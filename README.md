@@ -8,9 +8,9 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 
 ## Table of Contents
 1. [Dataset](#dataset)
-    + [Acquisition and Error Correction](#dataset-acquisition-and-error-correction)
-    + Feature Engineering
-    + Advanced Metrics Limited by Years
+    + [Acquisition and Error Correction](#dataset:-acquisition-and-error-correction)
+    + [Feature Engineering](#dataset:-feature-engineering)
+    + [Advanced Metrics Limited by Years](#dataset:-advanced-metrics-limited-by-years)
 2. [NFL Betting Primer](#nfl-betting-primer)  
     + The Spread
     + The Over/Under
@@ -43,7 +43,7 @@ The point of this entire project was to use team-level data to identify trends i
 
 Sports analytics has grown from a small cottage industry in the mid-1980s to a robust field unto itself in 2017.  My aim was to leverage as many 'advanced' as possible metrics to improve my model's accuracy.  Some of these metrics are proprietary and available only through subscriptions to their respective stat-owning websites, such as the _Defense-adjusted Value Over Average_ (DVOA) metrics from [Football Outsiders](www.footballoutsiders.com/) or _Clutch-weighted Quarterback Rating_ (QBR) and Brian Burke's _Football Power Index_ (FPI) from [ESPN Insider](www.espn.com/insider/).  Other metrics, such as _Pythagenport Win Expectancy_ -- a mildly revised descendent of baseball Sabremetrics godfather Bill James' famous _Pythagorean Win Expectancy_ metric -- or _Adjusted Net Yards Per Attempt_ (ANY/A), most recently modified by Chase Stuart, must be calculated.  Another excellent team-level advanced metric is _Expected Points Added_ (EPA), which originates from the seminal "Hidden Game of Football" published in the late 1980s by Bob Carroll and Pete Palmer.   
 
-#### Dataset - Acquisition and Error Correction
+### Dataset: Acquisition and Error Correction
 Unfortunately, no single source exists which has all these statistics.  In an effort to use as many of these stats as possible I decided to scrape the desired single-game statistics from [Pro Football Reference](www.pro-football-reference.com) (PFR) using BeautifulSoup and URLLib.  PFR is known as the online encyclopedia for all things pro football, and has detailed information for nearly each game played in pro football history, including stadium type, time of game, and weather.  Regarding scraping of their site, PFR makes the following pro-scraping statement on their [data use](http://www.sports-reference.com/data_use.html) page:
 >We will not fulfill any requests for data for custom downloads, unless you are prepared to pay a minimum of $1,000 for any such request.
 >
@@ -53,21 +53,39 @@ Surprisingly, most of PFR's data was well-maintained.  Apart from some random er
 
 As a long-time paying member at Football Outsiders, I was able to obtain all the DVOA data in their databases, which runs back to 1991 at present.
 
-#### Dataset - Feature Engineering
+### Dataset: Feature Engineering
+I engineered features in six distinct ways.
+1. __Per-game averages__ for each team in every statistic.  This was necessary for two concrete reasons.
+    1. Not every season in NFL history has had the same number of games.
+    2. Within a season, teams regularly play an opponent that has not played the same number of games at that point in the season.  Simply using season-long running-total values would skew things in favor of the team that had played more games for positive stats and in favor of the team that had played fewer games for negative stats.   By converting every statistic to a per-game value, we are comparing apples-to-apples.
+1. __Deltas__ between the two teams in given statistics, resulting in a single statistic describing the relationship between the teams for the given game.   
+    _Example:_ home team averages +103 more yards passing per game than the road team.
+2. __Aggregation__ of similar statistics into a single metric.  
+    _Example:_ find how many standard deviations a team is above or below league average in a given stat for a given week, and accumulate these for all relevant offensive or defensive stats into a single statistic, such as "Offensive Sigma".
+3. __Binning__ of a given statistic into quintiles.
+4. __Clustering__ of advanced metrics in an effort to identify "types" of game matchups.
+5. Calculating exact hours of rest between games, not merely days.  
+
+
+### Dataset: Advanced Metrics Limited by Years
 
 
 
-### NFL Betting Primer
 
 
-### Wise Bets
 
 
-### Model Selection
+## NFL Betting Primer
 
-### Results
 
-### Future Considerations
+## Wise Bets
+
+
+## Model Selection
+
+## Results
+
+## Future Considerations
 
 
 
