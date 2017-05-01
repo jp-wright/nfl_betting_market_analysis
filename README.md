@@ -21,11 +21,8 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Classification v. Regression](#model---classification-v.-regression)
     + [Model Selection and Tuning](#model---model-selection-and-tuning)
       + Trees Feature Importance - Split Datasets  **CHECK RFE accuracy in main model**
-    + Model Training - _EPA_ Dataset Used
-        + In [157]: 5498*360 - epa
-            Out[157]: 1979280
-            In [158]: 8788*258 - spread
-            Out[158]: 2267304
+    + Model Training - _Advanced_ Dataset Used
+
 5. [Results](#results)  
     + Overview -- Best and Worst
     + Spread
@@ -45,6 +42,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + Money Line
     + Hypothetical Bettor Using This Model
       + Money Line
+    + Clusters - Four Types
 6. [Future Considerations](#future-considerations)  
     + Dynamic Web App
     + Player-specific Information
@@ -84,7 +82,7 @@ I engineered features in seven distinct ways.
 7. Calculating exact hours of rest between games, not merely days.  
 
 ### Dataset - Advanced Metrics Limited by Years
-Due to the proprietary nature of some of the advanced metrics, and the reliance upon more granular statistics for others, they are not available for the entirety of the dataset itself.  Vegas line information only goes back to the 1978 season.  Time of possession information starts in 1983, 3rd and 4th Down success rates as well as DVOA begin in 1991, and EPA starting in 1994.  In the future as more old game logs and old game films are parsed and logged, it will be possible for these insightful advanced metrics to be extended further back into league history.  The selection of data from this parent dataset will be discussed below under [Model Selection](#model-selection).
+Due to the proprietary nature of some of the advanced metrics, and the reliance upon more granular statistics for others, they are not available for the entirety of the dataset itself.  Vegas line information only goes back to the 1978 season, meaning 1978 is the earliest possible season for this model.  Time of possession information starts in 1983, 3rd and 4th Down success rates as well as DVOA begin in 1991, and EPA starting in 1994.  In the future as more old game logs and old game films are parsed and logged, it will be possible for these insightful advanced metrics to be extended further back into league history.  The selection of data from this parent dataset will be discussed below under [Model Selection](#model-selection).
 
 <BR>
 
@@ -114,19 +112,32 @@ Secondarily, we can do the same for the Over/Under as well as the Money Line.  T
 <BR>
 
 ## Model Selection
-Four models were tested in this project: Random Forests and Gradient Boosted Trees (GBT), were used initially, followed by Support Vector Machines (SVM) and finally ElasticNet regression.
+Four models were tested in this project: two tree ensemble methods, Random Forests (RF) and Gradient Boosted Trees (GBT), as well as Support Vector Machines (SVM) and finally ElasticNet regression.  The GBT models are from __XGBoost__ while the rest are from __Sci-Kit Learn__.
 
 ### Model - Data Selection
-As mentioned above, there were three divisions of the original dataset features, as well as up to five progressively smaller year ranges of games to inspect.  The maximum number of features, without dummies, is 345.  The feature-set division arises from my desire to answer the following question: _which single statistics are the most important in predicting X result for an NFL game?_  
+As mentioned above, there were three divisions of the original dataset features, as well as up to five progressively smaller year ranges of games to inspect.
 
-The easiest and most direct way to do this is to use a model which has a feature importance attribute.  Gradient Boosted Trees do, and so served this role in this project.  There are two ways of finding the feature importance in ensemble tree models like Random Forests and Gradient Boosted Trees: first, each model has its own attribute which will tell you which features gave the highest return in purity or lowest return in error for the single fitting and run of the model.  Second, a more robust approach is to use Recursive Feature Elimination, which is calculated by fitting the model with all but one feature, measuring how well it predicts, and then repeating this for all features in the dataset until each one has had a turn being left out.  The features that caused the greatest drop in prediction accuracy are judged to be the most important.  
+#### Feature Separation and Importance
+The feature-set division arises from my desire to answer the following question: _which single statistics are the most important in predicting X result for an NFL game?_  
+
+The easiest and most direct way to do this is to use a model which has a feature importance attribute.  Gradient Boosted Trees do, and so served this role in this project.  There are two ways of finding the feature importance in ensemble tree models like Random Forests and Gradient Boosted Trees: first, each model has its own attribute which will tell you which features gave the highest return in purity or lowest return in error for the single fitting and run of the model.  Second, a more robust approach is to use Recursive Feature Elimination (RFE), which is calculated by fitting the model with all but one feature, measuring how well it predicts, and then repeating this for all features in the dataset until each one has had a turn being left out.  The features that caused the greatest drop in prediction accuracy are judged to be the most important.
 
 However, if any two features are closely related, the importance for either one will be largely negated by the existence of the other.  For example, pretend we have the two following statistics in this database: _touchdowns in the first three quarters_ and _touchdowns for the entire game_.  When the the stat for the entire game is removed and the model measures how accurate its predictions are, it will still have a feature included that provides three-quarters of the removed stat's information, and the prediction accuracy won't be severely impacted.  As a result, the _touchdowns for the entire game_ statistic will be reported as not being a very important feature.  However, the reality is that this would indeed be an important statistic, but having a correlated or, in this case, partially duplicated, feature clouds our ability to determine its true importance.
 
-Because of this fact, I split the feature set into three parts: All, Raw, and Matchup.  Raw stats are simply every team's own per-game statistics coming into the given game of interest.  Examples include Touchdowns/game, 1st Downs/game, turnovers/gm, etc.  Matchup stats are the differences between the road and home teams in these respective stats.  So, the home team might average seven more first downs per game, but 1.3 more turnovers per game.  Since the matchup stats are technically derived from the raw statistics, I wanted to ensure proper evaluation of feature importances which led to their being optionally separated.
+Because of this fact, I split the feature set into three parts: All, Raw, and Matchup.  Raw stats are simply every team's own per-game statistics coming into the given game of interest.  Examples include Touchdowns/game, 1st Downs/game, turnovers/gm, etc.  Matchup stats are the differences between the road and home teams in these respective stats.  So, the home team might average seven more first downs per game, but 1.3 more turnovers per game.  Since the matchup stats are technically derived from the raw statistics, I wanted to ensure proper evaluation of feature importances which led to their being optionally separated.  The top features for each target will be reported in the [Results](#results) section below.
 
-For prediction, having more information tends to be better than having less, and we see that here as using _all_ the features did lead to the best prediction accuracy for any given model.  However, the difference between using all the data and only the matchup data was minor, commonly in the range of 1% to 1.5%.  The raw features alone were noticeably less predictive, sometimes giving up to 5% worse prediction accuracy.
+Ideally, RFE allows you to trim the feature set of the model to only the most important variables in an effort to lower complexity and reduce variance.  This goal was not realistically achieved in this project, as any subset of N most important features (20, 40, 80) failed to match the accuracy of the full feature set, regardless of which subdivision (all, raw, matchup) of features was chosen.  
 
+Regarding prediction, having more information tends to be better than having less, and we see that here as using _all_ the features did lead to the best prediction accuracy for any given model.  However, the difference between using all the data and only the matchup data was minor, commonly in the range of 0.5% to 1.5%.  The raw features alone were noticeably less predictive, sometimes giving up to 5% worse prediction accuracy.
+
+#### Database Size
+As noted above, the more advanced metrics do not extend back to the beginning of the recorded Vegas betting data.  In order to use data ranging back to 1978, the start of the Vegas data, we would have to exclude many statistics which begin in subsequent years.  So, this gives us realistically two options:
+1. An 'longer' database that goes back to 1978, but is lacking many advanced metrics (called _1978 database_).
+    + 8,788 rows (games), 258 columns.  Total of 2,267,304 data points.
+2. A 'wider' database that starts in 1994 but has all the info-rich metrics (called _Advanced database_ since all advanced metrics are included).
+    + 5498 rows (games), 360 columns.  Total of 1,979,280 data points.  
+
+Experiments with both databases showed the wider, Advanced database to give slightly better predictions in regression, up to 4% improved R<sup>2</sup> accuracy and a tenth of a point in MAE.  For predicting the winner of a game, this gap was near 0.5% in AUC and -1.3% in F1-score without SMOTE oversampling, and -3.8% in AUC and -4.7% in F1-score with SMOTE oversampling.  This suggests that the information-rich advanced metrics more than make up for the loss of sample size when predicting the spread for a game but are either roughly equivalent to (without SMOTE), or do not compensate for the loss of (with SMOTE), fourteen extra years of data for predicting the winner outright.  Looking ahead, however, the advanced metrics will only continue to accrue and if they give better or roughly comparable predictions now with far fewer years of data, it would be sensible to use them going forward.
 
 ### Model - Classification v. Regression
 Since the Spread and the Over/Under are numeric, regression models were used to predict these targets.  Conversely, classification algorithms were used in modeling the Money Line binary winner/loser of a game.  
@@ -135,36 +146,48 @@ Since the Spread and the Over/Under are numeric, regression models were used to 
 In order to choose the models which performed best I optimized for the mean absolute error (MAE).  Compared to the root mean squared error (RMSE), the MAE is consistent across ranges of errors and doesn't 'flare' up in response to larger residuals.  For evaluating how many points a predicted NFL game's spread is  from the actual spread, there is no harsher penalty for being five points away than there is for being four points away.  There _are_ discontinuous jumps in importance of residual values, but these are _not_ progressively increasing with the value of the error itself.  Instead these recurring pronounced importance ranges are vestiges of the discrete scoring nature of football, with the vast majority of scores being multiples of three points or seven points, these being the two most common values of scoring plays (a field goal and a touchdown).  Using the absolute error ensures an easily interpretable metric for evaluating model accuracy with this data: a MAE of 3.5 means we have an average error of 3.5 points.
 
 ##### Regression
-For the regression targets, the two best performers were the Support Vector Machine and the Gradient Boosted Trees models, with the Random Forest a small step behind and the ElasticNet behind it.  Initial grid search cross-validation runs with the Gradient Boosted Trees regressor gave an overly optimistic result due to overfitting on the cross-validation set, with a drastically higher cross-validation score than subsequent test score.  This resulted in tweaking the parameters toward fewer trees, a medium tree depth, and a lower learning rate.  
+There are two possible regression targets: the _spread_ and the _over/under_ for each game. The two best performers were the Support Vector Machine and the Gradient Boosted Trees models, with the Random Forest a small step behind and the ElasticNet behind it.  Initial grid search cross-validation runs with the Gradient Boosted Trees regressor gave an overly optimistic result due to overfitting on the cross-validation set, with a drastically higher cross-validation score than subsequent test score.  This resulted in tweaking the parameters toward fewer trees, a medium tree depth, and a lower learning rate.  
 
 For the point spread, both the SVM and GBT models had an MAE of 2.2 points (and an R<sup>2</sup> of near .740).  For the over/under, they converged to an MAE of 1.8 points and an R<sup>2</sup> of near .715.  This means that at our best, we can predict the point spread of an NFL game to within 2.2 points and the over/under to within 1.8 points.  
 
 ##### Classification
+Three classification targets are available: whether a team _covered the spread_ (won the spread bet), whether a game went _over or under_ the over/under point total, and simply whether a team _won or lost_ the game (the money line bet).  The cover and over/under classes are very close to being ideally balanced, but the classes for a home team vs. a road team winning are slightly imbalanced.  Regardless of year range, the home team wins at roughly a 58% to 42% rate compared to the road team.  
 
+This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was minor, offering a few percentage points of improvement for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.
 
-__EPA tends to be__
+The best performing model in all classification tasks was the Gradient Boosted Classifier.  
 
-Data | Target | Model | Key Metrics
------|--------|-------|------------
+##### Class Ratios:  
+Target | Data | Majority Class | Minority Class | Majority % | Minority % | Counts
+-------|------|----------------|----------------|------------|------------|-------
+Road Cover | 1978 | Yes | No | 51.4% | 48.6% | 4514 - 4274
+Road Cover | Advanced | Yes | No | 51.7% | 48.3% | 2843 - 2655
+Over/Under Result | 1978 | Over | Under | 50.6% | 49.4% | 4449 - 4338
+Over/Under Result | Advanced | Over | Under | 51.0% | 49.0% | 2805 - 2693
+Home Team Win | 1978 | Win | Loss | 58.2% | 41.8% | 5114 - 3674
+Home Team Win | Advanced | Win | Loss | 57.9% | 42.1% | 3183 - 2315
 
-EPA
-Here are some basic results comparing models.
-#### EPA-HomeWin-All:
-1. GBC:
-_depth: 3, tree: 50, rate: .1 = .73 F1, .63 ROC (.67 Rec, .79 Pre) **_
+<BR>
 
-#### EPA-Spread-All:
-1. GBR:
-_depth: 3, tree: 100, rate: .1 = 3.0 rmse, 2.3 mae, .73 r2 *_
-2. SVR (rbf)
-_C: 1000, gamma: .001 = 2.9 rmse, 2.2 mae, .74 r2 **_
-
-#### EPA-O/U-All:
-1. GBR
-depth: 3, tree: 100, rate: .1 = 2.4 rmse, 1.8 mae, .71 r2 *
-
-2. SVR (rbf)
-C: 1000, gamma: .001 = 2.4 rmse, 1.8 mae, .72 r2  *
+##### Model results with _All_ feature set.
+Target | Data | Model | Key Metrics | Score
+-----|--------|-------|-------------|--------
+Game Spread | 1978 | GBR | MAE <br> R<sup>2</sup> | 2.41 <br> 0.699
+Game Spread | Advanced | GBR | MAE <br> R<sup>2</sup> | 2.31 <br> 0.731
+Over/Under Value | 1978 | GBR | MAE <br> R<sup>2</sup> | 1.85 <br> .716
+Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723
+Road Team Cover | 1978 | GBR | AUC | 0.516
+Road Team Cover | 1978 | GBR | AUC (SMOTE)| 0.498
+Road Team Cover | Advanced | GBR | AUC | 0.502
+Road Team Cover | Advanced | GBR | AUC (SMOTE)| 0.530
+Over/Under Result | 1978 | GBR | AUC | 0.510
+Over/Under Result | 1978 | GBR | AUC (SMOTE)| 0.509
+Over/Under Result | Advanced | GBR | AUC | 0.494
+Over/Under Result | Advanced | GBR | AUC (SMOTE)| 0.497
+Home Team Win | 1978 | GBR | AUC | 0.631
+Home Team Win | 1978 | GBR | AUC (SMOTE)| 0.702
+Home Team Win | Advanced | GBR | AUC | 0.636
+Home Team Win | Advanced | GBR | AUC (SMOTE)| 0.666
 
 
 ### Model - Training
