@@ -18,17 +18,15 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 3. [Wise Bets](#wise-bets)  
 4. [Model Selection](#model-selection)   
     + [Data Selection](#model---data-selection)
-    + [Classification v. Regression](#model---classification-v.-regression)
-    + [Model Selection and Tuning](#model---model-selection-and-tuning)
-      + Trees Feature Importance - Split Datasets  **CHECK RFE accuracy in main model**
-    + Model Training - _Advanced_ Dataset Used
-
-5. [Results](#results)  
+    + [Classification v. Regression](#model---regression-v.-classification)
+    + [Model Selection and Training](#model---model-selection-and-training)
+      + [Tree-based Feature Importance](#feature-separation-and-importance)
+5. [Results](#results)  **Try Seaborn RegPlot and lmplot with some targets/wise/proba/etc**
     + Overview -- Best and Worst
-    + Spread
+    + Spread             **Plot KDE/Curve of Spread target**
       + Features
       + Metrics
-    + Over/Under
+    + Over/Under         **Plot KDE/Curve of O/U target**
       + Features
       + Metrics
     + Money Line
@@ -82,7 +80,7 @@ I engineered features in seven distinct ways.
 7. Calculating exact hours of rest between games, not merely days.  
 
 ### Dataset - Advanced Metrics Limited by Years
-Due to the proprietary nature of some of the advanced metrics, and the reliance upon more granular statistics for others, they are not available for the entirety of the dataset itself.  Vegas line information only goes back to the 1978 season, meaning 1978 is the earliest possible season for this model.  Time of possession information starts in 1983, 3rd and 4th Down success rates as well as DVOA begin in 1991, and EPA starting in 1994.  In the future as more old game logs and old game films are parsed and logged, it will be possible for these insightful advanced metrics to be extended further back into league history.  The selection of data from this parent dataset will be discussed below under [Model Selection](#model-selection).
+Due to the proprietary nature of some of the advanced metrics, and the reliance upon more granular statistics for others, they are not available for the entirety of the dataset itself.  Vegas line information only goes back to the 1978 season, meaning 1978 is the earliest possible season for this model.  Time of possession information starts in 1983, 3rd and 4th Down success rates as well as DVOA begin in 1991, and EPA starting in 1994.  In the future as more old game logs and old game films are parsed and logged, it will be possible for these insightful advanced metrics to be extended further back into league history.  The selection of data from this parent dataset will be discussed below under [Model Selection](#model---data-selection).
 
 <BR>
 
@@ -103,9 +101,9 @@ The money line is simply the odds that a specific team will win the game, regard
 ## Wise Bets
 Games that pass a user-set threshold of deviation from the model's prediction, either in a point spread or in odds to win, are labeled as __wise bets__.
 
-A game whose actual spread deviates from the predicted spread by the user-set point threshold or more will be labeled a "wise bet".  The underlying approach to finding mis-valued spreads works as follows.  The key factor for a spread is its _flexibility_. As Vegas receives more bets on a particular team at a given spread value, they can adjust the spread in order to balance the wagers on the opposing team, reducing the bookmakers' risk by taking near equal money on both sides.  (Vegas typically does not win big on any given game.  They win small amounts consistently by playing percentages very carefully).  This flexibility in the line is the key component I aimed to use in snuffing out inefficiency in the spread.  _If the betting public has a possibly inaccurate perception about a given team, they will either over- or under-bet for that team, forcing Vegas oddsmakers to compensate by artificially adjusting the spread in order to entice bettors to make wagers against their (inaccurate) perception and even out the money wagered._  
+A game whose actual spread deviates from the predicted spread by the user-set point threshold or more will be labeled a "wise bet".  The underlying approach to finding mis-valued spreads works as follows.  The key factor for a spread is its _flexibility_. As Vegas receives more bets on a particular team at a given spread value, they can adjust the spread in order to balance the wagers on the opposing team, reducing the bookmakers' risk by taking near equal money on both sides.  (Vegas typically does not win big on any given game.  They win small amounts consistently by playing percentages very carefully).  This flexibility in the line is the key component I aimed to use in snuffing out inefficiency in the spread.  If the betting public has a possibly inaccurate perception about a given team, they will either over- or under-bet for that team, forcing Vegas oddsmakers to compensate by artificially adjusting the spread in order to entice bettors to make wagers against their (inaccurate) perception and even out the money wagered.  
 
-__The goal of this model was to find out which factors best predict which games have spreads that are incorrectly set, by how many points they were off, and to predict the result.__  
+Because of this, the initial aim of this project was simple: I wanted __to identify which factors best predict games that have spreads that are incorrectly set, to label these games as potentially "wise bets," and to examine the results of these games in hopes of finding that a favorable percentage would be winning bets.__
 
 Secondarily, we can do the same for the Over/Under as well as the Money Line.  The Money Line is slightly different, since it is concerned only with the binary outcome of win/lose.
 
@@ -132,30 +130,29 @@ Regarding prediction, having more information tends to be better than having les
 
 #### Database Size
 As noted above, the more advanced metrics do not extend back to the beginning of the recorded Vegas betting data.  In order to use data ranging back to 1978, the start of the Vegas data, we would have to exclude many statistics which begin in subsequent years.  So, this gives us realistically two options:
-1. An 'longer' database that goes back to 1978, but is lacking many advanced metrics (called _1978 database_).
+1. A 'longer' database that goes back to 1978, but is lacking any information-rich advanced metrics (called the _1978 database_).
     + 8,788 rows (games), 258 columns.  Total of 2,267,304 data points.
 2. A 'wider' database that starts in 1994 but has all the info-rich metrics (called _Advanced database_ since all advanced metrics are included).
     + 5498 rows (games), 360 columns.  Total of 1,979,280 data points.  
 
-Experiments with both databases showed the wider, Advanced database to give slightly better predictions in regression, up to 4% improved R<sup>2</sup> accuracy and a tenth of a point in MAE.  For predicting the winner of a game, this gap was near 0.5% in AUC and -1.3% in F1-score without SMOTE oversampling, and -3.8% in AUC and -4.7% in F1-score with SMOTE oversampling.  This suggests that the information-rich advanced metrics more than make up for the loss of sample size when predicting the spread for a game but are either roughly equivalent to (without SMOTE), or do not compensate for the loss of (with SMOTE), fourteen extra years of data for predicting the winner outright.  Looking ahead, however, the advanced metrics will only continue to accrue and if they give better or roughly comparable predictions now with far fewer years of data, it would be sensible to use them going forward.
+Experiments with both databases showed the wider, Advanced database to give slightly better predictions in regression, up to 4% improved R<sup>2</sup> accuracy and a tenth of a point lower in MAE.  For predicting the winner of a game, this gap was near 0.5% in AUC but -1.3% in F1-score without SMOTE oversampling, and -3.8% in AUC and -4.7% in F1-score with SMOTE oversampling.  This suggests that the information-rich advanced metrics more than make up for the loss of sample size when predicting the spread for a game but are either roughly equivalent to (without SMOTE), or do not compensate for the loss of (with SMOTE), fourteen extra years of data for predicting the winner outright.  Looking ahead, however, the advanced metrics will only continue to accrue and if they give better or roughly comparable predictions now with far fewer years of data, it would be sensible to use them going forward.
 
-### Model - Classification v. Regression
+### Model - Regression v. Classification
 Since the Spread and the Over/Under are numeric, regression models were used to predict these targets.  Conversely, classification algorithms were used in modeling the Money Line binary winner/loser of a game.  
 
-### Model - Model Selection and Tuning
-In order to choose the models which performed best I optimized for the mean absolute error (MAE).  Compared to the root mean squared error (RMSE), the MAE is consistent across ranges of errors and doesn't 'flare' up in response to larger residuals.  For evaluating how many points a predicted NFL game's spread is  from the actual spread, there is no harsher penalty for being five points away than there is for being four points away.  There _are_ discontinuous jumps in importance of residual values, but these are _not_ progressively increasing with the value of the error itself.  Instead these recurring pronounced importance ranges are vestiges of the discrete scoring nature of football, with the vast majority of scores being multiples of three points or seven points, these being the two most common values of scoring plays (a field goal and a touchdown).  Using the absolute error ensures an easily interpretable metric for evaluating model accuracy with this data: a MAE of 3.5 means we have an average error of 3.5 points.
+#### Regression
+There are two possible regression targets: the _spread_ and the _over/under_ for each game. Each target is given in game points.  The spread extends back to 1978 while the over/under starts in 1979.
 
-##### Regression
-There are two possible regression targets: the _spread_ and the _over/under_ for each game. The two best performers were the Support Vector Machine and the Gradient Boosted Trees models, with the Random Forest a small step behind and the ElasticNet behind it.  Initial grid search cross-validation runs with the Gradient Boosted Trees regressor gave an overly optimistic result due to overfitting on the cross-validation set, with a drastically higher cross-validation score than subsequent test score.  This resulted in tweaking the parameters toward fewer trees, a medium tree depth, and a lower learning rate.  
+Target | Mean | Minimum (abs) | Maximum (abs) | Range
+-------|------|---------------|---------------|------
+Spread | 2.6 | 0.0 | 26.5 | 26.5
+Over/Under | 41.6 | 28.0 | 63.0 | 35.0
 
-For the point spread, both the SVM and GBT models had an MAE of 2.2 points (and an R<sup>2</sup> of near .740).  For the over/under, they converged to an MAE of 1.8 points and an R<sup>2</sup> of near .715.  This means that at our best, we can predict the point spread of an NFL game to within 2.2 points and the over/under to within 1.8 points.  
 
-##### Classification
+#### Classification
 Three classification targets are available: whether a team _covered the spread_ (won the spread bet), whether a game went _over or under_ the over/under point total, and simply whether a team _won or lost_ the game (the money line bet).  The cover and over/under classes are very close to being ideally balanced, but the classes for a home team vs. a road team winning are slightly imbalanced.  Regardless of year range, the home team wins at roughly a 58% to 42% rate compared to the road team.  
 
-This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was minor, offering a few percentage points of improvement for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.
-
-The best performing model in all classification tasks was the Gradient Boosted Classifier.  
+This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was mixed, offering a few percentage points of improvement or negation for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.  The full breakdown of classes is shown below.
 
 ##### Class Ratios:  
 Target | Data | Majority Class | Minority Class | Majority % | Minority % | Counts
@@ -167,40 +164,47 @@ Over/Under Result | Advanced | Over | Under | 51.0% | 49.0% | 2805 - 2693
 Home Team Win | 1978 | Win | Loss | 58.2% | 41.8% | 5114 - 3674
 Home Team Win | Advanced | Win | Loss | 57.9% | 42.1% | 3183 - 2315
 
-<BR>
+The best performing model in all classification tasks was the Gradient Boosted Classifier.  
 
-##### Model results with _All_ feature set.
+
+### Model - Model Selection and Training
+In order to choose the models which performed best I optimized for the mean absolute error (MAE).  Compared to the root mean squared error (RMSE), the MAE is consistent across ranges of errors and doesn't 'flare' up in response to larger residuals.  For evaluating how many points a predicted NFL game's spread is  from the actual spread, there is no harsher penalty for being five points away than there is for being four points away.  There _are_ discontinuous jumps in importance of residual values, but these are _not_ progressively increasing with the value of the error itself.  Instead these recurring pronounced importance ranges are vestiges of the discrete scoring nature of football, with the vast majority of scores being multiples of three points or seven points, these being the two most common values of scoring plays (a field goal and a touchdown).  Using the absolute error ensures an easily interpretable metric for evaluating model accuracy with this data: a MAE of 3.5 means we have an average error of 3.5 points.
+
+The two best regression performers were the Support Vector Machine and the Gradient Boosted Trees models, with the Random Forest a small step behind and the ElasticNet behind it.  Initial grid search cross-validation runs with the Gradient Boosted Trees regressor gave an overly optimistic result due to overfitting on the cross-validation set, with a drastically higher cross-validation score than subsequent test score.  This resulted in tweaking the parameters toward fewer trees, a medium tree depth, and a lower learning rate.  
+
+For the point spread, both the SVM and GBT models had an MAE of 2.2 points (and an R<sup>2</sup> of near .740).  For the over/under, they converged to an MAE of 1.8 points and an R<sup>2</sup> of near .715.  This means that at our best, we can predict the point spread of an NFL game to within 2.2 points and the over/under to within 1.8 points.
+
+Classifying whether a team covered the spread or whether a game went over or under the over/under was not particularly responsive to model tuning.  Regardless of the model and its parameters, the AUC hovered close to an even score of 0.500.  I believe this is due to the nature of the categories -- the spread and over/under are designed by oddsmakers to be as close to the break-even point (50/50) as possible, to attract equal bets on both sides.  If anything, these results simply verify that Vegas is quite effective at calculating the expected margin of victory and total points scored per game, _en masse_.  Predicting the winner straight-up, however, is not a result contrived by Vegas and as such does have some appear to have some leeway in determining the outcome via machine learning.  
+
+
+##### Model Selection results across all targets and data splits with _All_ feature set.
 Target | Data | Model | Key Metrics | Score
 -----|--------|-------|-------------|--------
 Game Spread | 1978 | GBR | MAE <br> R<sup>2</sup> | 2.41 <br> 0.699
 Game Spread | Advanced | GBR | MAE <br> R<sup>2</sup> | 2.31 <br> 0.731
 Over/Under Value | 1978 | GBR | MAE <br> R<sup>2</sup> | 1.85 <br> .716
 Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723
-Road Team Cover | 1978 | GBR | AUC | 0.516
-Road Team Cover | 1978 | GBR | AUC (SMOTE)| 0.498
-Road Team Cover | Advanced | GBR | AUC | 0.502
-Road Team Cover | Advanced | GBR | AUC (SMOTE)| 0.530
-Over/Under Result | 1978 | GBR | AUC | 0.510
-Over/Under Result | 1978 | GBR | AUC (SMOTE)| 0.509
-Over/Under Result | Advanced | GBR | AUC | 0.494
-Over/Under Result | Advanced | GBR | AUC (SMOTE)| 0.497
-Home Team Win | 1978 | GBR | AUC | 0.631
-Home Team Win | 1978 | GBR | AUC (SMOTE)| 0.702
-Home Team Win | Advanced | GBR | AUC | 0.636
-Home Team Win | Advanced | GBR | AUC (SMOTE)| 0.666
-
-
-### Model - Training
-+ In [157]: 5498*360 - epa
-    Out[157]: 1979280
-    In [158]: 8788*258 - spread
-    Out[158]: 2267304
-
-
+Road Team Cover | 1978 | GBC | AUC | 0.516
+Road Team Cover | 1978 | GBC | AUC (SMOTE)| 0.498
+Road Team Cover | Advanced | GBC | AUC | 0.502
+Road Team Cover | Advanced | GBC | AUC (SMOTE)| 0.530
+Over/Under Result | 1978 | GBC | AUC | 0.510
+Over/Under Result | 1978 | GBC | AUC (SMOTE)| 0.509
+Over/Under Result | Advanced | GBC | AUC | 0.494
+Over/Under Result | Advanced | GBC | AUC (SMOTE)| 0.497
+Home Team Win | 1978 | GBC | AUC | 0.631
+Home Team Win | 1978 | GBC | AUC (SMOTE)| 0.702
+Home Team Win | Advanced | GBC | AUC | 0.636
+Home Team Win | Advanced | GBC | AUC (SMOTE)| 0.666
 
 <BR>
 
 ## Results
+Below are the results for each of the five Vegas-related targets investigated in this project.  Recall the o
+
+
+
+
 
 <BR>
 
