@@ -112,7 +112,7 @@ Secondarily, we can do the same for the Over/Under as well as the Money Line.  T
 
 <BR>
 
-## <span style="color: #00755E; font-family: 'Georgia'"> Model Selection </span>
+## <span style="font-family: 'futura'"> Model Selection </span>
 ***
 Four models were tested in this project: two tree ensemble methods, Random Forests (RF) and Gradient Boosted Trees (GBT), as well as Support Vector Machines (SVM) and finally ElasticNet regression.  The GBT models are from __XGBoost__ while the rest are from __Sci-Kit Learn__.
 
