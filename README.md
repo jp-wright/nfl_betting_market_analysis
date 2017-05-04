@@ -8,7 +8,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 
 ## Table of Contents
 1. [Dataset](#dataset)
-    + [Acquisition and Error Correction](#dataset---acquisition-and-error-correction)
+    + [Acquisition and Error Correction](#dataset---acquisition-and-error-correction) **tell # of PFR sheets**
     + [Feature Engineering](#dataset---feature-engineering)
     + [Advanced Metrics Limited by Years](#dataset---advanced-metrics-limited-by-years)
 2. [NFL Betting Primer](#nfl-betting-primer)  
@@ -18,7 +18,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 3. [Wise Bets](#wise-bets)  
 4. [Model Selection](#model-selection)   
     + [Data Selection](#model---data-selection)
-    + [Classification v. Regression](#model---regression-v.-classification)
+    + [Classification vs. Regression](#model---regression-vs-classification)
     + [Model Selection and Training](#model---model-selection-and-training)
       + [Tree-based Feature Importance](#feature-separation-and-importance)
 5. [Results](#results)  **Try Seaborn RegPlot and lmplot with some targets/wise/proba/etc**
@@ -26,7 +26,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + Spread             **Plot KDE/Curve of Spread target**
       + Features
       + Metrics
-    + Over/Under         **Plot KDE/Curve of O/U target**
+    + Over/Under         **Plot KDE/Curve of O/U target**  **PCA/t-SNE**
       + Features
       + Metrics
     + Money Line
@@ -38,6 +38,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + Spread
       + Over/Under
       + Money Line
+        + 91.5% R2 with Spread when predicting...
     + Hypothetical Bettor Using This Model
       + Money Line
     + Clusters - Four Types
@@ -137,7 +138,7 @@ As noted above, the more advanced metrics do not extend back to the beginning of
 
 Experiments with both databases showed the wider, Advanced database to give slightly better predictions in regression, up to 4% improved R<sup>2</sup> accuracy and a tenth of a point lower in MAE.  For predicting the winner of a game, this gap was near 0.5% in AUC but -1.3% in F1-score without SMOTE oversampling, and -3.8% in AUC and -4.7% in F1-score with SMOTE oversampling.  This suggests that the information-rich advanced metrics more than make up for the loss of sample size when predicting the spread for a game but are either roughly equivalent to (without SMOTE), or do not compensate for the loss of (with SMOTE), fourteen extra years of data for predicting the winner outright.  Looking ahead, however, the advanced metrics will only continue to accrue and if they give better or roughly comparable predictions now with far fewer years of data, it would be sensible to use them going forward.
 
-### Model - Regression v. Classification
+### Model - Regression vs Classification
 Since the Spread and the Over/Under are numeric, regression models were used to predict these targets.  Conversely, classification algorithms were used in modeling the Money Line binary winner/loser of a game.  
 
 #### Regression
@@ -202,7 +203,7 @@ Home Team Win | Advanced | GBC | AUC (SMOTE)| 0.666
 ## Results
 Below are the results for each of the five Vegas-related targets investigated in this project.  Recall the o
 
-
+__90.4%__ of all spreads are <= +/- 10.
 
 
 
