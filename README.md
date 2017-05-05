@@ -96,8 +96,6 @@ There are three primary types of wagers made on NFL games:
 2. The over/under
 3. The money line  
 
-This section will be kept brief, but is necessary to understand the methodology used in model selection and the results found.
-
 #### The Spread
 The spread, also called the "line", is a measure of how much better Vegas thinks Team A is than Team B.  Vegas sets the spread in the amount of points the favored team is expected to win by.  A negative spread indicates a team is favored, positive an underdog.  For example, a spread of -3.0 means the favored team is expected to win by a field goal (3 points).  You can bet on either team, the favorite or underdog.  In order to win a bet on the spread, your team must exceed the spread in your favor.  So, if you bet on the favorite at -3.0, they must win by _more_ than 3 points for your bet to win.  If they win by exactly 3 points, the result is called a "push", and all money is returned to bettors, none having been won nor lost.  
 
@@ -211,6 +209,7 @@ Game Spread | 1978 | GBR | MAE <br> R<sup>2</sup> | 2.41 <br> 0.699
 Game Spread | Advanced | GBR | MAE <br> R<sup>2</sup> | 2.31 <br> 0.731
 Over/Under Value | 1978 | GBR | MAE <br> R<sup>2</sup> | 1.85 <br> 0.716
 Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723  
+
 <sub>__Table 3:__ The overview of results from the two regression models and targets in this project.
 
 <BR><BR>
@@ -238,7 +237,7 @@ The result of using PCA to analyze the most easily classified target, _Home Team
 ![THE PCA'](https://github.com/jp-wright/nfl_betting_market_analysis/blob/master/images/3pwisebetPCA.png "PCA results for 'Home Team Win")
 
 
-<img alt='PCA results for 'Home Team Win' classification target' src='images/3pwisebetPCA.png' height=200>
+<img alt='PCA results for 'Home Team Win' classification target' src='/images/3pwisebetPCA.png' height=200>
 
 
 
