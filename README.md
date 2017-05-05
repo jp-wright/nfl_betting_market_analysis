@@ -27,7 +27,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + Features
       + Metrics
     + Over/Under         **Plot KDE/Curve of O/U target**  **PCA/t-SNE**
-      + Features
+      + Features        **TEMP/wind/wc plots**
       + Metrics
     + Money Line
       + Features
@@ -62,9 +62,11 @@ Unfortunately, no single source exists which has all these statistics.  In an ef
 >
 >We realize this will be insurmountable for any student requests. However, I would point out that learning how to accumulate data is often a more valuable skill than actually analyzing the data, so we encourage you as a student or professional to learn how.
 
-In total, I obtained 181,285 separate tables.  Around 30,000 of these were used in this project.  In order to utilize them, I first had to do modify them for uniformity and then create a table for each team that summarized their progress through a given season, game by game, with around 300 added features that covered both single-game and running total statistics.  Once completed, the final database was formed by stitching the statistics for each home team and road team together for every game from 1950-2016 into a single entry. For games that have Vegas-related information, which starts in 1978, this totals around 12,500 games.
+In total, I obtained 181, 285 separate tables.  Around 30,000 of these were used in this project.  In order to utilize them, I first had to do modify them for uniformity and then create a table for each team that summarized their progress through a given season, game by game, with around 300 added features that covered both single-game and running total statistics.  Once completed, the final database was formed by stitching the statistics for each home team and road team together for every game from 1950-2016 into a single entry. For games that have Vegas-related information, which starts in 1978, this totals around 12,500 games.
 
-Surprisingly, most of PFR's data was well-maintained.  Apart from some random errors, there were 87 games that had missing weather data (temperature, wind chill, wind speed, and humidity), which forced me to manually look up the weather in the city the game was played in on the date of the game, and insert into the database one-by-one.  (Surprise, it's hot and dry in Arizona).  For games that were played in a closed-roof dome, the temperature was set to 72°
+Surprisingly, most of PFR's data was well-maintained.  There were, however, two notable errors.  First, _time of possession_ data for all post-season games from 1991-1998 was missing.  I looked up each of these games and manually entered the correct data.  Second, 87 games had missing weather data (temperature, wind chill, wind speed (mph), and humidity), which forced me to manually look up the weather in the city the game was played in on the date of the game, and insert into the database one-by-one.  (_Surprise_, it's hot and dry in Arizona).  
+
+A total of 1817 games were played in a closed-roof, climate-controlled dome, starting in 1968.  The temperature was set to 67° F, no wind, and no humidity for these games.  Wind chill was also calculated for each game with a temperature below 50° F using the modern formula of 35.74 \+ (0.6215 \* Temp) - (35.75 \* Wind<sup>0.16</sup>) \+ (0.4275 \* Temp \* Wind<sup>0.16</sup>). <sup>[__4__](#fn4)</sup>
 
 Last, as a long-time paying member at Football Outsiders, I was able to obtain all the DVOA data in their databases, which runs back to 1991 as of February 2017.
 
@@ -83,28 +85,37 @@ I engineered features in seven distinct ways.
 7. Calculating exact hours of rest between games, not merely days.  
 
 ### Advanced Metrics Limited by Years
-Due to the proprietary nature of some of the advanced metrics, and the reliance upon more granular statistics for others, they are not available for the entirety of the dataset itself.  Vegas line information only goes back to the 1978 season, meaning 1978 is the earliest possible season for this model.  Time of possession information starts in 1983, 3rd and 4th Down success rates as well as DVOA begin in 1991, and EPA starting in 1994.  In the future as more old game logs and old game films are parsed and logged, it will be possible for these insightful advanced metrics to be extended further back into league history.  The selection of data from this parent dataset will be discussed below under [Model Selection](#model---data-selection).
+Due to the proprietary nature of some of the advanced metrics, and the reliance upon more granular statistics for others, they are not available for the entirety of the dataset itself.  Vegas line information only goes back to the 1978 season, meaning 1978 is the earliest possible season for this model.  Time of possession information starts in 1983, 3rd and 4th Down success rates as well as DVOA begin in 1991, and EPA starts in 1994.  In the future as more old game logs and old game films are parsed and logged, it will be possible for these insightful advanced metrics to be extended further back into league history.  The selection of data from this parent dataset will be discussed below under [Model Selection](#model---data-selection).
 
 <BR>
 
-## NFL Betting Primer
-There are three primary types of wagers made on NFL games: the spread, the over/under, and the money line.  This section will be kept brief, but is necessary to understand the methodology used in model selection and the results found.
 
-### The Spread
+## NFL Betting Primer
+There are three primary types of wagers made on NFL games:
+1. The spread
+2. The over/under
+3. The money line  
+
+This section will be kept brief, but is necessary to understand the methodology used in model selection and the results found.
+
+#### The Spread
 The spread, also called the "line", is a measure of how much better Vegas thinks Team A is than Team B.  Vegas sets the spread in the amount of points the favored team is expected to win by.  A negative spread indicates a team is favored, positive an underdog.  For example, a spread of -3.0 means the favored team is expected to win by a field goal (3 points).  You can bet on either team, the favorite or underdog.  In order to win a bet on the spread, your team must exceed the spread in your favor.  So, if you bet on the favorite at -3.0, they must win by _more_ than 3 points for your bet to win.  If they win by exactly 3 points, the result is called a "push", and all money is returned to bettors, none having been won nor lost.  
 
-### The Over/Under
+#### The Over/Under
 The Over/Under is simply the total expected number of points scored by both teams in a game.  You can bet the Over or the Under, and will win if the combined score of the teams is either more than (over) or less than (under) the set Over/Under value, depending on your wager.
 
-### The Money Line
+#### The Money Line
 The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds like the spread, where negative implies the favored team, and the odds themselves indicate what the payout will be for a winning bet.
 
 <BR>
 
+
 ## Wise Bets
 Games that pass a user-set threshold of deviation from the model's prediction, either in a point spread or in odds to win, are labeled as __wise bets__.
 
-A game whose actual spread deviates from the predicted spread by the user-set point threshold or more will be labeled a "wise bet".  The underlying approach to finding mis-valued spreads works as follows.  The key factor for a spread is its _flexibility_. As Vegas receives more bets on a particular team at a given spread value, they can adjust the spread in order to balance the wagers on the opposing team, reducing the bookmakers' risk by taking near equal money on both sides.  (Vegas typically does not win big on any given game.  They win small amounts consistently by playing percentages very carefully).  This flexibility in the line is the key component I aimed to use in snuffing out inefficiency in the spread.  If the betting public has a possibly inaccurate perception about a given team, they will either over- or under-bet for that team, forcing Vegas oddsmakers to compensate by artificially adjusting the spread in order to entice bettors to make wagers against their (inaccurate) perception and even out the money wagered.  
+A game whose actual spread deviates from the predicted spread by the user-set point threshold or more will be labeled a "wise bet".  The underlying approach to finding mis-valued spreads works as follows.  The key factor for a spread is its _flexibility_. As Vegas receives more bets on a particular team at a given spread value, they can adjust the spread in order to balance the wagers on the opposing team, reducing the bookmakers' risk by taking near equal money on both sides.  (Vegas typically does not win big on any given game.  They win small amounts consistently by playing percentages very carefully).  
+
+This flexibility in the line is the key component I aimed to use in snuffing out inefficiency in the spread.  If the betting public has a possibly inaccurate perception about a given team, they will either over- or under-bet for that team, forcing Vegas oddsmakers to compensate by artificially adjusting the spread in order to entice bettors to make wagers against their (inaccurate) perception and even out the money wagered.  
 
 Because of this, the initial aim of this project was simple: I wanted __to identify which factors best predict games that have spreads that are incorrectly set, to label these games as potentially "wise bets," and to examine the results of these games in hopes of finding that a favorable percentage would be winning bets.__
 
@@ -112,22 +123,25 @@ Secondarily, we can do the same for the Over/Under as well as the Money Line.  T
 
 <BR>
 
-## <span style="font-family: 'futura'"> Model Selection </span>
-***
+## Model Selection
 Four models were tested in this project: two tree ensemble methods, Random Forests (RF) and Gradient Boosted Trees (GBT), as well as Support Vector Machines (SVM) and finally ElasticNet regression.  The GBT models are from __XGBoost__ while the rest are from __Sci-Kit Learn__.
 
-### <span style="color:#00755E"> Data Selection </span>
+### Data Selection
 As mentioned above, there were three divisions of the original dataset features, as well as up to five progressively smaller year ranges of games to inspect.
-
 
 #### Feature Separation and Importance
 The feature-set division arises from my desire to answer the following question: _which single statistics are the most important in predicting X result for an NFL game?_  
 
 The easiest and most direct way to do this is to use a model which has a feature importance attribute.  Gradient Boosted Trees do, and so served this role in this project.  There are two ways of finding the feature importance in ensemble tree models like Random Forests and Gradient Boosted Trees: first, each model has its own attribute which will tell you which features gave the highest return in purity or lowest return in error for the single fitting and run of the model.  Second, a more robust approach is to use Recursive Feature Elimination (RFE), which is calculated by fitting the model with all but one feature, measuring how well it predicts, and then repeating this for all features in the dataset until each one has had a turn being left out.  The features that caused the greatest drop in prediction accuracy are judged to be the most important.
 
-However, if any two features are closely related, the importance for either one will be largely negated by the existence of the other.  For example, pretend we have the two following statistics in this database: _touchdowns in the first three quarters_ and _touchdowns for the entire game_.  When the the stat for the entire game is removed and the model measures how accurate its predictions are, it will still have a feature included that provides three-quarters of the removed stat's information, and the prediction accuracy won't be severely impacted.  As a result, the _touchdowns for the entire game_ statistic will be reported as not being a very important feature.  However, the reality is that this would indeed be an important statistic, but having a correlated or, in this case, partially duplicated, feature clouds our ability to determine its true importance.
+However, if any two features are closely related, the importance for either one will be largely negated by the existence of the other.  For example, pretend we have the two following statistics in this database: _touchdowns in the first three quarters_ and _touchdowns for the entire game_.  When the the stat for the _entire game_ is removed and the model measures how accurate its predictions are, it will still have a feature included that provides three-quarters of the removed _entire game_ stat's information, and the prediction accuracy won't be severely impacted.  As a result, the _touchdowns for the entire game_ statistic will be reported as not being a very important feature.  However, the reality is that this would indeed be an important statistic, but having a correlated or, in this case, partially duplicated feature clouds our ability to determine its true importance.
 
-Because of this fact, I split the feature set into three parts: All, Raw, and Matchup.  Raw stats are simply every team's own per-game statistics coming into the given game of interest.  Examples include Touchdowns/game, 1st Downs/game, turnovers/gm, etc.  Matchup stats are the differences between the road and home teams in these respective stats.  So, the home team might average seven more first downs per game, but 1.3 more turnovers per game.  Since the matchup stats are technically derived from the raw statistics, I wanted to ensure proper evaluation of feature importances which led to their being optionally separated.  The top features for each target will be reported in the [Results](#results) section below.
+Because of this fact, I split the feature set into three parts:
+1. All statistics
+2. Raw statistics
+3. Matchup deltas
+
+_Raw_ stats are simply every team's own per-game statistics coming into the given game of interest.  Examples include Touchdowns/game, 1st Downs/game, turnovers/game, etc.  Matchup deltas are the differences between the road and home teams in these respective stats.  So, the home team might average seven more first downs per game, but 1.3 more turnovers per game.  Since the matchup stats are technically derived from the raw statistics, I wanted to ensure proper evaluation of feature importances which led to their being optionally separated.  The top features for each target will be reported in the [Results](#results) section below.
 
 Ideally, RFE allows you to trim the feature set of the model to only the most important variables in an effort to lower complexity and reduce variance.  This goal was not realistically achieved in this project, as any subset of N most important features (20, 40, 80) failed to match the accuracy of the full feature set, regardless of which subdivision (all, raw, matchup) of features was chosen.  
 
@@ -140,7 +154,9 @@ As noted above, the more advanced metrics do not extend back to the beginning of
 2. A 'wider' database that starts in 1994 but has all the info-rich metrics (called _Advanced database_ since all advanced metrics are included).
     + 5498 rows (games), 360 columns.  Total of 1,979,280 data points.  
 
-Experiments with both databases showed the wider, Advanced database to give slightly better predictions in regression, up to 4% improved R<sup>2</sup> accuracy and a tenth of a point lower in MAE.  For predicting the winner of a game, this gap was near 0.5% in AUC but -1.3% in F1-score without SMOTE oversampling, and -3.8% in AUC and -4.7% in F1-score with SMOTE oversampling.  This suggests that the information-rich advanced metrics more than make up for the loss of sample size when predicting the spread for a game but are either roughly equivalent to (without SMOTE), or do not compensate for the loss of (with SMOTE), fourteen extra years of data for predicting the winner outright.  Looking ahead, however, the advanced metrics will only continue to accrue and if they give better or roughly comparable predictions now with far fewer years of data, it would be sensible to use them going forward.
+Experiments with both databases showed the wider, Advanced database to give slightly better predictions in regression, up to 4% improved R<sup>2</sup> accuracy and a tenth of a point lower in MAE.  For predicting the winner of a game, this gap was near 0.5% in AUC but -1.3% in F1-score without SMOTE oversampling, and -3.8% in AUC and -4.7% in F1-score with SMOTE oversampling.  
+
+This suggests that the information-rich advanced metrics more than make up for the loss of sample size when predicting the spread for a game but are either roughly equivalent to (without SMOTE), or do not compensate for the loss of (with SMOTE), fourteen extra years of data for predicting the winner outright.  Looking ahead, however, the advanced metrics will only continue to accrue and if they give better or roughly comparable predictions now with far fewer years of data, it would be sensible to use them going forward.
 
 ### Regression vs Classification
 Since the Spread and the Over/Under are numeric, regression models were used to predict these targets.  Conversely, classification algorithms were used in modeling the Money Line binary winner/loser of a game.  
@@ -154,12 +170,17 @@ Target | Mean | Minimum (abs) | Maximum (abs) | Range
 -------|------|---------------|---------------|------
 Spread | 2.6 | 0.0 | 26.5 | 26.5
 Over/Under | 41.6 | 28.0 | 63.0 | 35.0
-<span style="color:#1560BD; font-size: 6; font-family: 'caslon'">__Table 1:__</span> Spread Statistics
+<sub>__Table 1:__ Summary statistics for the Vegas Spread and Over/Under, from 1978-2016.</sub>
 
 #### Classification
-Three classification targets are available: whether a team _covered the spread_ (won the spread bet), whether a game went _over or under_ the over/under point total, and simply whether a team _won or lost_ the game (the money line bet).  The cover and over/under classes are very close to being ideally balanced, but the classes for a home team vs. a road team winning are slightly imbalanced.  Regardless of year range, the home team wins at roughly a 58% to 42% rate compared to the road team.  
+Three classification targets are available:
+1. Whether a team _covered the spread_ (won the spread bet),
+2. Whether a game went _over or under_ the over/under point total, and simply
+3. Whether a team _won or lost_ the game (the money line bet).  
 
-This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was mixed, offering a few percentage points of improvement or negation for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.  The full breakdown of classes is shown below.
+The cover and over/under classes are very close to being ideally balanced, but the classes for a home team vs. a road team winning are slightly imbalanced.  Regardless of year range, the home team wins at roughly a 58% to 42% rate compared to the road team.  
+
+This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was mixed, offering a few percentage points of improvement or negation for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.  The full breakdown of classes is shown below for reference.
 
 ##### Class Ratios:  
 Target | Data | Majority Class | Minority Class | Majority % | Minority % | Counts
@@ -170,8 +191,7 @@ Over/Under Result | 1978 | Over | Under | 50.6% | 49.4% | 4449 - 4338
 Over/Under Result | Advanced | Over | Under | 51.0% | 49.0% | 2805 - 2693
 Home Team Win | 1978 | Win | Loss | 58.2% | 41.8% | 5114 - 3674
 Home Team Win | Advanced | Win | Loss | 57.9% | 42.1% | 3183 - 2315
-
-The best performing model in all classification tasks was the Gradient Boosted Classifier.  
+<sub>__Table 2:__ Breakdown of classification targets within the two primary datasets, 1978-2016 and 1994-2016 (_Advanced_).  Only the __Home Team Win__ target has a moderate class imbalance.  </sub>
 
 
 ### Model Selection and Training
@@ -181,33 +201,51 @@ The two best regression performers were the Support Vector Machine and the Gradi
 
 For the point spread, both the SVM and GBT models had an MAE of 2.2 points (and an R<sup>2</sup> of near .740).  For the over/under, they converged to an MAE of 1.8 points and an R<sup>2</sup> of near .715.  This means that at our best, we can predict the point spread of an NFL game to within 2.2 points and the over/under to within 1.8 points.
 
-Classifying whether a team covered the spread or whether a game went over or under the over/under was not particularly responsive to model tuning.  Regardless of the model and its parameters, the AUC hovered close to an even score of 0.500.  I believe this is due to the nature of the categories -- the spread and over/under are designed by oddsmakers to be as close to the break-even point (50/50) as possible, to attract equal bets on both sides.  If anything, these results simply verify that Vegas is quite effective at calculating the expected margin of victory and total points scored per game, _en masse_.  Predicting the winner straight-up, however, is not a result contrived by Vegas and as such does have some appear to have some leeway in determining the outcome via machine learning.  
+The best performing model in all classification tasks was the Gradient Boosted Classifier. Classifying whether a team covered the spread or whether a game went over or under the over/under was not particularly responsive to model tuning.  Regardless of the model and its parameters, the AUC hovered close to an even score of 0.500.  I believe this is due to the nature of the categories -- the spread and over/under are designed by oddsmakers to be as close to the break-even point (50/50) as possible, to attract equal bets on both sides.  If anything, these results simply verify that Vegas is quite effective at calculating the expected margin of victory and total points scored per game, _en masse_.  Predicting the winner straight-up, however, is not a result contrived by Vegas and as such does have some appear to have some leeway in determining the outcome via machine learning.  Below are two tables summarizing the results of the model tuning and selection process.  
 
+<br>
 
-##### Model Selection results across all targets and data splits with _All_ feature set.
-Target | Data | Model | Key Metrics | Score
------|--------|-------|-------------|--------
+Target | Data | Model | Metrics | Score
+-----|--------|-------|---------|-----
 Game Spread | 1978 | GBR | MAE <br> R<sup>2</sup> | 2.41 <br> 0.699
 Game Spread | Advanced | GBR | MAE <br> R<sup>2</sup> | 2.31 <br> 0.731
-Over/Under Value | 1978 | GBR | MAE <br> R<sup>2</sup> | 1.85 <br> .716
-Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723
-Road Team Cover | 1978 | GBC | AUC | 0.516
-Road Team Cover | 1978 | GBC | AUC (SMOTE)| 0.498
-Road Team Cover | Advanced | GBC | AUC | 0.502
-Road Team Cover | Advanced | GBC | AUC (SMOTE)| 0.530
-Over/Under Result | 1978 | GBC | AUC | 0.510
-Over/Under Result | 1978 | GBC | AUC (SMOTE)| 0.509
-Over/Under Result | Advanced | GBC | AUC | 0.494
-Over/Under Result | Advanced | GBC | AUC (SMOTE)| 0.497
-Home Team Win | 1978 | GBC | AUC | 0.631
-Home Team Win | 1978 | GBC | AUC (SMOTE)| 0.702
-Home Team Win | Advanced | GBC | AUC | 0.636
-Home Team Win | Advanced | GBC | AUC (SMOTE)| 0.666
+Over/Under Value | 1978 | GBR | MAE <br> R<sup>2</sup> | 1.85 <br> 0.716
+Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723  
+<sub>__Table 3:__ The overview of results from the two regression models and targets in this project.
+
+<BR><BR>
+
+Target | Data | Model | Metrics | Score
+-----|--------|-------|---------|-----
+Road Team Cover | 1978 | GBC | AUC <br> AUC (SMOTE) | 0.516 <br> 0.498
+Road Team Cover | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.502 <br> 0.530
+Over/Under Result | 1978 | GBC | AUC <br> AUC (SMOTE)  | 0.510 <br> 0.509
+Over/Under Result | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.494 <br> 0.497
+Home Team Win | 1978 | GBC | AUC <br> AUC (SMOTE)  | 0.631 <br> 0.702
+Home Team Win | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.636 <br> 0.666
+
+<sub>__Table 4:__ The overview of results from the three classification targets using combinations of datasets and class-balancing oversampling (SMOTE).
+
 
 <BR>
 
 ## Results
-Below are the results for each of the five Vegas-related targets investigated in this project.  If you take a quick look at the table
+As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread and the over/under was be able to label games that had improperly set lines which could make them appealing bets.  This means we really wanted to regress against these targets in order to ultimately classify them.  Paired with the three classification targets, this results in the final goal for all models in this project being able to classify whether or not a game is one we should bet on.  A quick glance at __Tables 3__ and __4__ show a fairly pedestrian success rate at correctly predicting two of the three classification targets and a modest but not insignificant error on the regression targets.  
+
+Partially frustrated, partially disappointed, I decided to check if there was an underlying relationship or structure to this data which could show it was actually able to be classified better.  A popular method of this type of dimensionality reduction is Principal Component Analysis (PCA), which uses some higher-level mathematics to reduce the input data to core, or principal, components based on the amount of observed variance along a given rotational axis of the data.  The result is _not_ simply a set of input features, but rather the 'fundamental' relationships -- components -- between the features and the variance in the data.  If there exists a way to mathematically represent the data in a way that makes it separable in N-dimensions, PCA can tell us.  We can select for the number of components we want returned, which makes PCA ready-made for 2D and 3D visualizations.  
+
+The result of using PCA to analyze the most easily classified target, _Home Team Win_, were not encouraging.  
+![THE PCA'](https://github.com/jp-wright/nfl_betting_market_analysis/blob/master/images/3pwisebetPCA.png "PCA results for 'Home Team Win")
+
+
+<img alt='PCA results for 'Home Team Win' classification target' src='images/3pwisebetPCA.png' height=200>
+
+
+
+
+
+
+Below are the results for each of the five Vegas-related targets investigated in this project.  
 
 __90.4%__ of all spreads are <= +/- 10.
 
@@ -233,3 +271,4 @@ __90.4%__ of all spreads are <= +/- 10.
 <a name="fn1">1</a>: http://www.nbcnews.com/news/other/think-sports-gambling-isnt-big-money-wanna-bet-f6C10634316  
 <a name="fn2">2</a>: https://www.inc.com/slate/jordan-weissmann-is-illegal-sports-betting-a-400-billion-industry.html  
 <a name="fn3">3</a>: https://www.boydsbets.com/super-bowl-how-much-bet/
+<a name="fn4">4</a>: http://mentalfloss.com/article/26730/how-wind-chill-calculated
