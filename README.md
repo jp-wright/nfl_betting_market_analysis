@@ -246,7 +246,7 @@ Now, imagine floating high directly above the pyramid and looking down upon it. 
 
 Unlike the simplistic pyramid example, applying PCA in three dimensions to the wise bets from the Vegas spread did not reveal any feasible hyperplane of separation.  
 
-![PCA 3D Spread GIF](images/3D_PCA.gif "3D PCA results for the spread")
+![PCA 3D Spread GIF](images/3d_pca_gifs1/3D_PCA.gif "3D PCA results for the spread")
 
 <sub>__Figure 2:__ Three dimensions are unfortunately not enough to find a hyperplane of sufficient division between games that are wise bets and games that aren't.  There is no underlying structure to the classes, here.  They're distributed in a roughly spherical manner but almost randomly so.  
 
