@@ -233,15 +233,13 @@ As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread
 
 Partially frustrated, partially disappointed, I decided to check if there was an underlying relationship or structure to this data which could show it was actually able to be classified better.  A popular method of this type of dimensionality reduction is Principal Component Analysis (PCA), which uses some higher-level mathematics to reduce the input data to core, or principal, components based on the amount of observed variance along a given rotational axis of the data.  The result is _not_ simply a set of input features, but rather the 'fundamental' relationships -- components -- between the features and the variance in the data.  If there exists a way to mathematically represent the data in a way that makes it separable in N-dimensions, PCA can tell us.  We can select for the number of components we want returned, which makes PCA ready-made for 2D and 3D visualizations.  
 
-The result of using PCA to analyze the most easily classified target, _Home Team Win_, were not encouraging.  
-![THE PCA'](https://github.com/jp-wright/nfl_betting_market_analysis/blob/master/images/3pwisebetPCA.png "PCA results for 'Home Team Win")
+The result of using PCA to analyze the initial target and driving force of this project, the spread, were not encouraging.  Using the model's predictions for the spread to label games as potential "wise bets" or not, PCA showed a inseparable blob in two dimensions.
+![PCA 2D Spread](images/3pwisebetPCA.png "PCA results for the spread")
+
+<sub>__Figure 1:__ The first two principal components failed to give any viable separation for wise bets derived from the Vegas spread -- there is no line that can be drawn to reasonably divide the two classes.  
 
 
-<img alt='PCA results for 'Home Team Win' classification target' src='/images/3pwisebetPCA.png' height=200>
-
-
-
-
+https://github.com/jp-wright/nfl_betting_market_analysis/blob/master/
 
 
 Below are the results for each of the five Vegas-related targets investigated in this project.  
