@@ -119,7 +119,9 @@ The Over/Under is simply the total expected number of points scored by both team
 
 <BR><BR><BR><BR><BR>
 <div align="right">
-<sub><b>__Figure 2:__</b> The historical distribution of the Vegas Over/Under for NFL games. The mean is denoted by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution. </sub>
+<sub><b>Figure 2:</b> The historical distribution of the Vegas Over/Under for NFL games.
+<BR>
+The mean is denoted by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution. </sub>
 </div>
 
 <BR>
