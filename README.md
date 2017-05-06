@@ -117,9 +117,10 @@ Even moderate sports fans are doubtless familiar with the notion of "home field 
 #### The Over/Under
 The Over/Under is simply the total expected number of points scored by both teams in a game.  You can bet the Over or the Under, and will win if the combined score of the teams is either more than (over) or less than (under) the set Over/Under value, depending on your wager.  If the final combined score equals the Over/Under value exactly, the bet ends in a "push" and all money is returned.  
 
-<BR><BR><BR>
-<sub>__Figure 2:__ The historical distribution of the Vegas Over/Under for NFL games. The mean is denoted by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution. </sub>
-
+<BR><BR><BR><BR><BR>
+<div align="right">
+<sub><b>__Figure 2:__</b> The historical distribution of the Vegas Over/Under for NFL games. The mean is denoted by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution. </sub>
+</div>
 
 <BR>
 <img src="images/money-line_dist.png" width="600" align="right" alt="History of the Money Line">  
