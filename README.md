@@ -129,11 +129,15 @@ by the small dashed line at 42.2 points. Again, we observe here a gaussian distr
 
 #### The Money Line
 The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds like the spread, where negative implies the favored team, and the odds themselves indicate what the [payout](#interpreting-a-bet's-payout) will be for a winning bet.  Again owing to the notion of "home field advantage", the average money line for a road team when they're favored is -230, while the average for a home favorite is -313.  
+
+<BR><BR><BR><BR>
 <div align="right">
 <sub><b>Figure 3:</b> The historical distribution of the Vegas Money Line for NFL games. Split much like the spread, the money line shows the higher value and density of home favorites.
 <BR>
 by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution. </sub>
-</div> All things considered, you must risk more money when betting on a home team as they're expected to win more frequently.  This trend holds true for underdogs as well; you win more money from the average road underdog (+248) than the average home underdog (+179).
+</div>
+
+All things considered, you must risk more money when betting on a home team as they're expected to win more frequently.  This trend holds true for underdogs as well; you win more money from the average road underdog (+248) than the average home underdog (+179).
 
 <BR>
 
