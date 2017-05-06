@@ -12,7 +12,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Feature Engineering](#feature-engineering)
     + [Advanced Metrics Limited by Years](#advanced-metrics-limited-by-years)
 2. [NFL Betting Primer](#nfl-betting-primer)  
-    + [Interpreting a Bet's Payout](#interpreting-a-bet's-payout)
+    + [Interpreting Odds and the Payout](#interpreting-odds-and-the-payout)
     + [The Spread](#the-spread)
     + [The Over/Under](#the-over/under)
     + [The Money Line](#the-money-line)  
@@ -99,7 +99,7 @@ There are three primary types of wagers made on NFL games:
 2. The over/under
 3. The money line  
 
-#### Interpreting A Bet's Payout
+#### Interpreting Odds and the Payout
 When a money line or spread is negative for a given team, this means that team is favored to win.  As such, the payout for that bet is less favorable than for the underdog.  All odds are given relative to a wager of $100.  An example is easiest to demonstrate.  If Team A is the favorite and has odds (money line) of -200, this means you must bet $200 to win (net) $100 (the $200 you originally bet plus $100 in winnings).  Since Team A is this makes sense -- you must risk more money in order to profit since they're expected to win.  Conversely, if Team B is an underdog and has odds of +300, you will win (net) $300 with a wager of only $100.  Again, Team B is not expected to win, so to entice bettors to take the bet, the reward must be greater than the risk.
 
 #### The Spread
@@ -128,7 +128,7 @@ by the small dashed line at 42.2 points. Again, we observe here a gaussian distr
 <img src="images/money-line_dist.png" width="600" align="right" alt="History of the Money Line">  
 
 #### The Money Line
-The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds like the spread, where negative implies the favored team, and the odds themselves indicate what the [payout](#interpreting-a-bet's-payout) will be for a winning bet.  Again owing to the notion of "home field advantage", the average money line for a road team when they're favored is -230, while the average for a home favorite is -313.  
+The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds like the spread, where negative implies the favored team, and the odds themselves indicate what the [payout](#interpreting-odds-and-the-payout) will be for a winning bet.  Again owing to the notion of "home field advantage", the average money line for a road team when they're favored is -230, while the average for a home favorite is -313.  
 
 <BR><BR><BR>
 <div align="right">
