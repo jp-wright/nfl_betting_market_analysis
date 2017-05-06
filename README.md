@@ -12,6 +12,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Feature Engineering](#feature-engineering)
     + [Advanced Metrics Limited by Years](#advanced-metrics-limited-by-years)
 2. [NFL Betting Primer](#nfl-betting-primer)  
+    + [Interpreting a Bet's Payout](#interpreting-a-bet's-payout)
     + [The Spread](#the-spread)
     + [The Over/Under](#the-over/under)
     + [The Money Line](#the-money-line)  
@@ -98,12 +99,15 @@ There are three primary types of wagers made on NFL games:
 2. The over/under
 3. The money line  
 
+#### Interpreting A Bet's Payout
+When a money line or spread is negative for a given team, this means that team is favored to win.  As such, the payout for that bet is less favorable than for the underdog.  All odds are given relative to a wager of $100.  An example is easiest to demonstrate.  If Team A is the favorite and has odds (money line) of -200, this means you must bet $200 to win (net) $100 (the $200 you originally bet plus $100 in winnings).  Since Team A is this makes sense -- you must risk more money in order to profit since they're expected to win.  Conversely, if Team B is an underdog and has odds of +300, you will win (net) $300 with a wager of only $100.  Again, Team B is not expected to win, so to entice bettors to take the bet, the reward must be greater than the risk.
+
 #### The Spread
 The spread, also called the "line", is a measure of how much better Vegas thinks Team A is than Team B.  Vegas sets the spread in the amount of points the favored team is expected to win by.  A negative spread indicates a team is favored, positive an underdog.  For example, a spread of -3.0 means the favored team is expected to win by a field goal (3 points).  You can bet on either team, the favorite or underdog.  In order to win a bet on the spread, your team must exceed the spread in your favor.  So, if you bet on the favorite at -3.0, they must win by _more_ than 3 points for your bet to win.  If they win by exactly 3 points, the result is called a "push", and all money is returned to bettors, none having been won nor lost.  
 
 Even moderate sports fans are doubtless familiar with the notion of "home field advantage," and we see it borne out in the history of the Vegas NFL spread.  The peaks in the distribution represent the most common increments of scoring in football: 3 points, 7 points, 10 points, and 13 points.  Note the aversion to setting the line at 0 points, as this is equivalent to simply picking the winner outright.  Also note the significant majority of lines are set favoring the home team, offering real evidence of the notion of "home field advantage."
 
-<img src="images/road_spread_dist.png" width="800" alt="History of the Spread">  
+<img src="images/road_spread_dist.png" alt="History of the Spread">  
 
 <sub>__Figure 1:__ The historical distribution of the Vegas spread for NFL games from the perspective of the visiting team.  Excluding the intentional dip at 0 points, the spread conforms to a roughly normal distribution. </sub>
 
@@ -114,20 +118,18 @@ Even moderate sports fans are doubtless familiar with the notion of "home field 
 The Over/Under is simply the total expected number of points scored by both teams in a game.  You can bet the Over or the Under, and will win if the combined score of the teams is either more than (over) or less than (under) the set Over/Under value, depending on your wager.  If the final combined score equals the Over/Under value exactly, the bet ends in a "push" and all money is returned.  
 
 <BR>
-<div width="400" align="right">
-<sub><b>Figure 2:</b> The historical distribution of the Vegas Over/Under for NFL games. The mean is denoted <BR>
-by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution.
-</sub>
-</div>
 
-
-
-<BR><BR><BR>
-
-#### The Money Line
-The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds like the spread, where negative implies the favored team, and the odds themselves indicate what the payout will be for a winning bet.
+<sub>__Figure 2:__ The historical distribution of the Vegas Over/Under for NFL games. The mean is denoted by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution. </sub>
 
 <BR>
+<img src="images/money-line_dist.png" width="600" align="right" alt="History of the Money Line">  
+
+#### The Money Line
+The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds like the spread, where negative implies the favored team, and the odds themselves indicate what the [payout](#interpreting-a-bet's-payout) will be for a winning bet.  Again owing to the notion of "home field advantage", the average money line for a road team when they're favored is -230, while the average for a home favorite is -313.  All things considered, you must risk more money when betting on a home team as they're expected to win more frequently.  This trend holds true for underdogs as well; you win more money from the average road underdog (+248) than the average home underdog (+179).
+
+<BR>
+
+
 
 
 ## Wise Bets
