@@ -23,22 +23,24 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [Tree-based Feature Importance](#feature-separation-and-importance)
 5. [Results](#results)  **Try Seaborn RegPlot and lmplot with some targets/wise/proba/etc**
     + Overview -- Best and Worst
+    + PCA _done_
+    + t-SNE _done_
+    + Feature Overlaps _done_
     + Spread             **Plot KDE/Curve of Spread target**
       + Features
       + Metrics
-    + Over/Under         **Plot KDE/Curve of O/U target**  **PCA/t-SNE**
-      + Features        **TEMP/wind/wc plots**
+    + Over/Under         **Plot KDE/Curve of O/U target**  
+      + Features        
       + Metrics
-    + Money Line
+    + Money Line  **ROC**      **CMAT**
       + Features
       + Metrics
-    + PCA
-    + t-SNE
+    + Weather **TEMP/wind/wc plots**
     + Wise Bets Actual Results
       + Spread
       + Over/Under
       + Money Line
-        + 91.5% R2 with Spread when predicting...
+        + 91.5% R2 with Spread when predicting proba...
     + Hypothetical Bettor Using This Model
       + Money Line
     + Clusters - Four Types
@@ -99,8 +101,28 @@ There are three primary types of wagers made on NFL games:
 #### The Spread
 The spread, also called the "line", is a measure of how much better Vegas thinks Team A is than Team B.  Vegas sets the spread in the amount of points the favored team is expected to win by.  A negative spread indicates a team is favored, positive an underdog.  For example, a spread of -3.0 means the favored team is expected to win by a field goal (3 points).  You can bet on either team, the favorite or underdog.  In order to win a bet on the spread, your team must exceed the spread in your favor.  So, if you bet on the favorite at -3.0, they must win by _more_ than 3 points for your bet to win.  If they win by exactly 3 points, the result is called a "push", and all money is returned to bettors, none having been won nor lost.  
 
+Even moderate sports fans are doubtless familiar with the notion of "home field advantage," and we see it borne out in the history of the Vegas NFL spread.  The peaks in the distribution represent the most common increments of scoring in football: 3 points, 7 points, 10 points, and 13 points.  Note the aversion to setting the line at 0 points, as this is equivalent to simply picking the winner outright.  Also note the significant majority of lines are set favoring the home team, offering real evidence of the notion of "home field advantage."
+
+<img src="images/road_spread_dist.png" width="800" alt="History of the Spread">  
+
+<sub>__Figure 1:__ The historical distribution of the Vegas spread for NFL games from the perspective of the visiting team.  Excluding the intentional dip at 0 points, the spread conforms to a roughly normal distribution. </sub>
+
+<BR>
+<img src="images/over-under_dist.png" width="600" align="right" alt="History of the Over/Under">  
+
 #### The Over/Under
-The Over/Under is simply the total expected number of points scored by both teams in a game.  You can bet the Over or the Under, and will win if the combined score of the teams is either more than (over) or less than (under) the set Over/Under value, depending on your wager.
+The Over/Under is simply the total expected number of points scored by both teams in a game.  You can bet the Over or the Under, and will win if the combined score of the teams is either more than (over) or less than (under) the set Over/Under value, depending on your wager.  If the final combined score equals the Over/Under value exactly, the bet ends in a "push" and all money is returned.  
+
+<BR>
+<div width="400" align="right">
+<sub><b>Figure 2:</b> The historical distribution of the Vegas Over/Under for NFL games. The mean is denoted <BR>
+by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution.
+</sub>
+</div>
+
+
+
+<BR><BR><BR>
 
 #### The Money Line
 The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds like the spread, where negative implies the favored team, and the odds themselves indicate what the payout will be for a winning bet.
@@ -231,7 +253,9 @@ Home Team Win | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.636 <br> 0.666
 ## Results
 As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread and the over/under was be able to label games that had improperly set lines which could make them appealing bets.  This means we really wanted to regress against these targets in order to ultimately classify them.  Paired with the three classification targets, this results in the final goal for all models in this project being able to classify whether or not a game is one we should bet on.  A quick glance at __Tables 3__ and __4__ show a fairly pedestrian success rate at correctly predicting two of the three classification targets and a modest but not insignificant error on the regression targets.  
 
-Partially frustrated, partially disappointed, I decided to check if there was an underlying relationship or structure to this data which could show it was actually able to be classified better.  A popular method of this type of dimensionality reduction is Principal Component Analysis (PCA), which uses some higher-level mathematics to reduce the input data to core, or principal, components based on the amount of observed variance along a given rotational axis of the data.  The result is _not_ simply a set of input features, but rather the 'fundamental' relationships -- components -- between the features and the variance in the data.  If there exists a way to mathematically represent the data in a way that makes it separable in N-dimensions, PCA can tell us.  We can select for the number of components we want returned, which makes PCA ready-made for 2D and 3D visualizations.  
+### Class Inspection
+#### Principal Component Analysis
+One tactic when struggling to find viable class separation is to analyze your data with dimensional reduction.  A popular method of this type of dimensionality reduction is Principal Component Analysis (PCA), which uses some higher-level mathematics to reduce the input data to core, or principal, components based on the amount of observed variance along a given rotational axis of the data.  The result is _not_ simply a set of input features, but rather the 'fundamental' relationships -- components -- between the features and the variance in the data.  If there exists a way to mathematically represent the data in a way that makes it separable in N-dimensions, PCA can tell us.  We can select for the number of components we want returned, which makes PCA ready-made for 2D and 3D visualizations.  
 
 The results of using PCA to analyze the initial target and driving force of this project, the spread, were not encouraging.  Using the model's predictions for the spread to label games as potential "wise bets" or not, PCA showed a inseparable blob in two dimensions.
 ![PCA 2D Spread](images/2d3pwisebetPCA.png "2D PCA results for the spread")
@@ -246,11 +270,40 @@ Now, imagine floating high directly above the pyramid and looking down upon it. 
 
 Unlike the simplistic pyramid example, applying PCA in three dimensions to the wise bets from the Vegas spread did not reveal any feasible hyperplane of separation.  
 
-![PCA 3D Spread GIF](images/3d_pca_gifs1/3D_PCA.gif "3D PCA results for the spread")
+<img src="images/3d_pca_gifs1/3D_PCA.gif" width="600" alt="3D PCA for Vegas Spread wise bets">
 
-<sub>__Figure 2:__ Three dimensions are unfortunately not enough to find a hyperplane of sufficient division between games that are wise bets and games that aren't.  There is no underlying structure to the classes, here.  They're distributed in a roughly spherical manner but almost randomly so.  
+<sub>__Figure 2:__ Three dimensions -- each axis is a principal component -- are unfortunately not enough to find a hyperplane of sufficient division between games that are wise bets and games that aren't.  There is no underlying structure to the classes, here.  They're distributed in a roughly globular manner, and almost randomly so.  The hyperplane was obtained by using a linear SVM model.
 
 <br>
+
+#### t-SNE
+A second dimensional reduction algorithm, or manifold learner, that is commonly used for visualization is t-distributed Stochastic Neighbor Embedding (t-SNE).  Unlike PCA, t-SNE doesn't provide a Rosetta Stone for translating data into its fundamental components.  Instead it seeks to find local groupings of one data point to its neighbors in high dimensions and visually represent them in lower dimensions.  Its results will change slightly every time it is run, it is very sensitive to its parameters, and cannot be used for inference about unused, new data.  With proper tuning, however, it can reveal grouped relationships which might tell you if your data is actually separable.  Like PCA, t-SNE failed to reveal any underlying structure that could be separated.
+
+<img src="images/model_spread_wb_non-pca_tsne/epsilon50/tsne_wise_bet.gif" width="600" alt="t-SNE for Vegas Spread">  
+
+<sub> __Figure 3:__ The results of increasing levels of perplexity for t-SNE dimension reduction on the Vegas spread bets.  While there is eventual clustering, it is not separable.</sub>
+
+<BR>
+
+#### Important Feature Overlap
+With no apparent real success in determining which games should be considered a wise bet, I decided to take a quick glance at the primary advanced metrics which routinely are designated the most important features in the model.  The hope is to see horizontal (x-axis) separation, showing that there are distinct means or groupings for the two classes in a given statistic.  As with PCA and t-SNE, the results were not encouraging as the both classes occupy very similar regions of each feature.
+
+<img src="images/feature_overlap_vegas_spread.png" align="middle" alt="Important Feature Overlap" >
+
+<sub>__Figure 4:__ The advanced metrics of DVOA, EPA, ANY/A, and PORT show very little horizontal separation for games that were labeled as a "wise bet" and those that weren't.  Note: Axis tick labels are removed to help focus simply on bin separation, and the counts have been normalized since the raw count of "wise bet" games is a mere fraction of the total games.</sub>
+
+
+
+### Spread Results
+
+
+
+
+
+
+
+
+
 
 Below are the results for each of the five Vegas-related targets investigated in this project.  
 
@@ -261,7 +314,7 @@ __90.4%__ of all spreads are <= +/- 10.
 <BR>
 
 ## Future Considerations
-![PCA 3D Spread](images/3d3ptPCA.png "PCA results for the spread")
+
 
 
 
@@ -277,5 +330,5 @@ __90.4%__ of all spreads are <= +/- 10.
 ### References:
 <a name="fn1">1</a>: http://www.nbcnews.com/news/other/think-sports-gambling-isnt-big-money-wanna-bet-f6C10634316  
 <a name="fn2">2</a>: https://www.inc.com/slate/jordan-weissmann-is-illegal-sports-betting-a-400-billion-industry.html  
-<a name="fn3">3</a>: https://www.boydsbets.com/super-bowl-how-much-bet/
+<a name="fn3">3</a>: https://www.boydsbets.com/super-bowl-how-much-bet/  
 <a name="fn4">4</a>: http://mentalfloss.com/article/26730/how-wind-chill-calculated
