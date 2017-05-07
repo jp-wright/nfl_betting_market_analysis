@@ -8,9 +8,9 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 
 ## Table of Contents
 1. [Dataset](#dataset)
-    + [Acquisition and Error Correction](#acquisition-and-error-correction) **tell # of PFR sheets**
+    + [Advanced Metrics](#advanced-metrics)
+    + [Acquisition and Error Correction](#acquisition-and-error-correction)
     + [Feature Engineering](#feature-engineering)
-    + [Advanced Metrics Limited by Years](#advanced-metrics-limited-by-years)
 2. [NFL Betting Primer](#nfl-betting-primer)  
     + [Interpreting Odds and the Payout](#interpreting-odds-and-the-payout)
     + [The Spread](#the-spread)
@@ -23,13 +23,13 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Model Selection and Training](#model-selection-and-training)
       + [Tree-based Feature Importance](#feature-separation-and-importance)
 5. [Results](#results)  **Try Seaborn RegPlot and lmplot with some targets/wise/proba/etc**
-    + Overview -- Best and Worst
-    + PCA _done_
-    + t-SNE _done_
-    + Feature Overlaps _done_
+    + [Class Inspection](#class-inspection)
+      + [PCA](#principal-component-analysis)
+      + [t-SNE](#t---sne)
+      + [Feature Overlaps](#feature-overlaps)
     + Spread             **Plot KDE/Curve of Spread target**
-      + Features
-      + Metrics
+      + Accuracy
+      + Feature Importance
     + Over/Under         **Plot KDE/Curve of O/U target**  
       + Features        
       + Metrics
@@ -60,9 +60,12 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 ## Dataset
 The point of this entire project was to use team-level data to identify trends in how Vegas oddsmakers set the odds for a given game.  However, as this model aims to predict single game results, it requires the stats and information for each of the two teams in a given game up to that point in the given season.  This meant I needed to procure game-by-game detailed information for every statistic, and not merely season-long summary information.  The types of statistics and information I wanted to model included all in-game statistics, weather, stadium information, and advanced analytics.
 
+### Advanced Metrics
 Sports analytics has grown from a small cottage industry in the mid-1980s to a robust field unto itself in 2017.  My aim was to leverage as many 'advanced' as possible metrics to improve my model's accuracy.  Some of these metrics are proprietary and available only through subscriptions to their respective stat-owning websites, such as the _Defense-adjusted Value Over Average_ (DVOA) metrics from [Football Outsiders](http://www.footballoutsiders.com/) or _Clutch-weighted Quarterback Rating_ (QBR) and Brian Burke's _Football Power Index_ (FPI) from [ESPN Insider](http://www.espn.com/insider/).  
 
 Other metrics, such as _Pythagenport Win Expectancy_, a mildly revised descendent of baseball Sabremetrics godfather Bill James' famous _Pythagorean Win Expectancy_ metric, or _Adjusted Net Yards Per Attempt_ (ANY/A), most recently modified by Chase Stuart of [Football Perspective](http://www.footballperspective.com/tag/anya/), must be calculated.  Another excellent team-level advanced metric is _Expected Points Added_ (EPA), which originates from the seminal "Hidden Game of Football" published in the late 1980s by Bob Carroll and Pete Palmer, and has been updated by the folks at [Pro-Football Reference](http://www.sports-reference.com/blog/2012/03/features-expected-points/).   
+
+Due to the proprietary nature of some of the advanced metrics, and the reliance upon more granular statistics for others, they are not available for the entirety of the dataset itself.  Vegas line information only goes back to the 1978 season, meaning 1978 is the earliest possible season for this model.  Time of possession information starts in 1983, 3rd and 4th Down success rates as well as DVOA begin in 1991, and EPA starts in 1994.  In the future as more old game logs and old game films are parsed and logged, it will be possible for these insightful advanced metrics to be extended further back into league history.  The selection of data from this parent dataset will be discussed below under [Data Selection](#data-selection).
 
 ### Acquisition and Error Correction
 Unfortunately, no single source exists which has all these statistics.  In an effort to use as many of these stats as possible I decided to scrape the desired single-game statistics from [Pro Football Reference](http://www.pro-football-reference.com) (PFR) using BeautifulSoup and urllib.  PFR is known as the online encyclopedia for all things pro football, and has detailed information for nearly each game played in pro football history, including stadium type, time of game, weather, and Vegas betting information.  Regarding scraping of their site, PFR makes the following pro-scraping statement on their [data use](http://www.sports-reference.com/data_use.html) page:
@@ -92,9 +95,6 @@ I engineered features in seven distinct ways.
 6. __Dummying__ of categorical data, such as day of the week per game, type of stadium (dome or open), type of playing surface, and week of the season.
 7. Calculating exact hours of rest between games, not merely days.  
 
-### Advanced Metrics Limited by Years
-Due to the proprietary nature of some of the advanced metrics, and the reliance upon more granular statistics for others, they are not available for the entirety of the dataset itself.  Vegas line information only goes back to the 1978 season, meaning 1978 is the earliest possible season for this model.  Time of possession information starts in 1983, 3rd and 4th Down success rates as well as DVOA begin in 1991, and EPA starts in 1994.  In the future as more old game logs and old game films are parsed and logged, it will be possible for these insightful advanced metrics to be extended further back into league history.  The selection of data from this parent dataset will be discussed below under [Data Selection](#data-selection).
-
 <BR>
 
 
@@ -121,6 +121,7 @@ Even moderate sports fans are doubtless familiar with the notion of "home field 
 <sub>__Figure 1:__ The historical distribution of the Vegas spread for NFL games from the perspective of the visiting team.  Excluding the intentional dip at 0 points, the spread conforms to a roughly normal distribution with a mean close to +2.4 points. </sub>
 
 <BR>
+
 <img src="images/over-under_dist.png" width="600" align="right" alt="History of the Over/Under">  
 
 #### The Over/Under
@@ -134,6 +135,7 @@ by the small dashed line at 42.2 points. Again, we observe here a gaussian distr
 </div>
 
 <BR>
+
 <img src="images/money-line_dist.png" width="600" align="right" alt="History of the Money Line">  
 
 #### The Money Line
@@ -148,6 +150,7 @@ the spread, the money line shows the higher value and density of home favorites.
 </div>  
 
 <BR>
+
 All things considered, you must risk more money when betting on a home team as they're expected to win more frequently.  This trend holds true for underdogs as well; you win more money from the average road underdog (+248) than the average home underdog (+179).
 
 <BR><BR>
@@ -199,7 +202,7 @@ Because of this fact, I split the feature set into three parts:
 
 _Raw_ stats are simply every team's own per-game statistics coming into the given game of interest.  Examples include Touchdowns/game, 1st Downs/game, turnovers/game, etc.  Matchup deltas are the differences between the road and home teams in these respective stats.  So, the home team might average seven more first downs per game, but 1.3 more turnovers per game.  Since the matchup stats are technically derived from the raw statistics, I wanted to ensure proper evaluation of feature importances which led to their being optionally separated.  The top features for each target will be reported in the [Results](#results) section below.
 
-Ideally, RFE allows you to trim the feature set of the model to only the most important variables in an effort to lower complexity and reduce variance.  This goal was not realistically achieved in this project, as any subset of N most important features (20, 40, 80) failed to match the accuracy of the full feature set, regardless of which subdivision (all, raw, matchup) of features was chosen.  
+Ideally, RFE allows you to trim the feature set of the model to only the most important variables in an effort to lower complexity and reduce variance.  This goal was not realistically achieved in this project, as any subset of N most important features (20, 40, 80) failed to match the accuracy of the full feature set, regardless of which subdivision (all, raw, matchup) of features was chosen by RFE.  
 
 Regarding prediction, having more information tends to be better than having less, and we see that here as using _all_ the features did lead to the best prediction accuracy for any given model.  However, the difference between using all the data and only the matchup data was minor, commonly in the range of 0.5% to 1.5%.  The raw features alone were noticeably less predictive, sometimes giving up to 5% worse prediction accuracy.
 
@@ -261,7 +264,9 @@ For the point spread, both the SVM and GBT models had an MAE of 2.2 points (and 
 
 The best performing model in all classification tasks was the Gradient Boosted Classifier. Classifying whether a team covered the spread or whether a game went over or under the over/under was not particularly responsive to model tuning.  Regardless of the model and its parameters, the AUC hovered close to an even score of 0.500.  I believe this is due to the nature of the categories -- the spread and over/under are designed by oddsmakers to be as close to the break-even point (50/50) as possible, to attract equal bets on both sides.  If anything, these results simply verify that Vegas is quite effective at calculating the expected margin of victory and total points scored per game, _en masse_.  Predicting the winner straight-up, however, is not a result contrived by Vegas and as such does have some appear to have some leeway in determining the outcome via machine learning.  Below are two tables summarizing the results of the model tuning and selection process.  
 
-<br>
+<BR>
+
+###### Regression Outcomes
 
 Target | Data | Model | Metrics | Score
 -----|--------|-------|---------|-----
@@ -273,6 +278,8 @@ Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723
 <sub>__Table 3:__ The overview of results from the two regression models and targets in this project.
 
 <BR><BR>
+
+###### Classification Outcomes
 
 Target | Data | Model | Metrics | Score
 -----|--------|-------|---------|-----
@@ -296,7 +303,7 @@ Home Team Win | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.636 <br> 0.666
 
 
 ## Results
-As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread and the over/under was be able to label games that had improperly set lines which could make them appealing bets.  This means we really wanted to regress against these targets in order to ultimately classify them.  Paired with the three classification targets, this results in the final goal for all models in this project being able to classify whether or not a game is one we should bet on.  A quick glance at __Tables 3__ and __4__ show a fairly pedestrian success rate at correctly predicting two of the three classification targets and a modest but not insignificant error on the regression targets.  
+As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread and the over/under was be able to label games that had improperly set lines which could make them appealing bets.  This means we really wanted to regress against these targets in order to ultimately classify them.  Paired with the three classification targets, this results in the final goal for all models in this project being able to classify whether or not a game is one we should bet on.  A quick glance at [Tables 3](#regression-outcomes) and [4](#classification-outcomes) show a fairly pedestrian success rate at correctly predicting two of the three classification targets and a modest but not insignificant error on the regression targets.  
 
 ### Class Inspection
 #### Principal Component Analysis
@@ -307,7 +314,7 @@ The results of using PCA to analyze the initial target and driving force of this
 
 <sub>__Figure 1:__ The first two principal components failed to give any viable separation for wise bets derived from the Vegas spread -- there is no line that can be drawn to reasonably divide the two classes.  
 
-<br>
+<BR>
 
 The classes are clearly inseparable in two dimensions, but what about three?  It is possible that there exists a hyperplane which can divide the classes in three dimensional space.  For example, picture in your mind the Great Pyramid at Giza, Egypt.  Pretend the limestone blocks that make up the pyramid are separated into two classes by being painted either red or blue.  Now, pretend the top fraction of the pyramid's peak is all red, and the rest of the structure is all blue.  We could divide the red from the blue blocks -- the classes -- by putting a massive sheet of, say, thin plywood, between them.  This sheet of plywood is called a _hyperplane_ and would perfectly separate the two classes of blocks, meaning we could predict mathematically whether a brick was in the red or blue class (no word yet on which class of block is filled with grain...).  
 
@@ -319,28 +326,84 @@ Unlike the simplistic pyramid example, applying PCA in three dimensions to the w
 
 <sub>__Figure 2:__ Three dimensions -- each axis is a principal component -- are unfortunately not enough to find a hyperplane of sufficient division between games that are wise bets and games that aren't.  There is no underlying structure to the classes, here.  They're distributed in a roughly globular manner, and almost randomly so.  The hyperplane was obtained by using a linear SVM model.
 
-<br>
+<BR>
+
+
+<img src="images/model_spread_wb_non-pca_tsne/epsilon50/tsne_wise_bet.gif" width="600" alt="t-SNE for Vegas Spread" align="right">  
 
 #### t-SNE
-A second dimensional reduction algorithm, or manifold learner, that is commonly used for visualization is t-distributed Stochastic Neighbor Embedding (t-SNE).  Unlike PCA, t-SNE doesn't provide a Rosetta Stone for translating data into its fundamental components.  Instead it seeks to find local groupings of one data point to its neighbors in high dimensions and visually represent them in lower dimensions.  Its results will change slightly every time it is run, it is very sensitive to its parameters, and cannot be used for inference about unused, new data.  With proper tuning, however, it can reveal grouped relationships which might tell you if your data is actually separable.  Like PCA, t-SNE failed to reveal any underlying structure that could be separated.
+A second dimensional reduction algorithm, or manifold learner, that is commonly used for visualization is t-distributed Stochastic Neighbor Embedding (t-SNE).  Unlike PCA, t-SNE doesn't provide a Rosetta Stone for translating data into its fundamental components.  Instead it seeks to find local groupings of one data point to its neighbors in high dimensions and visually represent them in lower dimensions, illuminating possible separability.  
 
-<img src="images/model_spread_wb_non-pca_tsne/epsilon50/tsne_wise_bet.gif" width="600" alt="t-SNE for Vegas Spread">  
+<BR><BR><BR><BR>
+<div align="right">
+<sub><b>Figure 354:</b> The results of increasing levels of perplexity for t-SNE dimension reduction on the Vegas
+<BR> spread bets. While there is eventual clustering, the classes never become linearly separable.</sub>
+</div>
 
-<sub> __Figure 3:__ The results of increasing levels of perplexity for t-SNE dimension reduction on the Vegas spread bets.  While there is eventual clustering, it is not separable.</sub>
 
 <BR>
 
-#### Important Feature Overlap
-With no apparent real success in determining which games should be considered a wise bet, I decided to take a quick glance at the primary advanced metrics which routinely are designated the most important features in the model.  The hope is to see horizontal (x-axis) separation, showing that there are distinct means or groupings for the two classes in a given statistic.  As with PCA and t-SNE, the results were not encouraging as the both classes occupy very similar regions of each feature.
+t-SNE's results might change slightly every time it is run, it is very sensitive to its parameters, and cannot be used for inference about unused, new data.  With proper tuning, however, it can reveal grouped relationships which might tell you if your data is actually separable.  Like PCA, t-SNE failed to reveal any underlying structure that could be separated.
+
+<BR>
+
+#### Feature Overlaps
+With no apparent real success in determining which games should be considered a wise bet, I decided to take a quick glance at the primary [advanced metrics](#advanced-metrics) which routinely are designated the most important features in the model.  The hope is to see horizontal (x-axis) separation, showing that there are distinct means or groupings for the two classes in a given statistic.  As with PCA and t-SNE, the results were not encouraging as both classes occupy very similar regions of each feature.
 
 <img src="images/feature_overlap_vegas_spread.png" align="middle" alt="Important Feature Overlap" >
 
-<sub>__Figure 4:__ The advanced metrics of DVOA, EPA, ANY/A, and PORT show very little horizontal separation for games that were labeled as a "wise bet" and those that weren't.  Note: Axis tick labels are removed to help focus simply on bin separation, and the counts have been normalized since the raw count of "wise bet" games is a mere fraction of the total games.</sub>
+<sub>__Figure 4:__ The advanced metrics of DVOA, EPA, ANY/A, and PORT show very little horizontal separation for games that were labeled as a "wise bet" and those that weren't.  Ideally we would see a distribution of all blue and a separate one of all red beside it for a given metric.  Note: Axis tick labels are removed to help focus simply on bin separation, and the counts have been normalized since the raw count of "wise bet" games is a mere fraction of the total games.</sub>
 
 
 
 ### Spread Results
+#### Accuracy
+If we can predict the line accurately, we can identify games that are improperly valued by Vegas and choose to bet those games.  The best result obtained was a MAE of 2.32 points.  The spread average is 2.48 points with a standard deviation of 5.91 points.  Unfortunately this means that, on average, any prediction's true value can be within a window of 4.64 points -- not great.  
 
+If we predicted a spread for the road team an upcoming game to be +1.0 point (meaning they were a 1-point underdog), which is the 8th most common out of 47 unique recorded lines, then using our average error, the "true" spread of the game might ought to be 1.0 - 2.32 = -1.32 points, or 1.0 + 2.32 = +3.32 points.  In the case of -1.32 points, the road team would now be favored and would likely cause us to change our bet.  Conversely, in the case of +3.32 points, the home team would now be favored by _over_ a field goal, which is the easiest score to make in football and would likely change our bet.  
+
+With this in mind, I decided to set the threshold for deciding how far off a game's spread was to a minimum +/- 3 points.  This ensured we would not select games that would 'flip' the favored team.  Games that met or exceeded this threshold are explored in the [wise bets](#wise-bets) section below.
+
+#### Feature Importance
+The most important features tend to be the _matchup delta_ features I engineered.  These tell the difference between the two teams in a game in a given metric.  My reasoning was that the raw value, say a high amount of rushing yards per game, would matter little for prediction of one team's superiority if the other team also had a high value in that metric.  If one team was significantly better than the other team in a given metric we would be able to make more accurate predictions.  This finding is shown consistently in this project as the _matchup_ features rank high in importance.
+
+<img src="images/spread_feats.png" align="middle" alt="Important features to predict the spread" >
+
+<sub>__Figure 400:__ The 40 most important features in predicting the spread are dominated by the _matchup_ features, including ten of the first twelve.</sub>
+
+<BR>
+
+The most important statistic is simply the difference in losses between the teams.  This isn't surprising, as the general public is going to base much of their betting on which team has a better record.  Much of the rest of the features are dominated by the [advanced metrics](#advanced-metrics), with _weighted DVOA_ (a measure of how well a team has been playing recently) being the second biggest predictor.  The first non-_matchup_ feature is simply the number of 3rd down conversions the visiting team is averaging per game.  The more 3rd downs a team converts, the more they extend their drives and the more likely those drives are to yield points.   
+
+Apart from these metrics, it is interesting to see _hours of rest_ be so statistically significant.  Vegas is clearly factoring in how long it has been since a team last played into its formula when setting a spread.  The _season_ in which a game is played also has an impact on the spread, which surprised me.  So, I took a look at the spread with regard to change over time.
+
+<img src="images/spread_rolling_avg.png" align="middle" alt="Historical Rolling Average for the Spread" >
+
+<sub>__Figure 400:__ The spread has changed measurably over time.  The rolling average was computed with a window of four years and a second order polynomial fit line.
+
+<BR>
+
+I was unsure if the observed change is due to Vegas becoming better at prediction and improving their formulae, or if it reflects a change in the league itself, where home teams were more successful in the mid-1990s.  So -- you guessed it -- I decided to look at the historical averages for home team _margin of victory_.  
+
+<img src="images/home_mov_rolling_avg.png" align="middle" alt="Historical Rolling Average for Home Team Margin of Victory" >
+
+<sub>__Figure 400:__ The average margin of victory for home teams isn't smoothed very well with a four year rolling average window.  Its trend mirrors that of the Vegas spread overall, but has pronounced differences in any given year.
+
+<BR>
+
+We see that overall, the trends follow the same general path of peaking in the early- to mid-1990s and falling thereafter.  But a year-by-year inspection shows significant discrepancies.  Take 1995, for example.  It was the season of the lowest average home margin of victory for 30 years, but that year and the one after both saw Vegas _increase_ the average spread in favor of the home teams!  In general I suspect the average margin of victory has too much variance for Vegas to react with knee-jerk spread dampening or inflating.  While margin of victory trends over time are informative, they are clearly not the sole explanation for the changes with time in the average spread.  We can see the summary statistics below back up what the graphs above show us.
+
+Category | Mean (pts) | Std. Dev. | Coeff. of Variation
+---------|------------|-----------|---------------------
+Spread   |    2.58    | 5.89      |  2.28
+Home MoV |    2.87    | 14.6      |  5.07
+
+<sub>__Table 333:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.
+
+
+<BR>
+
+### Wise Bets
 
 
 
