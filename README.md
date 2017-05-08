@@ -395,7 +395,7 @@ We see that overall, the trends follow the same general path of peaking in the e
 
 ###### Spread Summary Statistics
 Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min. (pts) | Max. (pts) | Min. Std. | Max. Std.
-----------|:----------:|:---------:|:--------------:|:----------:|:----------:|:---------:|:--------:|-
+----------|:----------:|:---------:|:--------------:|:----------:|:----------:|:---------:|:--------:
 Spread    |    2.58    | 5.89      |  2.28          | -23.0      | 26.5       |  -4.34    | 4.06     
 Home MoV  |    2.87    | 14.6      |  5.07          | -46.0      | 59.0       |  -3.34    | 3.84   
 
@@ -435,8 +435,8 @@ The two most important statistics are the two we'd hope to see: how many points 
 
 Wind chill and temperature only differ below 50° F, so seeing them paired is partly a consequence of their having the same information for all temps above 50° F.  I think there is also a relationship between the weather variables and the roof variables.  First, a quick graphical glance, then my thoughts below.  For plotting purposes I use temperature since the values are all integers, whereas wind chill can take any decimal value.
 
-<img src="images/temp_with_domes.png" align="middle" width="400" alt="Temp distribution with domes" >
-<img src="images/temp_no_domes.png" align="middle" width="400" alt="Temp distribution with no domes" >
+<img src="images/temp_with_domes.png" align="middle" width="300" alt="Temp distribution with domes" >
+<img src="images/temp_no_domes.png" align="middle" width="300" alt="Temp distribution with no domes" >
 
 <sub>__Figures 4005__ and __4006:__ The distribution of game-time temperatures (°F) from 1978-2016 shows a normal distribution, except for the occurence of dome games which spikes the count for 67 °F.
 
