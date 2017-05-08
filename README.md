@@ -435,7 +435,7 @@ The two most important statistics are the two we'd hope to see: how many points 
 
 Wind chill and temperature only differ below 50° F, so seeing them paired is partly a consequence of their having the same information for all temps above 50° F.  I think there is also a relationship between the weather variables and the roof variables.  First, a quick graphical glance, then my thoughts below.  For plotting purposes I use temperature since the values are all integers, whereas wind chill can take any decimal value.
 
-<img src="images/temp_with_domes.png" align="middle" width="800" alt="Temp distribution with domes" >
+<img src="images/temp_with_domes.png" align="middle" alt="Temp distribution with domes" >
 
 <sub>__Figure 4005:__ The distribution of game-time temperatures (°F) from 1978-2016 shows a normal distribution, except for the occurence of dome games which spikes the count for 67 °F.
 
