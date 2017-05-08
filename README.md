@@ -474,23 +474,39 @@ But there's no bad weather in a dome.  So, the increase in domes means an increa
 
 While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__6__](#fn6)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
 
+###### Passing and Rushing Offense Over Time
 
 <table>
     <tr>
-    <td>
-    <img src="images/combined_pass_yd_rolling_avg.png" align="middle" alt="Passing Yards Per Game Rolling Avg" >
-    </td>
-    <td>
-    <img src="images/combined_rush_yd_rolling_avg.png" align="middle" alt="Passing Yards Per Game Rolling Avg" >
-    </td>
+        <td>
+            <img src="images/combined_pass_yd_rolling_avg.png" align="middle" alt="Passing Yards Per Game Rolling Avg" >
+        </td>
+        <td>
+            <img src="images/combined_rush_yd_rolling_avg.png" align="middle" alt="Passing Yards Per Game Rolling Avg" >
+        </td>
     </tr>
 </table>
 
 
-<sub>__Figures 4193:__ Passing offense has grown at an alarming rate.
+<sub>__Figures 4193__ and __4194:__ Five-year rolling averages of Passing offense (left), which has grown at an alarming rate over the last decade-plus, and rushing offense (right), which dropped precipitously two decades ago and has somewhat stabilized since.</sub>
+
+<BR>
+
+These two rolling average plots of passing offense (left) and rushing offense (right) since 1978 show starkly different trends in league-wide offensive approach.  In 1978 and 1979 major rule changes were implemented that made pass defense more difficult, causing the first initial rise in passing offense.  To my surprise, it leveled off and remained consistent for the remainder of the 1980s and 1990s.  Beginning in 2005, however, the league began to experience its own Cambrian explosion of passing attacks, growing each year for a decade straight.  Conversely, rushing offense plummeted for fifteen consecutive years before coming to a roughly stable resting point.  
+
+As intersting as the topic of how the league changes schematically as a whole over time is, the point of this investigation was to see if we could explain the dramatic rise in Over/Unders.  I think its safe to say we can do so to a large degree with passing offense alone, as we predicted above.  Take a minute to compare [Figure 411](#over---under-analysis) and [Figure 4193](#passing-and-rushing-offense-over-time).  The sharp rise in passing offense parallels that in the Over/Under, while rushing offense seems to have little to no correlation.  When comparing multiple variables at a time, a scatter matrix can help illuminate trends between all combinations of the targets.
+
+###### Offense and Over-Under Scatter Matrix
+<img src="images/pass_rush_over-under_matrix.png" align="middle" alt="Scatter Matrix for Passing, Rushing, and Over/Under" >
+
+<sub>__Figure 4443:__ Scatter matrix of five-year rolling average passing offense, rushing offense, and the Over/Under per season since 1978.  Passing offense is clearly positively correlated with the Over/Under, while rushing offense has almost no observed correlation.</sub>
+
+<BR>
+
+At a glance we can see evidence of what we suspected above -- passing offense is strongly and positively correlated with the Over/Under, while rushing offense apparently bears no correlation to it.  Recall the Over/Under is simply the combined total points in a game, and as mentioned above (see [Brian Burke's article](#fn6) about passing offense efficiency, which was written in 2010, right as the furious growth in passing offense began.  His claims would be only more concrete and emphasized if the article were written today) passing efficiency is the primary means to offensive success and higher scoring.  The data here only bolster this conclusion.  But if _everyone_ is better at passing league-wide, then would it not cancel out for everyone?  This question -- which statistics correlate to actually _winning_ -- is one we'll explore a bit more in the next section, where we analyze the Vegas money line.
 
 
-
+### Money Line Results
 
 
 
