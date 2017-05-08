@@ -417,6 +417,7 @@ By far the most obtainable scoring play in football is the field goal, which is 
 Unsurprisingly the most important features for determining the combined points scored in a game are statistics that relate to how effective a team is at scoring or preventing a score.  We see a strong divergence from important features in predicting the spread, with no _matchup delta_ metrics present.  This fits common sense as we aren't concerned with how much better Team A is than Team B at something, but rather how good or bad both teams combined are.  
 
 ###### Over/Under Top Features
+
 Rank | Statistic | Importance (%) | Rank | Statistic | Importance (%)
 -----|-----------|:--------------:|------|-----------|:-------------:|-
 1 | Home Pts For/Gm | 6.10 |  9 | Temperature | 1.89
