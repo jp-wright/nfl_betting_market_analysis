@@ -433,13 +433,11 @@ Rank | Statistic | Importance (%) | Rank | Statistic | Importance (%)
 
 The two most important statistics are the two we'd hope to see: how many points each team scores per game.  Following that is a surprising result -- the season!  This sparked me to investigate the Over/Under change over time as I did with the spread above.  It is examined below.  The remainder of the important statistics can be categorized as either "team related" or "game related".  The team-related statistics are sensible, related to how many points allowed and yards teams average.  But the game-related features are interesting and worth a quick word.
 
-<img src="images/temp_with_domes.png" align="middle" width="400" alt="Temp distribution with domes" >
-<img src="images/temp_no_domes.png" align="middle" width="400" alt="Temp distribution with no domes" >
-
 Wind chill and temperature only differ below 50° F, so seeing them paired is partly a consequence of their having the same information for all temps above 50° F.  I think there is also a relationship between the weather variables and the roof variables.  First, a quick graphical glance, then my thoughts below.  For plotting purposes I use temperature since the values are all integers, whereas wind chill can take any decimal value.
 
+<img src="images/temp_with_domes.png" align="middle" width="600" alt="Temp distribution with domes" >
 
-<sub>__Figures 4005__ and __4006:__ The distribution of game-time temperatures (°F) from 1978-2016 shows a normal distribution, except for the occurence of dome games which spikes the count for 67 °F.
+<sub>__Figure 4005:__ The distribution of game-time temperatures (°F) from 1978-2016 shows a normal distribution, except for the occurence of dome games which spikes the count for 67 °F.
 
 
 The poignant aspect of the temperature charts is the towering prevalence of games at 67 °F, the temperature of games in played in a dome.  (See [Acquisition and Error Correction](#acquisition-and-error-correction) for details on this).  Around 21% of all games played from 1978-2016, but these aren't equally distributed across that time span.  Domes have become increasingly popular in recent years.  Because of this, I wondered if there was a possible connection between the increase in games played in domes and the increase in the Over/Under.  Behold!
