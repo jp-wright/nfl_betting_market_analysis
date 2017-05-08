@@ -22,26 +22,29 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Classification vs. Regression](#regression-vs-classification)
     + [Model Selection and Training](#model-selection-and-training)
       + [Tree-based Feature Importance](#feature-separation-and-importance)
-5. [Results](#results)  **Try Seaborn RegPlot and lmplot with some targets/wise/proba/etc**
+5. [Results](#results)
     + [Class Inspection](#class-inspection)
       + [PCA](#principal-component-analysis)
       + [t-SNE](#t---sne)
       + [Feature Overlaps](#feature-overlaps)
-    + Spread             **Plot KDE/Curve of Spread target**
-      + Accuracy
-      + Feature Importance
-    + Over/Under         **Plot KDE/Curve of O/U target**  
-      + Features        
-      + Metrics
-    + Money Line  **ROC**      **CMAT**
+    + [Spread Results](#spread-results)
+      + [Accuracy](#accuracy)
+      + [Feature Importance](#feature-importance)
+    + [Over/Under](#over-under)
+      + [Accuracy](#accuracy)
+      + [Feature Importance](#feature-importance)
+    + Money Line  
+      + **ROC** /**CMAT**
       + Features
       + Metrics
-    + Weather **TEMP/wind/wc plots**
+    + Weather
+      + TEMP/wind/wc plots
     + Wise Bets Results
       + Spread
       + Over/Under
       + Money Line
         + 91.5% R2 with Spread when predicting proba...
+        + Try Seaborn RegPlot and lmplot with some targets/wise/proba/etc
       + Biggest Bet Upsets?
     + Hypothetical Bettor Using This Model
       + Money Line
@@ -405,7 +408,7 @@ Home MoV  |    2.87    | 14.6      |  5.07          | -46.0      | 59.0       | 
 
 <BR>
 
-### Over/Under Results
+### Over\/Under Results
 #### Accuracy
 Predicting the Over/Under is a bit easier for the model, as the data is more tightly clustered around its mean than the Vegas Spread. (See [Table 33](#over/under-summary-statistics)).  The lowest MAE for predicting the Over/Under was 1.86 points.  As with the spread, if we consider the range this gives us for prediction, we have a 3.72-point window.  However, unlike the spread, where a scoring play can be good (if made by the team we've bet on) or bad (if made by their opponent), all scoring plays for an Over/Under bet are either good (if we bet the Over) or bad (if we bet the Under).  
 
