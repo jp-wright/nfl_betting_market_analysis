@@ -226,7 +226,7 @@ There are two possible regression targets: the _spread_ and the _over/under_ for
 
 ###### Regression Target Ranges
 Target | Min. (abs) | Max. (abs) | Range
--------|------|---------------|---------------|------
+-------|------|---------------|----------
 Spread | 0.0 | 26.5 | 26.5
 Over/Under | 28.0 | 63.0 | 35.0
 
