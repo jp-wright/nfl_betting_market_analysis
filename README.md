@@ -30,9 +30,11 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Spread Results](#spread-results)
       + [Accuracy](#spread-accuracy)
       + [Feature Importance](#feature-importance)
+      + [Analysis](#spread-analysis)
     + [Over/Under](#over---under)
       + [Accuracy](#over---under-accuracy)
       + [Feature Importance](#over---under-feature-importance)
+      + [Analysis](#over---under-analysis)
     + [Money Line](#money-line)
       + **ROC** /**CMAT**
       + [Accuracy](#money-line-accuracy)
@@ -376,6 +378,7 @@ The most important features tend to be the _matchup delta_ features I engineered
 
 <BR>
 
+#### Spread Analysis
 The most important statistic is simply the difference in losses between the teams.  This isn't surprising, as the general public is going to base much of their betting on which team has a better record.  Much of the rest of the features are dominated by the [advanced metrics](#advanced-metrics), with _weighted DVOA_ (a measure of how well a team has been playing recently) being the second biggest predictor.  The first non-_matchup_ feature is simply the number of 3rd down conversions the visiting team is averaging per game.  The more 3rd downs a team converts, the more they extend their drives and the more likely those drives are to yield points.   
 
 Apart from these metrics, it is interesting to see _hours of rest_ be so statistically significant.  Vegas is clearly factoring in how long it has been since a team last played into its formula when setting a spread.  The _season_ in which a game is played also has an impact on the spread, which surprised me.  So, I took a look at the spread with regard to change over time.
@@ -419,22 +422,33 @@ By far the most obtainable scoring play in football is the field goal, which is 
 #### Over-Under Feature Importance
 Unsurprisingly the most important features for determining the combined points scored in a game are statistics that relate to how effective a team is at scoring or preventing a score.  We see a strong divergence from important features in predicting the spread, with no _matchup delta_ metrics present.  This fits common sense as we aren't concerned with how much better Team A is than Team B at something, but rather how good or bad both teams combined are.  
 
-###### Over/Under Top Features
+###### Over-Under Top Features
 Rank | Statistic | Importance (%) | Rank | Statistic | Importance (%)
 -----|-----------|:--------------:|------|-----------|:-------------:
-1 | Home Pts For/Gm | 6.10 |  9 | Temperature | 1.89
-2 | Road Pts For/Gm | 5.81 |  10 | Wind (mph) | 1.74
-3 | Season | 4.64 |  11 | Road Off PassTD/Gm | 1.60
-4 | Home Pts Allow/Gm | 3.48 |  12 | Road Wtd. Def DVOA | 1.60
-5 | Road Pts Allow/Gm | 3.34 |  13 | Road Def TotYd/Gm | 1.45
-6 | Road Off TotYd/Gm | 3.05 |  14 | Home Off TotYd/Gm | 1.45
-7 | Home Def TotYd/Gm | 2.18 |  15 | Road Off PassYd/Gm | 1.31
-8 | Wind Chill | 1.89 |  16 | Roof Dome | 1.31
+1 | Home Pts For/Gm | 6.10   |  9        | Temperature          | 1.89
+2 | Road Pts For/Gm | 5.81   |  10       | Wind (mph)           | 1.74
+3 | Season          | 4.64   |  11       | Road Off PassTD/Gm   | 1.60
+4 | Home Pts Allow/Gm | 3.48 |  12       | Road Wtd. Def DVOA   | 1.60
+5 | Road Pts Allow/Gm | 3.34 |  13       | Road Def TotYd/Gm    | 1.45
+6 | Road Off TotYd/Gm | 3.05 |  14       | Home Off TotYd/Gm    | 1.45
+7 | Home Def TotYd/Gm | 2.18 |  15       | Road Off PassYd/Gm   | 1.31
+8 | Wind Chill        | 1.89 |  16       | Roof Dome            | 1.31
 
 
 <sub>__Table 99:__ Top 16 features for predicting the Over/Under show many stats related to scoring and yardage, but also surprisingly temperature, wind, and whether or not the game is played in a dome.
 
-The two most important statistics are the two we'd hope to see: how many points each team scores per game.  Following that is a surprising result -- the season!  This sparked me to investigate the Over/Under change over time as I did with the spread above.  It is examined below.  The remainder of the important statistics can be categorized as either "team related" or "game related".  The team-related statistics are sensible, related to how many points allowed and yards teams average.  But the game-related features are interesting and worth a quick word.
+<BR>
+
+#### Over-Under Analysis
+The Over/Under has been climbing since the year 2000.  Initially the change was incremental, but over the last decade the Over/Under has exploded, setting a new record five-year averge for ten of the last eleven years!  I explore some possible causes for this growth below, starting with features that had the biggest impact on predicting the Over/Under.
+
+<img src="images/over-under_rolling_avg.png" align="middle" alt="Historical rolling average of Over/Under" >
+
+<sub>__Figures 411:__ The Over/Under has been on an upward climb since 2000, and has especially skyrocketed the last ten years.
+
+<BR>
+
+Looking at [Table 99](#over-under-top-features), the two most important statistics are the two we'd hope to see: how many points each team scores per game.  Following that is a surprising result -- the season!  This sparked me to investigate the Over/Under change over time as I did with the spread above.  It is examined below.  The remainder of the important statistics can be categorized as either "team related" or "game related".  The team-related statistics are sensible, related to how many points allowed and yards teams average.  But the game-related features are interesting and worth a quick word.
 
 Wind chill and temperature only differ below 50° F, so seeing them paired is partly a consequence of their having the same information for all temps above 50° F.  I think there is also a relationship between the weather variables and the roof variables.  First, a quick graphical glance, then my thoughts below.
 
@@ -442,6 +456,7 @@ Wind chill and temperature only differ below 50° F, so seeing them paired is pa
 
 <sub>__Figure 4005:__ The distribution of game-time temperatures from 1978-2016 show an expected distribution, except for the occurence of dome games which spikes the count for 67 °F.
 
+<BR>
 
 The poignant aspect of the temperature charts is the towering prevalence of games at 67 °F, the temperature of games in played in a dome.  (See [Acquisition and Error Correction](#acquisition-and-error-correction) for details on this).  Around 21% of all games played from 1978-2016, but these aren't equally distributed across that time span.  Domes have become increasingly popular in recent years.  Because of this, I wondered if there was a possible connection between the increase in games played in domes and the increase in the Over/Under.  Behold!
 
@@ -449,14 +464,32 @@ The poignant aspect of the temperature charts is the towering prevalence of game
 
 <sub>__Figures 410:__ The trend in percent of games played in a dome is clear: more, more, more.  This trend also mirrors the increase in Over/Unders set by Vegas.
 
+<BR>
 
-While I am unsure of the cause of the slight dip in the mid-200s (it's possibly due to temporary outdoor stadia being used while newer, domed stadia were being built), the overall trend of an increased percent of games being played in domes is obvious.  Currently one-quarter of the league's stadia are either domed or have retractable roofs.  Once the forthcoming Las Vegas Raiders finish building their new stadium in Nevada, nine of thirty-two teams will have the potential for a roofed stadium. <sup id="a1">[__5__](#fn5)</sup>
+Though I am unsure of the cause of the slight dip in the mid-200s (it's possibly due to temporary outdoor stadia being used while newer, domed stadia were being built), the overall trend of an increased percent of games being played in domes is obvious.  Currently one-quarter of the league's stadia are either domed or have retractable roofs.  Once the forthcoming Las Vegas Raiders finish building their new stadium in Nevada, nine of thirty-two teams will have the potential for a roofed stadium. <sup id="a1">[__5__](#fn5)</sup>
 
 Considering this impact on the Over/Under, recall that feature importance only tells us if having either _more_ or _less_ of the given feature increases the prediction of the model, not which one. With this in mind, I propose the following explanation for the apparent value of the weather-related and dome features in predicting the Over/Under: in the NFL, successfully passing the football is the catalyst for consistent scoring. <sup id="a1">[__6__](#fn6)</sup> Extreme weather (very high/low temperature, very windy, rain, snow) adversely affects the passing game more than the rushing game.  In a rainy game, for example, teams will run much more than pass because the ball is slippery, making it both hard to throw and to catch.  This decrease in passing will lead to a decrease in combined scoring.  
 
-But there's no bad weather in a dome.  So, the increase in domes means an increase in the number of games that are guaranteed to have good conditions, and a decrease in the number of games which can have bad ones.  With this reasoning, more dome games should equal more scoring.  The trend between incresed number of dome games parallels the increase in the Over/Under set by Vegas.  There are other reasons which have undoubtedly contributed to this increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__6__](#fn6)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  And there are also multiple factors which influence the rise of domes, including the ability to draw fans on bad weather days, as well as what might be perceived as a competitive advantage for the home team by gearing their offense to more finesse passing (debatable).  
+But there's no bad weather in a dome.  So, the increase in domes means an increase in the number of games that are guaranteed to have good conditions, and a decrease in the number of games which can have bad ones.  With this reasoning, more dome games should equal more scoring.  There are also a handful of factors which influence the rise of domes, including the ability to draw fans on bad weather days, as well as what might be perceived as a competitive advantage for the home team by gearing their offense to more finesse passing (debatable).  Regardless of origin, the larger trend between incresed number of dome games parallels the increase in the Over/Under set by Vegas.  
 
-The relationship between an increased number of dome games and the increased Over/Under is just my ad-hoc proposal, but I believe the data supports it for futher investigation if nothing else.  
+While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__6__](#fn6)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
+
+
+<table>
+    <tr>
+    <td>
+    <img src="images/combined_pass_yd_rolling_avg.png" align="middle" alt="Passing Yards Per Game Rolling Avg" >
+    </td>
+    <td>
+    <img src="images/combined_rush_yd_rolling_avg.png" align="middle" alt="Passing Yards Per Game Rolling Avg" >
+    </td>
+    </tr>
+</table>
+
+
+<sub>__Figures 4193:__ Passing offense has grown at an alarming rate.
+
+
 
 
 
