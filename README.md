@@ -14,7 +14,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 2. [NFL Betting Primer](#nfl-betting-primer)  
     + [Interpreting Odds and the Payout](#interpreting-odds-and-the-payout)
     + [The Spread](#the-spread)
-    + [The Over/Under](#the-over/under)
+    + [The Over/Under](#the-over-under)
     + [The Money Line](#the-money-line)  
 3. [Wise Bets](#wise-bets)  
 4. [Model Selection](#model-selection)   
@@ -28,15 +28,15 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [t-SNE](#t---sne)
       + [Feature Overlaps](#feature-overlaps)
     + [Spread Results](#spread-results)
-      + [Accuracy](#accuracy)
+      + [Accuracy](#spread-accuracy)
       + [Feature Importance](#feature-importance)
-    + [Over/Under](#over-under)
-      + [Accuracy](#accuracy)
-      + [Feature Importance](#feature-importance)
-    + Money Line  
+    + [Over/Under](#over---under)
+      + [Accuracy](#over---under-accuracy)
+      + [Feature Importance](#over---under-feature-importance)
+    + [Money Line](#money-line)
       + **ROC** /**CMAT**
-      + Features
-      + Metrics
+      + [Accuracy](#money-line-accuracy)
+      + [Feature Importance](#money-line-feature-importance)
     + Weather
       + TEMP/wind/wc plots
     + Wise Bets Results
@@ -360,17 +360,17 @@ As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread
 
 
 ### Spread Results
-#### Accuracy
+#### Spread Accuracy
 If we can predict the line accurately, we can identify games that are improperly valued by Vegas and choose to bet those games.  The best result obtained was a MAE of 2.32 points.  The spread average is 2.58 points with a standard deviation of 5.91 points.  (See [Table 333](#spread-summary-statistics).  Unfortunately this means that, on average, any prediction's true value can be within a window of 4.64 points -- not great.  
 
 If we predicted a spread for the road team an upcoming game to be +1.0 point (meaning they were a 1-point underdog), which is the 8th most common out of 47 unique recorded lines, then using our average error, the "true" spread of the game might ought to be 1.0 - 2.32 = -1.32 points, or 1.0 + 2.32 = +3.32 points.  In the case of -1.32 points, the road team would now be favored and would likely cause us to change our bet.  Conversely, in the case of +3.32 points, the home team would now be favored by _over_ a field goal, which is the easiest score to make in football and would likely change our bet.  
 
 With this in mind, I decided to set the threshold for deciding how far off a game's spread was to a minimum +/- 3 points.  This ensured we would not select games that would 'flip' the favored team and that our prediction would be beyond the threshold of a field goal. Games that met or exceeded this threshold are explored in the [Wise Bets Results](#wise-bets-results) section below.
 
-#### Feature Importance
+#### Spread Feature Importance
 The most important features tend to be the _matchup delta_ features I engineered.  These tell the difference between the two teams in a game in a given metric.  My reasoning was that the raw value, say a high amount of rushing yards per game, would matter little for prediction of one team's superiority if the other team also had a high value in that metric.  If one team was significantly better than the other team in a given metric we would be able to make more accurate predictions.  This finding is shown consistently in this project as the _matchup_ features rank high in importance.
 
-<img src="images/spread_feats.png" align="middle" alt="Important features to predict the spread" >
+<img src="images/road_spread_feats.png" align="middle" alt="Important features to predict the spread" >
 
 <sub>__Figure 400:__ The 40 most important features in predicting the spread are dominated by the _matchup_ features, including ten of the first twelve.  After the first 15 features, relative importance begins to level off with larger groupings of equally important features. </sub>
 
@@ -380,7 +380,7 @@ The most important statistic is simply the difference in losses between the team
 
 Apart from these metrics, it is interesting to see _hours of rest_ be so statistically significant.  Vegas is clearly factoring in how long it has been since a team last played into its formula when setting a spread.  The _season_ in which a game is played also has an impact on the spread, which surprised me.  So, I took a look at the spread with regard to change over time.
 
-<img src="images/spread_rolling_avg.png" align="middle" alt="Historical Rolling Average for the Spread" >
+<img src="images/road_spread_rolling_avg.png" align="middle" alt="Historical Rolling Average for the Spread" >
 
 <sub>__Figure 400:__ The spread has changed measurably over time.  The rolling average was computed with a window of four years and a second order polynomial fit line.
 
@@ -408,15 +408,15 @@ Home MoV  |    2.87    | 14.6      |  5.07          | -46.0      | 59.0       | 
 
 <BR>
 
-### Over\/Under Results
-#### Accuracy
+### Over-Under Results
+#### Over-Under Accuracy
 Predicting the Over/Under is a bit easier for the model, as the data is more tightly clustered around its mean than the Vegas Spread. (See [Table 33](#over/under-summary-statistics)).  The lowest MAE for predicting the Over/Under was 1.86 points.  As with the spread, if we consider the range this gives us for prediction, we have a 3.72-point window.  However, unlike the spread, where a scoring play can be good (if made by the team we've bet on) or bad (if made by their opponent), all scoring plays for an Over/Under bet are either good (if we bet the Over) or bad (if we bet the Under).  
 
 This allows us to use the 1.86-point MAE as our error instead of the 3.72 window.  If the real Over/Under is 43.0 points and our predicted Over/Under is 44.0 points, and we choose the Over, we are not worried about the +1.86-point error in prediction since we are already expecting more than 44 points to be scored. So 44.0 + 1.86 = 45.86 points for the upper bound of prediction is actually _better_ for us, since this says the game should go even further over. The reverse is true for betting the Under.
 
 By far the most obtainable scoring play in football is the field goal, which is worth three points.  As such, it reasons any predicted Over/Under that is +/- more than three points different than the actual Over/Under should be considered a potential "[wise bet](#wise-bets)". If it is beyond this threshold with the error taken into account, even better. See [Wise Bets Results](#wise-bets-results) below.
 
-#### Feature Importance
+#### Over-Under Feature Importance
 Unsurprisingly the most important features for determining the combined points scored in a game are statistics that relate to how effective a team is at scoring or preventing a score.  We see a strong divergence from important features in predicting the spread, with no _matchup delta_ metrics present.  This fits common sense as we aren't concerned with how much better Team A is than Team B at something, but rather how good or bad both teams combined are.  
 
 ###### Over/Under Top Features
@@ -436,11 +436,11 @@ Rank | Statistic | Importance (%) | Rank | Statistic | Importance (%)
 
 The two most important statistics are the two we'd hope to see: how many points each team scores per game.  Following that is a surprising result -- the season!  This sparked me to investigate the Over/Under change over time as I did with the spread above.  It is examined below.  The remainder of the important statistics can be categorized as either "team related" or "game related".  The team-related statistics are sensible, related to how many points allowed and yards teams average.  But the game-related features are interesting and worth a quick word.
 
-Wind chill and temperature only differ below 50° F, so seeing them paired is partly a consequence of their having the same information for all temps above 50° F.  I think there is also a relationship between the weather variables and the roof variables.  First, a quick graphical glance, then my thoughts below.  For plotting purposes I use temperature since the values are all integers, whereas wind chill can take any decimal value.
+Wind chill and temperature only differ below 50° F, so seeing them paired is partly a consequence of their having the same information for all temps above 50° F.  I think there is also a relationship between the weather variables and the roof variables.  First, a quick graphical glance, then my thoughts below.
 
 <img src="images/temp_with_domes.png" align="middle" alt="Temp distribution with domes" >
 
-<sub>__Figure 4005:__ The distribution of game-time temperatures (°F) from 1978-2016 shows a normal distribution, except for the occurence of dome games which spikes the count for 67 °F.
+<sub>__Figure 4005:__ The distribution of game-time temperatures from 1978-2016 show an expected distribution, except for the occurence of dome games which spikes the count for 67 °F.
 
 
 The poignant aspect of the temperature charts is the towering prevalence of games at 67 °F, the temperature of games in played in a dome.  (See [Acquisition and Error Correction](#acquisition-and-error-correction) for details on this).  Around 21% of all games played from 1978-2016, but these aren't equally distributed across that time span.  Domes have become increasingly popular in recent years.  Because of this, I wondered if there was a possible connection between the increase in games played in domes and the increase in the Over/Under.  Behold!
@@ -450,7 +450,7 @@ The poignant aspect of the temperature charts is the towering prevalence of game
 <sub>__Figures 410:__ The trend in percent of games played in a dome is clear: more, more, more.  This trend also mirrors the increase in Over/Unders set by Vegas.
 
 
-While I am unsure of the cause of the slight dip in the mid-200s (it's possibly due to temporary outdoor stadaia being used while newer, domed stadia were being built), the overall trend of an increased percent of games being played in domes is obvious.  Currently one-quarter of the league's stadia are either domed or have retractable roofs.  Once the forthcoming Las Vegas Raiders finish building their new stadium in Nevada, nine of thirty-two teams will have the potential for a roofed stadium. <sup id="a1">[__5__](#fn5)</sup>
+While I am unsure of the cause of the slight dip in the mid-200s (it's possibly due to temporary outdoor stadia being used while newer, domed stadia were being built), the overall trend of an increased percent of games being played in domes is obvious.  Currently one-quarter of the league's stadia are either domed or have retractable roofs.  Once the forthcoming Las Vegas Raiders finish building their new stadium in Nevada, nine of thirty-two teams will have the potential for a roofed stadium. <sup id="a1">[__5__](#fn5)</sup>
 
 Considering this impact on the Over/Under, recall that feature importance only tells us if having either _more_ or _less_ of the given feature increases the prediction of the model, not which one. With this in mind, I propose the following explanation for the apparent value of the weather-related and dome features in predicting the Over/Under: in the NFL, successfully passing the football is the catalyst for consistent scoring. <sup id="a1">[__6__](#fn6)</sup> Extreme weather (very high/low temperature, very windy, rain, snow) adversely affects the passing game more than the rushing game.  In a rainy game, for example, teams will run much more than pass because the ball is slippery, making it both hard to throw and to catch.  This decrease in passing will lead to a decrease in combined scoring.  
 
