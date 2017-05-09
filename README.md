@@ -568,25 +568,31 @@ Recall from [Table 2](#class-ratios) that the lone imbalanced class was the _Hom
 
 While using SMOTE did improve the _Home Team Win_ predictions, I didn't like the idea of 'articifial' games being used in the database because it made extrapolating results to the actual games that occurred more difficult.  The idea of having 'false' games included if I were to use a plot detailing the breakdown of how a specific metric impacts the chances of a team winning was unappealing.  If I decided to use only the 'true' games, would the trends match up to what was claimed by the SMOTE-driven results?  Having the luxury of a Gradient Boosted Classifier that handled the 'imbalanced' classes rather well (as noted in [Table 4](#classification-outcomes)) made the decision easier, admittedly.
 
+<BR>
+
 #### Winning Team Accuracy
-When our model makes a prediction that the home team won a game it has labeled the game as a "positive" (e.g. "yes").  If the game it labeled as a positive actually was by the home team, the prediction would then be considered a "true positive".  However, if the game predicted by the model to have been won by the home team was actually won by the visiting team, it would have incorrectly labeled the game as a positive, resulting in a "false positive."  No model will get every prediction right (in the real world), so we need a way to measure how accurate and reliable our model is.  One method, developed during World War II by the British, is the ROC curve.
+<img src="images/cmat_home_winner.png" align="right" alt="Confusion Matrix for Home Winner" width="600">
 
-The ROC tells us the ratio of how many true positives to false positives our model is predicting.  We do this for every threshold of 'confidence' in the prediction, from 1% to 99% confident.  The ratio changes as the threshold changes, and we plot these changes to form a ROC curve.  Random guessing would equate to a 50/50 split of true positives to false positives, so this is our baseline.  Anything below that is _worse than random chance_.  The higher the true positive rate, the better the model.  The actual value we use to evaluate the model is technically the area under the curve (AUC).  As in model tuning, we use a split subsample, or fold, of the data to test how well it performs on each split and average them together.  The ROC curve for predicting whether the home team wins a game is below.
+###### Home Team Winner Confusion Matrix
+When our model makes a prediction that the home team won a game it has labeled the game as a "positive" (e.g. "yes").  If the game it labeled as a positive actually was by the home team, the prediction would then be considered a "true positive".  However, if the game predicted by the model to have been won by the home team was actually won by the visiting team, it would have incorrectly labeled the game as a positive, resulting in a "false positive."  The same concept applies to predictions labeled "negative" as well.  No model will get every prediction right (in the real world), so we need a way to measure how accurate and reliable our model is.  One method is the confusion matrix for our predictions.  A confusion matrix allows us to see how accurate our model is by showing us the counts of our true positives, true negatives, as well as our false positives and false negatives.
 
+<sub>__Figure 55874:__ A confusion matrix of the prediction results for classifying games for the home team being the winner.  The model errs on the side of considering more games to be won by the home team than actually are.</sub>
+
+<BR>
+
+Another method of classification evaluation, developed during World War II by the British, is the ROC curve.  The ROC tells us the ratio of how many true positives to false positives our model is predicting.  We do this for every threshold of 'confidence' in the prediction, from 1% to 99% confident.  The ratio changes as the threshold changes, and we plot these changes to form a ROC curve.  Random guessing would equate to a 50/50 split of true positives to false positives, so this is our baseline.  Anything below that is _worse than random chance_.  The higher the true positive rate, the better the model.  The actual value we use to evaluate the model is technically the area under the curve (AUC).  As in model tuning, we use a split subsample, or fold, of the data to test how well it performs on each split and average them together.  The ROC curve for predicting whether the home team wins a game is below.
+
+###### Home Team Winner ROC Curve
 <img src="images/roc_home_winner.png" align="middle" alt="ROC Curve for Home Winner">
 
 <sub>__Figure 5544:__ The ROC curve for predicting if the home team will win.  Some deviation is present between each fold of data.</sub>
 
 <BR>
 
-Any time we have a classification model, we should also examine the confusion matrix for our predictions.  This is another way to visualize how accurate our model is.
 
 
-<img src="images/cmat_home_winner.png" align="middle" alt="Confusion Matrix for Home Winner" width="600">
 
-<sub>__Figure 55874:__ A confusion matrix of the prediction results for classifying games for the home team being the winner.  The model errs on the side of considering more games to be won by the home team than actually are.</sub>
 
-<BR>
 **Proba**
 
 
