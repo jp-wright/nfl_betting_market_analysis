@@ -575,17 +575,16 @@ While using SMOTE did improve the _Home Team Win_ predictions, I didn't like the
 #### Winning Team Accuracy
 <img src="images/cmat_home_winner.png" align="right" alt="Confusion Matrix for Home Winner" width="600">
 
-###### Home Team Winner Confusion Matrix
+
 When our model makes a prediction that the home team won a game it has labeled the game as a "positive" (e.g. "yes").  If the game it labeled as a positive actually was won by the home team, the prediction would then be considered a "true positive".  However, if the home team lost a game predicted by the model to have been a home victory, it would have incorrectly labeled the game as a positive, resulting in a "false positive."  The same concept applies to predictions labeled "negative" as well.  
 
 <div align="right">
 <sub><b>Figure 55874:</b> A confusion matrix of predictions for classifying games won by the home team.  <br>The model errs on the side of naming more games are home wins than actually are.</sub>
 </div>
 
+<BR>
 
 No model will get every prediction right (in the real world), so we need a way to measure how accurate and reliable our model is.  One method is the confusion matrix for our predictions.  A confusion matrix allows us to see how accurate our model is by showing us the counts of our true positives, true negatives, as well as our false positives and false negatives.
-
-
 
 <BR>
 
