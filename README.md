@@ -563,6 +563,8 @@ Since the spread and over/under are set by Vegas to meet this balanced criterion
 
 The reults for predicting these two bets never got much above 51%.  Remembering that the initial motivation of this project was to build a model to predict the spread, identify games that were beyond a spread-deviation threshold, and investigate to see if they were truly "wise bets".  As you can likely guess, the results for this approach were sub-optimal.  That does not make them uninteresting, however, and they are discussed below in the [Wise Bets Results](#wise-bets-results) section.
 
+<BR>
+
 #### The Winning Team
 Recall from [Table 2](#class-ratios) that the lone imbalanced class was the _Home Team Win_ class, which is simply a binary class of "yes" or "no" results depending on if the home team won ("yes") or lost ("no").  Also recall that home teams win at a 58% rate over time, meaning the class is 58% 'yes' and 42% 'no'.  Methods of addressing this moderate imbalance were discussed in the [Classification](#classification) section as well.  Ultimately I decided to use the _advanced_ database and to not use SMOTE oversampling for class psuedo-balancing.  
 
@@ -574,9 +576,16 @@ While using SMOTE did improve the _Home Team Win_ predictions, I didn't like the
 <img src="images/cmat_home_winner.png" align="right" alt="Confusion Matrix for Home Winner" width="600">
 
 ###### Home Team Winner Confusion Matrix
-When our model makes a prediction that the home team won a game it has labeled the game as a "positive" (e.g. "yes").  If the game it labeled as a positive actually was by the home team, the prediction would then be considered a "true positive".  However, if the game predicted by the model to have been won by the home team was actually won by the visiting team, it would have incorrectly labeled the game as a positive, resulting in a "false positive."  The same concept applies to predictions labeled "negative" as well.  No model will get every prediction right (in the real world), so we need a way to measure how accurate and reliable our model is.  One method is the confusion matrix for our predictions.  A confusion matrix allows us to see how accurate our model is by showing us the counts of our true positives, true negatives, as well as our false positives and false negatives.
+When our model makes a prediction that the home team won a game it has labeled the game as a "positive" (e.g. "yes").  If the game it labeled as a positive actually was won by the home team, the prediction would then be considered a "true positive".  However, if the home team lost a game predicted by the model to have been a home victory, it would have incorrectly labeled the game as a positive, resulting in a "false positive."  The same concept applies to predictions labeled "negative" as well.  
 
-<sub>__Figure 55874:__ A confusion matrix of the prediction results for classifying games for the home team being the winner.  The model errs on the side of considering more games to be won by the home team than actually are.</sub>
+<div align="right">
+<sub>__Figure 55874:__ A confusion matrix of the prediction results for classifying games for the home team being the winner.  <br>The model errs on the side of considering more games to be won by the home team than actually are.</sub>
+</div>
+
+
+No model will get every prediction right (in the real world), so we need a way to measure how accurate and reliable our model is.  One method is the confusion matrix for our predictions.  A confusion matrix allows us to see how accurate our model is by showing us the counts of our true positives, true negatives, as well as our false positives and false negatives.
+
+
 
 <BR>
 
