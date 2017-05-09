@@ -335,7 +335,7 @@ Unlike the simplistic pyramid example, applying PCA in three dimensions to the w
 <img src="images/model_spread_wb_non-pca_tsne/epsilon50/tsne_wise_bet.gif" width="600" alt="t-SNE for Vegas Spread" align="right">  
 
 #### t-SNE
-A second dimensional reduction algorithm, or manifold learner, that is commonly used for visualization is t-distributed Stochastic Neighbor Embedding (t-SNE).  Unlike PCA, t-SNE doesn't provide a Rosetta Stone for translating data into its fundamental components.  Instead it seeks to find local groupings of one data point to its neighbors in high dimensions and visually represent them in lower dimensions, illuminating possible separability.  
+A second dimensional reduction algorithm, or manifold learner, that is commonly used for visualization is t-distributed Stochastic Neighbor Embedding (t-SNE).  Unlike PCA, t-SNE doesn't provide a Rosetta Stone for translating data into its fundamental components.  Instead it seeks to find local groupings of one data point to its neighbors in high dimensions and visually represent them in lower dimensions, illuminating possible separability.  A progression of t-SNE results through increasing parameters for games labeled "wise bets" by the spread regression is to the right.
 
 <BR><BR><BR><BR>
 <div align="right">
