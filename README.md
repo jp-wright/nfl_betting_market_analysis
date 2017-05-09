@@ -579,7 +579,7 @@ While using SMOTE did improve the _Home Team Win_ predictions, I didn't like the
 When our model makes a prediction that the home team won a game it has labeled the game as a "positive" (e.g. "yes").  If the game it labeled as a positive actually was won by the home team, the prediction would then be considered a "true positive".  However, if the home team lost a game predicted by the model to have been a home victory, it would have incorrectly labeled the game as a positive, resulting in a "false positive."  The same concept applies to predictions labeled "negative" as well.  
 
 <div align="right">
-<sub><b>Figure 55874:</b> A confusion matrix of predictions for classifying games as being won by the home team.  <br>The model errs on the side of considering more games to be won by the home team than actually are.</sub>
+<sub><b>Figure 55874:</b> A confusion matrix of predictions for classifying games won by the home team.  <br>The model errs on the side of naming more games to be won by the home team than actually are.</sub>
 </div>
 
 
