@@ -539,13 +539,19 @@ As noted above in the [NFL Betting Primer](#nfl-betting-primer) section, the mon
 <BR>
 
 ###### Spread and Money Line Rolling Average
-<img src="images/spread_vs_moneyline_rolling_avg.png" align="middle" alt="spread_vs_moneyline_rolling_avg" width="600">
+<img src="images/spread_vs_moneyline_rolling_avg.png" align="right" alt="spread_vs_moneyline_rolling_avg" width="600">
+
+<BR>
+
+The point to take home is that the spread and the money line are essentially two ways to report the same metric -- how much better one team is than another.  Because of this, regressing against the moneyline is essentially the same as regressing against the spread.  Results are nearly identical in both feature importance and accuracy, as expected.  As a result, no further testing or modeling was done on the money line.
+
+<BR><BR><BR>
 
 <sub>__Figure 4444:__ Further illustrating the near-identical relationship between the spread and the moneyline is their five-year rolling averages which appear as nearly carbon copies of each other.</sub>
 
 <BR>
 
-The point to take home is that the spread and the moneyline are essentially two ways to report the same metric -- how much better one team is than another.  Because of this, regressing against the moneyline is essentially the same as regressing against the spread.  Results are nearly identical in both feature importance and accuracy, as expected.  As a result, no further testing or modeling was done on the money line.
+
 
 <BR>
 <BR>
