@@ -5,6 +5,7 @@ Sports betting is a multi-billion dollar per year industry.  Estimates vary, but
 The oddsmakers in Vegas use networks of supercomputers to set the odds, so expecting to beat them outright with a single machine learning model is a bad bet, no pun intended.  However, my hope was that systemic inefficiencies could be ferreted out as Vegas must also shift the odds based on __how the public bets__ in order to prevent a catastrophic loss of house money should an upset occur, granting the one-sided public bets all large payouts.  This opens the door for the informed bettor (us) to profit by the uninformed bettors (the public) making bad choices and forcing Vegas to alter the odds in an inefficient manner. In the interest of full disclosure, I have never bet a penny in my life (not even on slot machines -- sorry, casinos).  
 
 <BR>
+<BR>
 
 ## Table of Contents
 1. [Dataset](#dataset)
@@ -35,10 +36,11 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [Accuracy](#over---under-accuracy)
       + [Feature Importance](#over---under-feature-importance)
       + [Analysis](#over---under-analysis)
-    + [Money Line](#money-line)
+    + [Money Line](#money-line-results)
+    + [Predicting Bet Outcomes](#predicting-bet-outcomes)
       + **ROC** /**CMAT**
-      + [Accuracy](#money-line-accuracy)
-      + [Feature Importance](#money-line-feature-importance)
+      + [Accuracy](#winning-team-accuracy)
+      + [Feature Importance](#winning-team-feature-importance)
     + Weather
       + TEMP/wind/wc plots
     + Wise Bets Results
@@ -58,8 +60,10 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + Current-season Performance
     + Miles Traveled
 
-<BR><BR>
 
+<BR>
+<BR>
+<BR>
 
 
 
@@ -101,10 +105,11 @@ I engineered features in seven distinct ways.
 6. __Dummying__ of categorical data, such as day of the week per game, type of stadium (dome or open), type of playing surface, and week of the season.
 7. Calculating exact hours of rest between games, not merely days.  
 
+
+
 <BR>
-
-
-
+<BR>
+<BR>
 
 
 
@@ -145,7 +150,7 @@ by the small dashed line at 42.2 points. Again, we observe here a gaussian distr
 <img src="images/money-line_dist.png" width="600" align="right" alt="History of the Money Line">  
 
 #### The Money Line
-The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds like the spread, where negative implies the favored team, and the odds themselves indicate what the [payout](#interpreting-odds-and-the-payout) will be for a winning bet.  Again owing to the notion of "home field advantage", the average money line for a road team when they're favored is -230, while the average for a home favorite is -313.  
+The money line is simply the odds that a specific team will win the game, regardless of margin of victory (spread).  The money line is given in odds and like the spread a negative value denotes the favored team, and the odds themselves indicate what the [payout](#interpreting-odds-and-the-payout) will be for a winning bet.  Again owing to the notion of "home field advantage", the average money line for a favored road team is -230, while the average for a home favorite is -313.  
 
 <BR><BR>
 <div align="right">
@@ -159,12 +164,11 @@ the spread, the money line shows the higher value and density of home favorites.
 
 All things considered, you must risk more money when betting on a home team as they're expected to win more frequently.  This trend holds true for underdogs as well; you win more money from the average road underdog (+248) than the average home underdog (+179).
 
-<BR><BR>
 
 
-
-
-
+<BR>
+<BR>
+<BR>
 
 
 
@@ -179,14 +183,16 @@ Because of this, the initial aim of this project was simple: I wanted __to ident
 
 Secondarily, we can do the same for the Over/Under as well as the Money Line.  The Money Line is slightly different, since it is concerned only with the binary outcome of win/lose.
 
+
+
+
+
+
+
+
 <BR>
-
-
-
-
-
-
-
+<BR>
+<BR>
 
 ## Model Selection
 Four models were tested in this project: two tree ensemble methods, Random Forests (RF) and Gradient Boosted Trees (GBT), as well as Support Vector Machines (SVM) and finally ElasticNet regression.  The GBT models are from __XGBoost__ while the rest are from __Sci-Kit Learn__.
@@ -237,6 +243,8 @@ Over/Under | 28.0 | 63.0 | 35.0
 
 <sub>__Table 1:__ Range information for the Vegas Spread and Over/Under, from 1978-2016.</sub>
 
+<BR>
+
 #### Classification
 Three classification targets are available:
 1. Whether a team _covered the spread_ (won the spread bet)
@@ -245,7 +253,7 @@ Three classification targets are available:
 
 The cover and over/under classes are very close to being ideally balanced, but the classes for a home team vs. a road team winning are slightly imbalanced.  Regardless of year range, the home team wins at roughly a 58% to 42% rate compared to the road team.  
 
-This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was mixed, offering a few percentage points of improvement or negation for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.  The full breakdown of classes is shown below for reference.
+This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was typically mild, but always positive, offering a few percentage points of improvement for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.  The full breakdown of classes is shown below for reference.
 
 ###### Class Ratios
 Target | Data | Majority Class | Minority Class | Majority % | Minority % | Counts
@@ -259,6 +267,7 @@ Home Team Win | Advanced | Win | Loss | 57.9% | 42.1% | 3183 - 2315
 
 <sub>__Table 2:__ Breakdown of classification targets within the two primary datasets, 1978-2016 and 1994-2016 (_Advanced_).  Only the __Home Team Win__ target has a moderate class imbalance.  </sub>
 
+<BR>
 
 ### Model Selection and Training
 In order to choose the models which performed best I optimized for the mean absolute error (MAE).  Compared to the root mean squared error (RMSE), the MAE is consistent across ranges of errors and doesn't 'flare' up in response to larger residuals.  For evaluating how many points a predicted NFL game's spread is  from the actual spread, there is no harsher penalty for being five points away than there is for being four points away.  There _are_ discontinuous jumps in importance of residual values, but these are _not_ progressively increasing with the value of the error itself.  Instead these recurring pronounced importance ranges are vestiges of the discrete scoring nature of football, with the vast majority of scores being multiples of three points or seven points, these being the two most common values of scoring plays (a field goal and a touchdown).  Using the absolute error ensures an easily interpretable metric for evaluating model accuracy with this data: a MAE of 3.5 means we have an average error of 3.5 points.
@@ -287,12 +296,12 @@ Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723
 ###### Classification Outcomes
 Target | Data | Model | Metrics | Score
 -----|--------|-------|---------|-----
-Road Team Cover | 1978 | GBC | AUC <br> AUC (SMOTE) | 0.516 <br> 0.498
-Road Team Cover | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.502 <br> 0.530
-Over/Under Result | 1978 | GBC | AUC <br> AUC (SMOTE)  | 0.510 <br> 0.509
-Over/Under Result | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.494 <br> 0.497
-Home Team Win | 1978 | GBC | AUC <br> AUC (SMOTE)  | 0.631 <br> 0.702
-Home Team Win | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.636 <br> 0.666
+Road Team Cover | 1978 | GBC | AUC <br> AUC (SMOTE) | 0.516 <br> 0.518
+Road Team Cover | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.502 <br> 0.535
+Over/Under Result | 1978 | GBC | AUC <br> AUC (SMOTE)  | 0.514 <br> 0.515
+Over/Under Result | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.494 <br> 0.508
+Home Team Win | 1978 | GBC | AUC <br> AUC (SMOTE)  | 0.710 <br> 0.775
+Home Team Win | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.711 <br> 0.745
 
 <sub>__Table 4:__ The overview of results from the three classification targets using combinations of datasets and class-balancing oversampling (SMOTE).
 
@@ -353,15 +362,29 @@ With no apparent real success in determining which games should be considered a 
 
 
 
-
+<BR>
+<BR>
+<BR>
 
 
 
 ## Results
 As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread and the over/under was be able to label games that had improperly set lines which could make them appealing bets.  This means we really wanted to regress against these targets in order to ultimately classify them.  Paired with the three classification targets, this results in the final goal for all models in this project being able to classify whether or not a game is one we should bet on.  A quick glance at [Tables 3](#regression-outcomes) and [4](#classification-outcomes) show a fairly pedestrian success rate at correctly predicting two of the three classification targets and a modest but not insignificant error on the regression targets.  
 
+<BR>
 
 ### Spread Results
+###### Spread Summary Statistics
+Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min. (pts) | Max. (pts) | Min. Std. | Max. Std.
+----------|:----------:|:---------:|:--------------:|:----------:|:----------:|:---------:|:--------:
+Spread    |    2.58    | 5.89      |  2.28          | -23.0      | 26.5       |  -4.34    | 4.06     
+Home MoV  |    2.87    | 14.6      |  5.07          | -46.0      | 59.0       |  -3.34    | 3.84   
+
+
+<sub>__Table 333:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
+
+<BR>
+
 #### Spread Accuracy
 If we can predict the line accurately, we can identify games that are improperly valued by Vegas and choose to bet those games.  The best result obtained was a MAE of 2.32 points.  The spread average is 2.58 points with a standard deviation of 5.91 points.  (See [Table 333](#spread-summary-statistics).  Unfortunately this means that, on average, any prediction's true value can be within a window of 4.64 points -- not great.  
 
@@ -397,21 +420,23 @@ I was unsure if the observed change is due to Vegas becoming better at predictio
 
 <BR>
 
-We see that overall, the trends follow the same general path of peaking in the early- to mid-1990s and falling thereafter.  But a year-by-year inspection shows significant discrepancies.  Take 1995, for example.  It was the season of the lowest average home margin of victory for 30 years, but that year and the one after both saw Vegas _increase_ the average spread in favor of the home teams!  In general I suspect the average margin of victory has too much variance for Vegas to react with knee-jerk spread dampening or inflating.  While margin of victory trends over time are informative, they are clearly not the sole explanation for the changes with time in the average spread.  We can see the summary statistics below back up what the graphs above show us.
-
-###### Spread Summary Statistics
-Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min. (pts) | Max. (pts) | Min. Std. | Max. Std.
-----------|:----------:|:---------:|:--------------:|:----------:|:----------:|:---------:|:--------:
-Spread    |    2.58    | 5.89      |  2.28          | -23.0      | 26.5       |  -4.34    | 4.06     
-Home MoV  |    2.87    | 14.6      |  5.07          | -46.0      | 59.0       |  -3.34    | 3.84   
-
-
-<sub>__Table 333:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
+We see that overall, the trends follow the same general path of peaking in the early- to mid-1990s and falling thereafter.  But a year-by-year inspection shows significant discrepancies.  Take 1995, for example.  It was the season of the lowest average home margin of victory for 30 years, but that year and the one after both saw Vegas _increase_ the average spread in favor of the home teams!  In general I suspect the average margin of victory has too much variance for Vegas to react with knee-jerk spread dampening or inflating.  While margin of victory trends over time are informative, they are clearly not the sole explanation for the changes with time in the average spread.  We can see the summary statistics in [Table 333](#spread-summary-statistics) back up what the graphs above show us.
 
 
 <BR>
+<BR>
+
 
 ### Over-Under Results
+###### Over/Under Summary Statistics
+Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min (pts) | Max (pts) | Min Std. | Max Std.
+----------|:----------:|:---------:|:--------------:|:---------:|:---------:|:--------:|:-------:|
+Over/Under |    41.6   | 4.58      |  0.11          | 28.0      | 63.0      | -2.97    | 4.67    |
+
+<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
+
+<BR>
+
 #### Over-Under Accuracy
 Predicting the Over/Under is a bit easier for the model, as the data is more tightly clustered around its mean than the Vegas Spread. (See [Table 33](#over/under-summary-statistics)).  The lowest MAE for predicting the Over/Under was 1.86 points.  As with the spread, if we consider the range this gives us for prediction, we have a 3.72-point window.  However, unlike the spread, where a scoring play can be good (if made by the team we've bet on) or bad (if made by their opponent), all scoring plays for an Over/Under bet are either good (if we bet the Over) or bad (if we bet the Under).  
 
@@ -475,20 +500,11 @@ But there's no bad weather in a dome.  So, the increase in domes means an increa
 While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__6__](#fn6)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
 
 ###### Passing and Rushing Offense Over Time
-
-<table>
-    <tr>
-        <td>
-            <img src="images/combined_pass_yd_rolling_avg.png" align="middle" alt="Passing Yards Per Game Rolling Avg" >
-        </td>
-        <td>
-            <img src="images/combined_rush_yd_rolling_avg.png" align="middle" alt="Passing Yards Per Game Rolling Avg" >
-        </td>
-    </tr>
-</table>
+<img src="images/combined_pass_rush_yard_rolling_avg.png" align="middle" alt="Passing vs. Rushing Yard Trends over time" >
 
 
-<sub>__Figures 4193__ and __4194:__ Five-year rolling averages of Passing offense (left), which has grown at an alarming rate over the last decade-plus, and rushing offense (right), which dropped precipitously two decades ago and has somewhat stabilized since.</sub>
+
+<sub>__Figures 4193:__ Five-year rolling averages of Passing offense (left), which has grown at an alarming rate over the last decade-plus, and rushing offense (right), which dropped precipitously two decades ago and has somewhat stabilized since.</sub>
 
 <BR>
 
@@ -501,36 +517,80 @@ As intersting as the topic of how the league changes schematically as a whole ov
 
 <sub>__Figure 4443:__ Scatter matrix of five-year rolling average passing offense, rushing offense, and the Over/Under per season since 1978.  Passing offense is clearly positively correlated with the Over/Under, while rushing offense has almost no observed correlation.</sub>
 
+
+
 <BR>
 
-At a glance we can see evidence of what we suspected above -- passing offense is strongly and positively correlated with the Over/Under, while rushing offense apparently bears no correlation to it.  Recall the Over/Under is simply the combined total points in a game, and as mentioned above (see [Brian Burke's article](#fn6) about passing offense efficiency, which was written in 2010, right as the furious growth in passing offense began.  His claims would be only more concrete and emphasized if the article were written today) passing efficiency is the primary means to offensive success and higher scoring.  The data here only bolster this conclusion.  But if _everyone_ is better at passing league-wide, then would it not cancel out for everyone?  This question -- which statistics correlate to actually _winning_ -- is one we'll explore a bit more in the next section, where we analyze the Vegas money line.
+At a glance we can see evidence of what we suspected above -- passing offense is strongly and positively correlated with the Over/Under, while rushing offense apparently bears no correlation to it.  Recall the Over/Under is simply the combined total points in a game, and as mentioned above, passing efficiency is the primary means to offensive success and higher scoring (see [Brian Burke's article](https://fifthdown.blogs.nytimes.com/2010/08/31/why-passing-is-more-important-than-running-in-the-n-f-l/) about passing offense efficiency which was written in 2010, right as the furious growth in passing offense began.  His claims would be only more concrete and emphasized if the article were written today).  The data here only bolster this conclusion: more passing means more scoring, all things equal.  But if _everyone_ is better at passing league-wide, then would it not competitively cancel out for everyone?  This question -- which statistics correlate to actually _winning_ -- is one we'll explore a bit more in the next section, where we analyze the Vegas money line.
 
+<BR>
+<BR>
 
 ### Money Line Results
+As noted above in the [NFL Betting Primer](#nfl-betting-primer) section, the money line is merely the odds of Team A beating Team B.  As you might expect, the odds of Team A beating Team B dovetail very nicely with the spread, which is a measure in points (not odds) of how much better Vegas believes Team A is than Team B.  In fact, the two are so closely linked that they are for practical purposes equivalent in significance.  The R<sup>2</sup> correlation between a game's spread and its money line is __0.975__!  
+
+
+###### Spread and Money Line Linear Relationship
+<img src="images/spread_vs_moneyline.png" align="middle" alt="spread_vs_moneyline" width="800">
+
+<sub>__Figure 4443:__ The relationship between the spread and moneyline looks to be perfectly described by a 3rd degree polynomial (not pictured), but a closer look at the _density_ of the spread values shows that over 94% are concentrated between -10 and +10.  This range comprises the center of this plot, and is easily desribed by a linear regression.</sub>
+
+<BR>
+
+###### Spread and Money Line Rolling Average
+<img src="images/spread_vs_moneyline_rolling_avg.png" align="middle" alt="spread_vs_moneyline_rolling_avg" width="600">
+
+<sub>__Figure 4444:__ Further illustrating the near-identical relationship between the spread and the moneyline is their five-year rolling averages which appear as nearly carbon copies of each other.</sub>
+
+<BR>
+
+The point to take home is that the spread and the moneyline are essentially two ways to report the same metric -- how much better one team is than another.  Because of this, regressing against the moneyline is essentially the same as regressing against the spread.  Results are nearly identical in both feature importance and accuracy, as expected.  As a result, no further testing or modeling was done on the money line.
+
+<BR>
+<BR>
+
+### Predicting Bet Outcomes
+#### Covers and Over/Unders
+Two of the three classification targets, _road covers_ and _over/under results_ proved to be very difficult to tease anything meaningful out of.  My first hunch is that this is due mostly to what the classes are derived from: betting lines set by Vegas.  As discussed in the [NFL Betting Primer](#nfl-betting-primer) section, Vegas has a vested interest in making the results of any bet as close to 50/50 as possible, in order to avoid suffering massive losses.  Vegas takes small wins many times over to turn large profits.  
+
+Since the spread and over/under are set by Vegas to meet this balanced criterion, it is not surprising to find that "hidden gem" metrics which predict the results of these bets were not discovered.  If something does a great job of predicting these results, then Vegas knows about them already -- this is their livelihood, after all -- and is using them in their formulae to set these values.  In a sense, we are merely trying to tease out something Vegas has already baked in.
+
+The reults for predicting these two bets never got much above 51%.  Remembering that the initial motivation of this project was to build a model to predict the spread, identify games that were beyond a spread-deviation threshold, and investigate to see if they were truly "wise bets".  As you can likely guess, the results for this approach were sub-optimal.  That does not make them uninteresting, however, and they are discussed below in the [Wise Bets Results](#wise-bets-results) section.
+
+#### The Winning Team
+Recall from [Table 2](#class-ratios) that the lone imbalanced class was the _Home Team Win_ class, which is simply a binary class of "yes" or "no" results depending on if the home team won ("yes") or lost ("no").  Also recall that home teams win at a 58% rate over time, meaning the class is 58% 'yes' and 42% 'no'.  Methods of addressing this moderate imbalance were discussed in the [Classification](#classification) section as well.  Ultimately I decided to use the _advanced_ database and to not use SMOTE oversampling for class psuedo-balancing.  
+
+While using SMOTE did improve the _Home Team Win_ predictions, I didn't like the idea of 'articifial' games being used in the database because it made extrapolating results to the actual games that occurred more difficult.  The idea of having 'false' games included if I were to use a plot detailing the breakdown of how a specific metric impacts the chances of a team winning was unappealing.  If I decided to use only the 'true' games, would the trends match up to what was claimed by the SMOTE-driven results?  Having the luxury of a Gradient Boosted Classifier that handled the 'imbalanced' classes rather well (as noted in [Table 4](#classification-outcomes)) made the decision easier, admittedly.
+
+#### Winning Team Accuracy
+When our model makes a prediction that the home team won a game it has labeled the game as a "positive" (e.g. "yes").  If the game it labeled as a positive actually was by the home team, the prediction would then be considered a "true positive".  However, if the game predicted by the model to have been won by the home team was actually won by the visiting team, it would have incorrectly labeled the game as a positive, resulting in a "false positive."  No model will get every prediction right (in the real world), so we need a way to measure how accurate and reliable our model is.  One method, developed during World War II by the British, is the ROC curve.
+
+The ROC tells us the ratio of how many true positives to false positives our model is predicting.  We do this for every threshold of 'confidence' in the prediction, from 1% to 99% confident.  The ratio changes as the threshold changes, and we plot these changes to form a ROC curve.  Random guessing would equate to a 50/50 split of true positives to false positives, so this is our baseline.  Anything below that is _worse than random chance_.  The higher the true positive rate, the better the model.  The actual value we use to evaluate the model is technically the area under the curve (AUC).  As in model tuning, we use a split subsample, or fold, of the data to test how well it performs on each split and average them together.  The ROC curve for predicting whether the home team wins a game is below.
+
+<img src="images/roc_home_winner.png" align="middle" alt="ROC Curve for Home Winner">
+
+<sub>__Figure 5544:__ The ROC curve for predicting if the home team will win.  Some deviation is present between each fold of data.</sub>
+
+<BR>
+
+Any time we have a classification model, we should also examine the confusion matrix for our predictions.  This is another way to visualize how accurate our model is.
+
+
+<img src="images/cmat_home_winner.png" align="middle" alt="Confusion Matrix for Home Winner" width="600">
+
+<sub>__Figure 55874:__ A confusion matrix of the prediction results for classifying games for the home team being the winner.  The model errs on the side of considering more games to be won by the home team than actually are.</sub>
+
+<BR>
+**Proba**
 
 
 
 
 
+<BR>
+<BR>
 
-
-
-
-
-
-
-
-
-###### Over/Under Summary Statistics
-Statistic | Mean (pts) | Std. Dev. | Coeff. of Variation
-----------|:----------:|:---------:|:-------------------:|
-Over/Under |    41.6   | 4.58       |  0.11
-
-<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
-
-
-
-### Wise Bets
+### Wise Bets Results
 
 
 
