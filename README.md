@@ -500,6 +500,7 @@ But there's no bad weather in a dome.  So, the increase in domes means an increa
 While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__6__](#fn6)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
 
 ###### Passing and Rushing Offense Over Time
+
 <img src="images/combined_pass_rush_yard_rolling_avg.png" align="middle" alt="Passing vs. Rushing Yard Trends over time" >
 
 
