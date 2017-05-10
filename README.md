@@ -237,9 +237,9 @@ There are two possible regression targets: the _spread_ and the _over/under_ for
 
 ###### Regression Target Ranges
 Target | Min. (abs) | Max. (abs) | Range
--------|------|---------------|----------
-Spread | 0.0 | 26.5 | 26.5
-Over/Under | 28.0 | 63.0 | 35.0
+-------|------------|------------|----------
+Spread | 0.0        | 26.5       | 26.5
+Over/Under | 28.0   | 63.0       | 35.0
 
 <sub>__Table 1:__ Range information for the Vegas Spread and Over/Under, from 1978-2016.</sub>
 
@@ -256,14 +256,14 @@ The cover and over/under classes are very close to being ideally balanced, but t
 This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was typically mild, but always positive, offering a few percentage points of improvement for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.  The full breakdown of classes is shown below for reference.
 
 ###### Class Ratios
-Target | Data | Majority Class | Minority Class | Majority % | Minority % | Counts
--------|------|----------------|----------------|------------|------------|-------
-Road Cover | 1978 | Yes | No | 51.4% | 48.6% | 4514 - 4274
-Road Cover | Advanced | Yes | No | 51.7% | 48.3% | 2843 - 2655
-Over/Under Result | 1978 | Over | Under | 50.6% | 49.4% | 4449 - 4338
-Over/Under Result | Advanced | Over | Under | 51.0% | 49.0% | 2805 - 2693
-Home Team Win | 1978 | Win | Loss | 58.2% | 41.8% | 5114 - 3674
-Home Team Win | Advanced | Win | Loss | 57.9% | 42.1% | 3183 - 2315
+Target            | Data     | Majority Class | Minority Class | Majority % | Minority % | Counts
+------------------|----------|----------------|----------------|------------|------------|------------
+Road Cover        | 1978     | Yes            | No             | 51.4%      | 48.6%      | 4514 - 4274
+Road Cover        | Advanced | Yes            | No             | 51.7%      | 48.3%      | 2843 - 2655
+Over/Under Result | 1978     | Over           | Under          | 50.6%      | 49.4%      | 4449 - 4338
+Over/Under Result | Advanced | Over           | Under          | 51.0%      | 49.0%      | 2805 - 2693
+Home Team Win     | 1978     | Win            | Loss           | 58.2%      | 41.8%      | 5114 - 3674
+Home Team Win     | Advanced | Win            | Loss           | 57.9%      | 42.1%      | 3183 - 2315
 
 <sub>__Table 2:__ Breakdown of classification targets within the two primary datasets, 1978-2016 and 1994-2016 (_Advanced_).  Only the __Home Team Win__ target has a moderate class imbalance.  </sub>
 
@@ -281,12 +281,12 @@ The best performing model in all classification tasks was the Gradient Boosted C
 <BR>
 
 ###### Regression Outcomes
-Target | Data | Model | Metrics | Score
------|--------|-------|---------|-----
-Game Spread | 1978 | GBR | MAE <br> R<sup>2</sup> | 2.41 <br> 0.699
-Game Spread | Advanced | GBR | MAE <br> R<sup>2</sup> | 2.31 <br> 0.731
-Over/Under Value | 1978 | GBR | MAE <br> R<sup>2</sup> | 1.85 <br> 0.716
-Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723  
+Target           | Data     | Model | Metrics                | Score
+-----------------|----------|-------|------------------------|----------------
+Game Spread      | 1978     | GBR   | MAE <br> R<sup>2</sup> | 2.41 <br> 0.699
+Game Spread      | Advanced | GBR   | MAE <br> R<sup>2</sup> | 2.31 <br> 0.731
+Over/Under Value | 1978     | GBR   | MAE <br> R<sup>2</sup> | 1.85 <br> 0.716
+Over/Under Value | Advanced | GBR   | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723  
 
 <sub>__Table 3:__ The overview of results from the two regression models and targets in this project.
 
@@ -294,14 +294,14 @@ Over/Under Value| Advanced | GBR | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723
 <BR>
 
 ###### Classification Outcomes
-Target | Data | Model | Metrics | Score
------|--------|-------|---------|-----
-Road Team Cover | 1978 | GBC | AUC <br> AUC (SMOTE) | 0.516 <br> 0.518
-Road Team Cover | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.502 <br> 0.535
-Over/Under Result | 1978 | GBC | AUC <br> AUC (SMOTE)  | 0.514 <br> 0.515
-Over/Under Result | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.494 <br> 0.508
-Home Team Win | 1978 | GBC | AUC <br> AUC (SMOTE)  | 0.710 <br> 0.775
-Home Team Win | Advanced | GBC | AUC <br> AUC (SMOTE)  | 0.711 <br> 0.745
+Target            | Data     | Model | Metrics              | Score
+------------------|----------|-------|----------------------|-----------------
+Road Team Cover   | 1978     | GBC   | AUC <br> AUC (SMOTE) | 0.516 <br> 0.518
+Road Team Cover   | Advanced | GBC   | AUC <br> AUC (SMOTE) | 0.502 <br> 0.535
+Over/Under Result | 1978     | GBC   | AUC <br> AUC (SMOTE) | 0.514 <br> 0.515
+Over/Under Result | Advanced | GBC   | AUC <br> AUC (SMOTE) | 0.494 <br> 0.508
+Home Team Win     | 1978     | GBC   | AUC <br> AUC (SMOTE) | 0.710 <br> 0.775
+Home Team Win     | Advanced | GBC   | AUC <br> AUC (SMOTE) | 0.711 <br> 0.745
 
 <sub>__Table 4:__ The overview of results from the three classification targets using combinations of datasets and class-balancing oversampling (SMOTE).
 
@@ -375,10 +375,10 @@ As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread
 
 ### Spread Results
 ###### Spread Summary Statistics
-Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min. (pts) | Max. (pts) | Min. Std. | Max. Std.
-----------|:----------:|:---------:|:--------------:|:----------:|:----------:|:---------:|:--------:
-Spread    |    2.58    | 5.89      |  2.28          | -23.0      | 26.5       |  -4.34    | 4.06     
-Home MoV  |    2.87    | 14.6      |  5.07          | -46.0      | 59.0       |  -3.34    | 3.84   
+Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min. (pts) | Max. (pts) | Min. Sigma | Max. Sigma
+----------|:----------:|:---------:|:--------------:|:----------:|:----------:|:----------:|:--------:
+Spread    |    2.58    | 5.89      |  2.28          | -23.0      | 26.5       |  -4.34     | 4.06     
+Home MoV  |    2.87    | 14.6      |  5.07          | -46.0      | 59.0       |  -3.34     | 3.84   
 
 
 <sub>__Table 333:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
@@ -429,9 +429,9 @@ We see that overall, the trends follow the same general path of peaking in the e
 
 ### Over-Under Results
 ###### Over/Under Summary Statistics
-Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min (pts) | Max (pts) | Min Std. | Max Std.
-----------|:----------:|:---------:|:--------------:|:---------:|:---------:|:--------:|:-------:|
-Over/Under |    41.6   | 4.58      |  0.11          | 28.0      | 63.0      | -2.97    | 4.67    |
+Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min (pts) | Max (pts) | Min Sigma | Max Sigma
+----------|:----------:|:---------:|:--------------:|:---------:|:---------:|:---------:|:-------:|
+Over/Under |    41.6   | 4.58      |  0.11          | 28.0      | 63.0      | -2.97     | 4.67    |
 
 <sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
 
@@ -448,16 +448,16 @@ By far the most obtainable scoring play in football is the field goal, which is 
 Unsurprisingly the most important features for determining the combined points scored in a game are statistics that relate to how effective a team is at scoring or preventing a score.  We see a strong divergence from important features in predicting the spread, with no _matchup delta_ metrics present.  This fits common sense as we aren't concerned with how much better Team A is than Team B at something, but rather how good or bad both teams combined are.  
 
 ###### Over-Under Top Features
-Rank | Statistic | Importance (%) | Rank | Statistic | Importance (%)
------|-----------|:--------------:|------|-----------|:-------------:
-1 | Home Pts For/Gm | 6.10   |  9        | Temperature          | 1.89
-2 | Road Pts For/Gm | 5.81   |  10       | Wind (mph)           | 1.74
-3 | Season          | 4.64   |  11       | Road Off PassTD/Gm   | 1.60
-4 | Home Pts Allow/Gm | 3.48 |  12       | Road Wtd. Def DVOA   | 1.60
-5 | Road Pts Allow/Gm | 3.34 |  13       | Road Def TotYd/Gm    | 1.45
-6 | Road Off TotYd/Gm | 3.05 |  14       | Home Off TotYd/Gm    | 1.45
-7 | Home Def TotYd/Gm | 2.18 |  15       | Road Off PassYd/Gm   | 1.31
-8 | Wind Chill        | 1.89 |  16       | Roof Dome            | 1.31
+Rank | Statistic         | Importance (%) | Rank | Statistic          | Importance (%)
+-----|-------------------|:--------------:|------|--------------------|:-------------:
+1    | Home Pts For/Gm   | 6.10           |  9   | Temperature        | 1.89
+2    | Road Pts For/Gm   | 5.81           |  10  | Wind (mph)         | 1.74
+3    | Season            | 4.64           |  11  | Road Off PassTD/Gm | 1.60
+4    | Home Pts Allow/Gm | 3.48           |  12  | Road Wtd. Def DVOA | 1.60
+5    | Road Pts Allow/Gm | 3.34           |  13  | Road Def TotYd/Gm  | 1.45
+6    | Road Off TotYd/Gm | 3.05           |  14  | Home Off TotYd/Gm  | 1.45
+7    | Home Def TotYd/Gm | 2.18           |  15  | Road Off PassYd/Gm | 1.31
+8    | Wind Chill        | 1.89           |  16  | Roof Dome          | 1.31
 
 
 <sub>__Table 99:__ Top 16 features for predicting the Over/Under show many stats related to scoring and yardage, but also surprisingly temperature, wind, and whether or not the game is played in a dome.
@@ -465,7 +465,7 @@ Rank | Statistic | Importance (%) | Rank | Statistic | Importance (%)
 <BR>
 
 #### Over-Under Analysis
-The Over/Under has been climbing since the year 2000.  Initially the change was incremental, but over the last decade the Over/Under has exploded, setting a new record five-year averge for ten of the last eleven years!  I explore some possible causes for this growth below, starting with features that had the biggest impact on predicting the Over/Under.
+The Over/Under has been climbing since the year 2000.  Initially the change was incremental, but over the last decade the Over/Under has exploded, setting a new record five-year average for ten of the last eleven years!  I explore some possible causes for this growth below, starting with features that had the biggest impact on predicting the Over/Under.
 
 <img src="images/over-under_rolling_avg.png" align="middle" alt="Historical rolling average of Over/Under" >
 
@@ -479,7 +479,7 @@ Wind chill and temperature only differ below 50° F, so seeing them paired is pa
 
 <img src="images/temp_with_domes.png" align="middle" alt="Temp distribution with domes" >
 
-<sub>__Figure 4005:__ The distribution of game-time temperatures from 1978-2016 show an expected distribution, except for the occurence of dome games which spikes the count for 67 °F.
+<sub>__Figure 4005:__ The distribution of game-time temperatures from 1978-2016 show an expected distribution, except for the occurrence of dome games which spikes the count for 67 °F.
 
 <BR>
 
@@ -495,11 +495,11 @@ Though I am unsure of the cause of the slight dip in the mid-200s (it's possibly
 
 Considering this impact on the Over/Under, recall that feature importance only tells us if having either _more_ or _less_ of the given feature increases the prediction of the model, not which one. With this in mind, I propose the following explanation for the apparent value of the weather-related and dome features in predicting the Over/Under: in the NFL, successfully passing the football is the catalyst for consistent scoring. <sup id="a1">[__6__](#fn6)</sup> Extreme weather (very high/low temperature, very windy, rain, snow) adversely affects the passing game more than the rushing game.  In a rainy game, for example, teams will run much more than pass because the ball is slippery, making it both hard to throw and to catch.  This decrease in passing will lead to a decrease in combined scoring.  
 
-But there's no bad weather in a dome.  So, the increase in domes means an increase in the number of games that are guaranteed to have good conditions, and a decrease in the number of games which can have bad ones.  With this reasoning, more dome games should equal more scoring.  There are also a handful of factors which influence the rise of domes, including the ability to draw fans on bad weather days, as well as what might be perceived as a competitive advantage for the home team by gearing their offense to more finesse passing (debatable).  Regardless of origin, the larger trend between incresed number of dome games parallels the increase in the Over/Under set by Vegas.  
+But there's no bad weather in a dome.  So, the increase in domes means an increase in the number of games that are guaranteed to have good conditions, and a decrease in the number of games which can have bad ones.  With this reasoning, more dome games should equal more scoring.  There are also a handful of factors which influence the rise of domes, including the ability to draw fans on bad weather days, as well as what might be perceived as a competitive advantage for the home team by gearing their offense to more finesse passing (debatable).  Regardless of origin, the larger trend between increased number of dome games parallels the increase in the Over/Under set by Vegas.  
 
 While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__6__](#fn6)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
 
-###### Passing and Rushing Offense Over Time
+###### Passing vs Rushing Offense Over Time
 
 <img src="images/combined_pass_rush_yard_rolling_avg.png" align="middle" alt="Passing vs. Rushing Yard Trends over time" >
 
@@ -511,7 +511,7 @@ While the relationship between an increased number of dome games and the increas
 
 These two rolling average plots of passing offense (left) and rushing offense (right) since 1978 show starkly different trends in league-wide offensive approach.  In 1978 and 1979 major rule changes were implemented that made pass defense more difficult, causing the first initial rise in passing offense.  To my surprise, it leveled off and remained consistent for the remainder of the 1980s and 1990s.  Beginning in 2005, however, the league began to experience its own Cambrian explosion of passing attacks, growing each year for a decade straight.  Conversely, rushing offense plummeted for fifteen consecutive years before coming to a roughly stable resting point.  
 
-As intersting as the topic of how the league changes schematically as a whole over time is, the point of this investigation was to see if we could explain the dramatic rise in Over/Unders.  I think its safe to say we can do so to a large degree with passing offense alone, as we predicted above.  Take a minute to compare [Figure 411](#over---under-analysis) and [Figure 4193](#passing-and-rushing-offense-over-time).  The sharp rise in passing offense parallels that in the Over/Under, while rushing offense seems to have little to no correlation.  When comparing multiple variables at a time, a scatter matrix can help illuminate trends between all combinations of the targets.
+As interesting as the topic of how the league changes schematically as a whole over time is, the point of this investigation was to see if we could explain the dramatic rise in Over/Unders.  I think its safe to say we can do so to a large degree with passing offense alone, as we predicted above.  Take a minute to compare [Figure 411](#over---under-analysis) and [Figure 4193](#passing-vs-rushing-offense-over-time).  The sharp rise in passing offense parallels that in the Over/Under, while rushing offense seems to have little to no correlation.  When comparing multiple variables at a time, a scatter matrix can help illuminate trends between all combinations of the targets.
 
 ###### Offense and Over-Under Scatter Matrix
 <img src="images/pass_rush_over-under_matrix.png" align="middle" alt="Scatter Matrix for Passing, Rushing, and Over/Under" >
@@ -561,14 +561,23 @@ Two of the three classification targets, _road covers_ and _over/under results_ 
 
 Since the spread and over/under are set by Vegas to meet this balanced criterion, it is not surprising to find that "hidden gem" metrics which predict the results of these bets were not discovered.  If something does a great job of predicting these results, then Vegas knows about them already -- this is their livelihood, after all -- and is using them in their formulae to set these values.  In a sense, we are merely trying to tease out something Vegas has already baked in.
 
-The reults for predicting these two bets never got much above 51%.  Remembering that the initial motivation of this project was to build a model to predict the spread, identify games that were beyond a spread-deviation threshold, and investigate to see if they were truly "wise bets".  As you can likely guess, the results for this approach were sub-optimal.  That does not make them uninteresting, however, and they are discussed below in the [Wise Bets Results](#wise-bets-results) section.
+The results for predicting these two bets never got much above 51%.  Remembering that the initial motivation of this project was to build a model to predict the spread, identify games that were beyond a spread-deviation threshold, and investigate to see if they were truly "wise bets".  As you can likely guess, the results for this approach were sub-optimal.  That does not make them uninteresting, however, and they are discussed below in the [Wise Bets Results](#wise-bets-results) section.
 
 <BR>
 
 #### The Winning Team
+###### Winning Team Summary Statistics
+Statistic     | Mean (pts) | Std. Dev. | Coeff. of Var. | Min (pts) | Max (pts) | Min Sigma | Max Sigma
+--------------|:----------:|:---------:|:--------------:|:---------:|:---------:|:---------:|:--------:|
+Home Team Win |    12.5    | 9.65      |  0.771         | 1.0       | 59.0      | -2.97     | 4.67     |
+
+<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
+
+<BR>
+
 Recall from [Table 2](#class-ratios) that the lone imbalanced class was the _Home Team Win_ class, which is simply a binary class of "yes" or "no" results depending on if the home team won ("yes") or lost ("no").  Also recall that home teams win at a 58% rate over time, meaning the class is 58% 'yes' and 42% 'no'.  Methods of addressing this moderate imbalance were discussed in the [Classification](#classification) section as well.  Ultimately I decided to use the _advanced_ database and to not use SMOTE oversampling for class psuedo-balancing.  
 
-While using SMOTE did improve the _Home Team Win_ predictions, I didn't like the idea of 'articifial' games being used in the database because it made extrapolating results to the actual games that occurred more difficult.  The idea of having 'false' games included if I were to use a plot detailing the breakdown of how a specific metric impacts the chances of a team winning was unappealing.  If I decided to use only the 'true' games, would the trends match up to what was claimed by the SMOTE-driven results?  Having the luxury of a Gradient Boosted Classifier that handled the 'imbalanced' classes rather well (as noted in [Table 4](#classification-outcomes)) made the decision easier, admittedly.
+While using SMOTE did improve the _Home Team Win_ predictions, I didn't like the idea of 'artificial' games being used in the database because it made extrapolating results to the actual games that occurred more difficult.  The idea of having 'false' games included if I were to use a plot detailing the breakdown of how a specific metric impacts the chances of a team winning was unappealing.  If I decided to use only the 'true' games, would the trends match up to what was claimed by the SMOTE-driven results?  Having the luxury of a Gradient Boosted Classifier that handled the 'imbalanced' classes rather well (as noted in [Table 4](#classification-outcomes)) made the decision easier, admittedly.
 
 <BR>
 
@@ -590,16 +599,78 @@ No model will get every prediction right (in the real world), so we need a way t
 
 <BR>
 
-Another method of classification evaluation, developed during World War II by the British, is the ROC curve.  The ROC tells us the ratio of how many true positives to false positives our model is predicting.  We do this for every threshold of 'confidence' in the prediction, from 1% to 99% confident.  The ratio changes as the threshold changes, and we plot these changes to form a ROC curve.  Random guessing would equate to a 50/50 split of true positives to false positives, so this is our baseline.  Anything below that is _worse than random chance_.  The higher the true positive rate, the better the model.  The actual value we use to evaluate the model is technically the area under the curve (AUC).  As in model tuning, we use a split subsample, or fold, of the data to test how well it performs on each split and average them together.  The ROC curve for predicting whether the home team wins a game is below.
+###### Receiver Operating Characteristic
+Another method of classification evaluation, developed during World War II by the British, is the ROC curve.  The ROC tells us the ratio of how many true positives to false positives our model is predicting.  We do this for every threshold of 'confidence' in the prediction, from 0% to 100% confident.  The ratio changes as the threshold changes, and we plot these changes to form a ROC curve.  Random guessing would equate to a 50/50 split of true positives to false positives, so this is our baseline.  Anything below that is _worse than random chance_.  The higher the true positive rate, the better the model.  The actual value we use to evaluate the model is the area under the curve (AUC).  This value tells us how the classifier performs over its entire range of operation.  As in model tuning, we use a split subsample, or fold, of the data to test how well it performs on each split and average them together.  The ROC curve for predicting whether the home team wins a game is below.
 
-###### Home Team Winner ROC Curve
 <img src="images/roc_home_winner.png" align="middle" alt="ROC Curve for Home Winner">
 
 <sub>__Figure 5544:__ The ROC curve for predicting if the home team will win.  Some deviation is present between each fold of data.</sub>
 
 <BR>
 
+An AUC of 0.68 is appreciable for the challenging task of identifying the winner of a game.  But as seen above in [Figure 5544](#receiver-operating-characteristic), the ROC curve lets us choose a single threshold value for comparison if we desire.  Depending on the question we are trying to answer, we might have a strong preference for a higher or lower threshold.  The canonical example is cancer detection, where we would want a fairly low threshold to label a patient as "positive" for cancer.  A low threshold means we will have more cases that are labeled as "positive," both true and false, and fewer total negatives conversely.  
 
+We can tolerate more false positives because a cancer diagnosis comes with extensive follow up appointments to both confirm the diagnosis and plan treatment if a growth is malignant.  These will weed out the false positives.  But a false negative is a critical error that sends a patient home thinking they're healthy when in reality they've cancerous tumors.  Since this is the result we most want to avoid, we choose a threshold that optimizes our ROC score at a low threshold.  
+
+Our goal in this particular task is to identify which team will win the game ahead of time so we can place a bet on that team.  While there are various strategies to betting, it's safe to say that on average we would prioritize a high degree of certainty in our prediction at the expense of missing out on some potential winners.  We aren't going to be all sixteen games each week.  Instead, we will ideally bet only one or two that we are most confident about.  The actual success rates of given thresholds is discussed below in [Prediction Confidence](#prediction_confidence), but for the ROC curve, we would probably try to pick the optimum point that is at a 75% threshold or greater.  In this case, that would be at 0.75 to 0.80.
+
+<BR>
+
+#### Winning Team Feature Importance
+Perhaps the best evidence that Vegas "knows what they're doing" is this ranking of feature importances.  The Vegas spread is easily the most decisive statistic that found in predicting who will win a game.  Including dummied variables, there were around 345 total features included in this model.  For one to be roughly four times more important than any of the other 344 is telling.  Overall there are really five tiers to the top forty features:
+1. The spread: 11.66%
+2. Features 2-4: >2.0%
+3. Features 5-8: 1.53%
+4. Features 9-18: 1.23%
+5. Features 19-39: 0.92%
+
+<img src="images/home_winner_feats.png" align="middle" alt="Feature Importances for Predicting Game Winner">
+
+<sub>__Figure 555:__ The 40 most important features in predicting the game's winner.  The spread for the game is the easy winner.</sub>
+
+<BR>
+
+#### Winning Team Analysis
+The predictive power of the spread in determining who will win an NFL game is worthy of further discussion below.  Before that, let's take a quick look at the other features which give insight into a game's winner.  While the old adage "defense wins championships" often feels trite and cliched, it might hold some statistical water as two defense-related metrics are the second (_points allowed per game_) and fifth (_defensive sigma above average_) most important features.  This topic warrants an entire project all its own, but the fact that even with competing against the entire litany of advanced metrics, _points allowed per game_ by the home team is the most predictive non-Vegas statistic for determining if the home team will win a game can't be discounted.  
+
+Perhaps unsurprisingly, the _difference in average passes completed per game_ is the third biggest predictor and passing-specific stats appear eight times in the top 40 features (see [Table 66](#passing-features)).  Echoing what was discussed in the [Passing vs Rushing Offense](#passing-vs-rushing-offense-over-time) section above, when one team is more proficient at passing than their opponent, they are more likely to win.  
+
+###### Passing Features in Top 40
+Statistic                          | Tier | Importance (%)
+-----------------------------------|------|---------------
+Difference in Pass Comp. / Gm      | 2    | 2.76%
+Pass Comp. / Gm                    | 3    | 1.53%
+Pass Yards / Gm                    | 4    | 1.23%
+Difference in Pass Yards / Gm      | 4    | 1.23%
+Yards Lost to Sacks / Gm           | 4    | 1.23%
+Difference in Pass Att. / Gm       | 4    | 1.23%
+Difference in Pass TD Allowed / Gm | 5    | 0.92%
+Pass Att. / Gm                     | 5    | 0.92%
+
+<sub>__Table 66:__ The eight passing-related statistics that appear in the top 40 features for predicting a game's winner.
+
+<BR>
+
+Other features that help predict whether a team will win or not read like a list of the usual suspects: superiority in advanced metrics like [DVOA](#advanced-metrics) and [EPA](#advanced-metrics), rushing stats per game, penalties and penalty yards per game, and 3rd and 4th down efficiency.  _Time of possession_ clocks in at \#29.  _Time of possession_ and the various _rushing_ stats (five total in the top 40 but none before tier 4) offer a textbook case of the "chicken and the egg" conundrum, however.  At first glance it is tempting to simply say "teams that have the ball more and have more rushing attempts per game win more."  Statistically, yes, our model says that is true.  
+
+But we must think about it one level deeper.  Doing so, we realize that teams which are leading _overwhelmingly_ run the ball more than teams that are trailing (Chase Stuart’s easily digestible “[game scripts](http://www.footballperspective.com/introducing-game-scripts-part-i/)” metric does a good job of capturing this).  As a result, teams that are trailing face far more rushes and subsequently give up more yards.  So, in a way the model is likely picking up that teams that allow more rushing yards than others are frequently trailing... and when you’re frequently trailing you are going to lose more often than win.  The fallacy (known in the stats community as the [“establish the run”](http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause) fallacy, popularized by Aaron Schatz at Football Outsiders back in 2003 <sup>[__7__](#fn7)</sup>) that so many jabbering heads on TV espouse of “run the ball to win!” is actually the inverse of what happens, and I suspect this is what the model also detects.  It’s the teams that are already winning which choose to run the ball, not vice versa.
+
+Turnovers appear in tier 5 with _difference in average turnovers caused per game_.  This is a tough one.  We know that in any game turnovers are massively important.  They directly rob one team of a possession and gift one to the other (usually with advantageous field position).  This model doesn’t see a team's average turnover rate as being supremely __predictive__ because they are in some degree unpredictable.  Team A may be averaging 2.2 turnovers per game and Team B may average 1.8, but they might fluctuate a good deal between games (high).  These differences don’t appear to be extremely predictive (about as predictive as the difference in 1st downs per team, penalties per team, or passing yards per team).  
+
+I broke the category down into fumbles, fumbles lost, interceptions, and total turnovers, and the model identified "total turnovers" as the most important of the lot.  My personal conclusion is that the nature of turnovers is largely so random that they aren’t necessarily replicable per game.  Another way to think of it is that the other metrics, especially the advanced ones, do a good to great job of telling us about ‘true’ team strength.  Since a large element of turnovers is due to chance, they don’t do nearly as good a job about telling us about true team strength going into a game, and their lower predictive power reflects this.
+
+I was a bit surprised to see _hours of rest_ omitted from this list.  I expected differences in how much time players had to heal and coaches had to game plan to be more correlated with winning.  They don't appear until tier 6 (0.61%).  Similarly, _temperature_ also shows up in tier 6 (0.61%).  It’s about as important as how many penalty yards the defense averages per game, or how many sack yards the defense gets per game.  This is where knowing the model was targeting the home team matters — we expect home teams to be used to their weather more than the road team is.  Detroit going down to Tampa early in the season or Jacksonville going up to Buffalo in December... these things apparently really do matter.  
+
+Some of the less important items are routinely the _day of the week_ the game is played on.  This makes sense since the day of the game is shared by both teams, so it is usually not a dividing feature.  However, we did see that hours of rest do matter, so teams that play on Sunday night then on Thursday reasonably have a disadvantage.  Another seemingly unimportant variable is the _surface_ and _stadium_.  Domes, retractable roofs, open stadiums, astroturf, sport turf, dessograss, field turf, natural grass... none of these variables have much impact at all compared to the actual team-centered and matchup-centered stats.
+
+The overwhelming importance of the spread is
+
+
+
+
+###### Prediction Confidence
+
+**hist of class 1 proba**
 
 
 
@@ -638,6 +709,9 @@ __90.4%__ of all spreads are <= +/- 10.
 
 
 
+## Glossary
+
+
 
 <BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
 
@@ -650,4 +724,5 @@ __90.4%__ of all spreads are <= +/- 10.
 <a name="fn3">3</a>: https://www.boydsbets.com/super-bowl-how-much-bet/  
 <a name="fn4">4</a>: http://mentalfloss.com/article/26730/how-wind-chill-calculated  
 <a name="fn5">5</a>: https://en.wikipedia.org/wiki/List_of_current_National_Football_League_stadiums  
-<a name="fn6">6</a>: https://fifthdown.blogs.nytimes.com/2010/08/31/why-passing-is-more-important-than-running-in-the-n-f-l/
+<a name="fn6">6</a>: https://fifthdown.blogs.nytimes.com/2010/08/31/why-passing-is-more-important-than-running-in-the-n-f-l/  
+<a name="fn7">7</a>: http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause
