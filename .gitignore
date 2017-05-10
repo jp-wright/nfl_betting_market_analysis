@@ -1,0 +1,10 @@
+*.csv
+*.xlsx
+*.xls
+
+jp_nfl_capstone_outline.md
+capstone_presentation_plan.md
+nfl_databases/
+nfl_presentation/
+nfl_scripts/
+nfl_coding_resources/
