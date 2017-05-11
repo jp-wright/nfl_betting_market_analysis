@@ -654,7 +654,7 @@ Pass Att. / Gm                     | 5    | 0.92%
 ###### Rushing and Winning
 Other features that help predict whether a team will win or not read like a list of the usual suspects: superiority in advanced metrics like [DVOA](#advanced-metrics) and [EPA](#advanced-metrics), rushing stats per game, penalties and penalty yards per game, and 3rd and 4th down efficiency.  _Time of possession_ clocks in at \#29.  _Time of possession_ and the various _rushing_ stats (five total in the top 40 but none before tier 4) offer a textbook case of the "chicken and the egg" conundrum, however.  At first glance it is tempting to simply say "teams that have the ball more and have more rushing attempts per game win more."  Statistically, yes, our model says that is true.  
 
-But we must think about it one level deeper.  Doing so, we realize that teams which are leading _overwhelmingly_ run the ball more than teams that are trailing (Chase Stuart’s easily digestible “[game scripts](http://www.footballperspective.com/introducing-game-scripts-part-i/)” metric does a good job of capturing this).  As a result, teams that are trailing face far more rushes and subsequently give up more yards.  So, in a way the model is likely picking up that teams that allow more rushing yards than others are frequently trailing... and when you’re frequently trailing you are going to lose more often than win.  The fallacy (known in the stats community as the [“establish the run”](http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause) fallacy, popularized by Aaron Schatz at Football Outsiders back in 2003 <sup>[__7__](#fn7)</sup>) that so many jabbering heads on TV espouse of “run the ball to win!” is actually the inverse of what happens, and I suspect this is what the model also detects.  It’s the teams that are already winning which choose to run the ball, not vice versa.  [Figures 666](#time-of-possession-and-rushing-attempts) and [667](#)
+But we must think about it one level deeper.  Doing so, we realize that teams which are leading _overwhelmingly_ run the ball more than teams that are trailing (Chase Stuart’s easily digestible “[game scripts](http://www.footballperspective.com/introducing-game-scripts-part-i/)” metric does a good job of capturing this).  As a result, teams that are trailing face far more rushes and subsequently give up more yards.  So, in a way the model is likely picking up that teams that allow more rushing yards than others are frequently trailing... and when you’re frequently trailing you are going to lose more often than win.  The fallacy (known in the stats community as the [“establish the run”](http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause) fallacy, popularized by Aaron Schatz at Football Outsiders back in 2003 <sup>[__7__](#fn7)</sup>) that so many jabbering heads on TV espouse of “run the ball to win!” is actually the inverse of what happens, and I suspect this is what the model also detects.  It’s the teams that are already winning which choose to run the ball, not vice versa.  [Figures 666](#time-of-possession-and-rushing-attempts) and [667](#passing=and-rushing-attempts-correlation-to-margin-of-victory)
 
 ###### Time of Possession and Rushing Attempts
 <img src="images/top_v_rush_att.png" align="middle" alt="Time of Possession Correlation to Rush Attempts">
@@ -663,7 +663,9 @@ But we must think about it one level deeper.  Doing so, we realize that teams w
 
 <BR>
 
+The relationship between rushing attempts and time of possession is stark but sensible.  The clock is stopped after every incomplete pass or after a player steps out of bounds, which also happens more often after a pass play.  It continues running after a player is tackled in the field of play, which is the result of the vast majority of rushing plays.  When you're leading in the game, especially in the second half, you want to "shorten" the game by using a much time per play as possible.  This regression plot shows what both we and coaches intuitively know: running the ball is directly tied to draining the play clock.  The same correlation between number of passing attempts and time of possession yields a piddling R<sup>2</sup> value of __.044__, which is essentially zero.    
 
+<BR>
 
 ###### Passing and Rushing Attempts Correlation to Margin of Victory
 <img src="images/pass_v_rush_margin_vic.png" align="middle" alt="Passing and Rushing Correlation to Margin of Victory">
@@ -672,9 +674,9 @@ But we must think about it one level deeper.  Doing so, we realize that teams w
 
 <BR>
 
+A second look at the concept of "rushing because we're winning" is to see how the number of rushing attempts correlates to average margin of victory.  There is a distinct positive relationship, while the same regression for number of passing attempts is actually slightly negative.  The old adage "correlation is not causation" applies here.  Someone uninterested in the underlying mechanics of the relationship, or nearly every sports TV talking head, would take one glance and conclude that the secret to winning more games is simply to run the ball more.  But as discussed above in the [Rushing and Winning](#rushing-and-winning) section, the inverse of this is actually true.  
 
-**talk about rushing while winning via charts**
-
+Properly understood from this context, [Figure 667](#passing=and-rushing-attempts-correlation-to-margin-of-victory) shows that the bigger a team's lead, the more they're going to run the ball.  Conversely, teams that are trailing have to pass to catch up.  Again, as mentioned above, on average passing using less of the clock per play than rushing, and also covers more yardage.  Thus, we see the negative relationship of "bigger deficit correlates with more passing."
 
 ###### Turnovers
 Turnovers appear in tier 5 with _difference in average turnovers caused per game_.  This is a tough one.  We know that in any game turnovers are massively important.  They directly rob one team of a possession and gift one to the other (usually with advantageous field position).  This model doesn’t see a team's average turnover rate as being supremely __predictive__ because they are in some degree unpredictable.  Team A may be averaging 2.2 turnovers per game and Team B may average 1.8, but they might fluctuate a good deal between games (high).  These differences don’t appear to be extremely predictive (about as predictive as the difference in 1st downs per team, penalties per team, or passing yards per team).  
@@ -687,10 +689,16 @@ I was a bit surprised to see _hours of rest_ omitted from this list.  I expected
 ###### Weekday, Surface, and Stadium
 Some of the less important items are routinely the _day of the week_ the game is played on.  This makes sense since the day of the game is shared by both teams, so it is usually not a dividing feature.  However, we did see that hours of rest do matter, so teams that play on Sunday night then on Thursday reasonably have a disadvantage.  Another seemingly unimportant variable is the _surface_ and _stadium_.  Domes, retractable roofs, open stadiums, astroturf, sport turf, dessograss, field turf, natural grass... none of these variables have much impact at all compared to the actual team-centered and matchup-centered stats.
 
-The overwhelming importance of the spread is
+###### The Power of the Spread
+The power of the spread in determining which team will win the game is clearly valuable to the model.  But to understand why the model gains more information from the spread than from other statistics takes a bit of digging.  Other statistics have similar correlations to the outcome of a game, as shown here in __Figure 669__.  
 
+<img src="images/home_win_feats_matrix.png" align="middle" alt="Scatter Matrix of top three features for determining the winner">
 
+<sub>__Figure 669:__ The relationships between the three most important features in predicting the game winner, 1991-2016.</sub>
 
+<BR>
+
+There doesn't appear to be a divide as sharp as the model's feature importance results suggest there is between the spread and the next two most important features.  After all, the difference in _Total DVOA_ and _Points Allowed per Game_ seem to be at least in the same ballpark as the spread for explaining the variance in the outcome of a game.  I was curious as to what was causing the apparent discrepancy and decided to dig a little deeper.
 
 ###### Prediction Confidence
 
