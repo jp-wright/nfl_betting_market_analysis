@@ -23,11 +23,11 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Classification vs. Regression](#regression-vs-classification)
     + [Model Selection and Training](#model-selection-and-training)
       + [Tree-based Feature Importance](#feature-separation-and-importance)
-5. [Results](#results)
     + [Class Inspection](#class-inspection)
       + [PCA](#principal-component-analysis)
       + [t-SNE](#t---sne)
       + [Feature Overlaps](#feature-overlaps)
+5. [Results](#results)
     + [Spread Results](#spread-results)
       + [Accuracy](#spread-accuracy)
       + [Feature Importance](#feature-importance)
@@ -294,14 +294,14 @@ Over/Under Value | Advanced | GBR   | MAE <br> R<sup>2</sup> | 1.86 <br> 0.723
 <BR>
 
 ###### Classification Outcomes
-Target            | Data     | Model | Metrics              | Score
-------------------|----------|-------|----------------------|-----------------
-Road Team Cover   | 1978     | GBC   | AUC <br> AUC (SMOTE) | 0.516 <br> 0.518
-Road Team Cover   | Advanced | GBC   | AUC <br> AUC (SMOTE) | 0.502 <br> 0.535
-Over/Under Result | 1978     | GBC   | AUC <br> AUC (SMOTE) | 0.514 <br> 0.515
-Over/Under Result | Advanced | GBC   | AUC <br> AUC (SMOTE) | 0.494 <br> 0.508
-Home Team Win     | 1978     | GBC   | AUC <br> AUC (SMOTE) | 0.710 <br> 0.775
-Home Team Win     | Advanced | GBC   | AUC <br> AUC (SMOTE) | 0.711 <br> 0.745
+Target            | Data     | Model | Metrics                      | Score
+------------------|----------|-------|------------------------------|-----------------
+Road Team Cover   | 1978     | GBC   | AUC <br> AUC (SMOTE)         | 0.516 <br> 0.518
+Road Team Cover   | Advanced | GBC   | AUC <br> AUC (SMOTE)         | 0.502 <br> 0.535
+Over/Under Result | 1978     | GBC   | AUC <br> AUC (SMOTE)         | 0.514 <br> 0.515
+Over/Under Result | Advanced | GBC   | AUC <br> AUC (SMOTE)         | 0.494 <br> 0.508
+Home Team Win     | 1978     | GBC   | AUC <br> AUC (SMOTE) <br> F1 | 0.710 <br> 0.775 <br> 0.744
+Home Team Win     | Advanced | GBC   | AUC <br> AUC (SMOTE) <br> F1 | 0.711 <br> 0.745 <br> 0.732
 
 <sub>__Table 4:__ The overview of results from the three classification targets using combinations of datasets and class-balancing oversampling (SMOTE).
 
@@ -600,19 +600,29 @@ No model will get every prediction right (in the real world), so we need a way t
 <BR>
 
 ###### Receiver Operating Characteristic
-Another method of classification evaluation, developed during World War II by the British, is the ROC curve.  The ROC tells us the ratio of how many true positives to false positives our model is predicting.  We do this for every threshold of 'confidence' in the prediction, from 0% to 100% confident.  The ratio changes as the threshold changes, and we plot these changes to form a ROC curve.  Random guessing would equate to a 50/50 split of true positives to false positives, so this is our baseline.  Anything below that is _worse than random chance_.  The higher the true positive rate, the better the model.  The actual value we use to evaluate the model is the area under the curve (AUC).  This value tells us how the classifier performs over its entire range of operation.  As in model tuning, we use a split subsample, or fold, of the data to test how well it performs on each split and average them together.  The ROC curve for predicting whether the home team wins a game is below.
+Another method of classification evaluation, developed during World War II by the British, is the ROC curve.  The ROC tells us the ratio of the true positive _rate_ (TPR) to false positive _rate_ (FPR) our model is predicting.  _Rate_ is an important word, here.  The ROC curve doesn't tell us the raw _counts_, which is perhaps the first assumption for someone new to the concept.  Instead, the ROC curve tells us what percent of the positive class in the dataset we correctly identified as positive (our true positive rate, also known as "recall" or "sensitivity") and conversely what percent of the negative class we incorrectly labeled as positive.  
+
+An example is instructive.  Pretend our dataset has ten games, eight are "home team wins" (positive class) and two are "home team loses" (negative class).  Our model makes a prediction for each of these ten games with a certain degree of confidence.  For example, the model might feel 75% confident that game one is a "home team wins" game, but only 15% confident that game eight is as well (which means the model is actually 85% confident game eight is a "home team loses" outcome).  The ROC curve shows us how accurate our model is at increasing thresholds of confidence in classifying a game as "home team win".
+
+At a threshold level of 0% confidence, we are saying _every_ game should be a "home team wins" because we require no threshold to meet this classification.  As such, every actual "home win" in the database will be labeled as a "home win" by the model, giving us 100% true positive rate. (Yay us).  However, since we labeled _every_ game a "home win", this means we also labeled all the "home loss" games as "home wins," which means our false positive rate is also 100% (Not yay us).  As we escalate our threshold level, only games that are at or above the given threshold will be considered a "home win", all the way up to a 100% threshold, at which point no game is good enough to be classified as a "home win" (we can never be _100%_ positive of a prediction unless the game has already occurred), and our rates for both true and false positives are 0%.  
+
+So, of the ten games in our example dataset, let's say the first two are "home losses" and the remaining eight are "home wins". (This would be represented as `[0, 0, 1, 1, 1, 1, 1, 1, 1, 1]` in our model, equaling `[loss, loss, win, win, win, win, win, win, win, win]`.  Note, the model does _not_ know the answers which we have just seen.  All it sees is `[game 1, game 2, game 3, ..., game 10]`.  Each result is a mystery to it, hence the need to predict.  This is a very "duh" fact, but bears repeating in this explanatory example). Let's also say that our model says the first five games are assigned a 30% confidence of being a home win and the final five games are given an 80% confidence of being a home win.  For clarity, our game set would look like this (actual result in parentheses):  [__30%__ (loss), __30%__ (loss), __30%__ (win), __30%__ (win), __30%__ (win), __80%__ (win), __80%__ (win), __80%__ (win), __80%__ (win), __80%__ (win)].  
+
+If we set our threshold for "home win" acceptance at 50%, then all games listed below 50% would be labeled "home loss" and all games above would be labeled a "home win."  Our resulting predictions in this case would be as follows: [__loss__ (loss), __loss__ (loss), __loss__ (win), __loss__ (win), __loss__ (win), __win__ (win), __win__ (win), __win__ (win), __win__ (win), __win__ (win)].  So we have now five of the eight games that were actual wins predicted as wins.  Our __TPR is 5/8 = 62.5%__.  And we have neither of the games that were actually losses predicted as wins.  Our __FPR is 0/2 = 0.0%__.  Thus, we can say at the 50% threshold, our model has a TPR of 62.5% and an FPR of 0.0%.  
+
+We measure our TPR and FPR for every threshold of 'confidence' in the prediction, from 0% to 100% confident.  The ratio changes as the threshold changes, and we plot these changes to form a ROC curve.  Random guessing would equate to a 50/50 split of true positives to false positives for a binary classifier, so this is our baseline.  Anything below that is worse than random chance.  The higher the true positive rate at a given threshold, the better the model.  When wanting to evaluate the model _as a whole_, we use the area under the curve (AUC).  This value tells us how the classifier performs over its entire range of operation.  As in model tuning, we use a split subsample, or fold, of the data to test how well it performs on each split and average them together.  Here is this model's ROC curve for predicting whether the home team wins a game.
 
 <img src="images/roc_home_winner.png" align="middle" alt="ROC Curve for Home Winner">
 
-<sub>__Figure 5544:__ The ROC curve for predicting if the home team will win.  Some deviation is present between each fold of data.</sub>
+<sub>__Figure 5544:__ The ROC curve for predicting if the home team will win.  Some deviation is present between each fold of data.  The _threshold_ level for each prediction is ideally 1-FPR.  So, at the FPR of 0.6, the threshold for our predictions is 0.40, or 40%.  This means the bottom left corner represents the un-achievable 100% confidence level (no data point is good enough to be classified as the "positive" class), while the top right corner represents the opposite, a 0% confidence level (every data point is classified as "positive").</sub>
 
 <BR>
 
-An AUC of 0.68 is appreciable for the challenging task of identifying the winner of a game.  But as seen above in [Figure 5544](#receiver-operating-characteristic), the ROC curve lets us choose a single threshold value for comparison if we desire.  Depending on the question we are trying to answer, we might have a strong preference for a higher or lower threshold.  The canonical example is cancer detection, where we would want a fairly low threshold to label a patient as "positive" for cancer.  A low threshold means we will have more cases that are labeled as "positive," both true and false, and fewer total negatives conversely.  
+An AUC of 0.68 is appreciable for the challenging task of identifying the winner of a game.  But as seen in [Figure 5544](#receiver-operating-characteristic), the ROC curve lets us choose a single threshold value for comparison.  Depending on the question we are trying to answer, we might have a strong preference for a higher or lower threshold.  The canonical example is cancer detection, where we would want a fairly low threshold to label a patient as "positive" for cancer.  A low threshold means we will have more cases that are labeled as "positive," both true and false, and fewer total negatives conversely.  
 
 We can tolerate more false positives because a cancer diagnosis comes with extensive follow up appointments to both confirm the diagnosis and plan treatment if a growth is malignant.  These will weed out the false positives.  But a false negative is a critical error that sends a patient home thinking they're healthy when in reality they've cancerous tumors.  Since this is the result we most want to avoid, we choose a threshold that optimizes our ROC score at a low threshold.  
 
-Our goal in this particular task is to identify which team will win the game ahead of time so we can place a bet on that team.  While there are various strategies to betting, it's safe to say that on average we would prioritize a high degree of certainty in our prediction at the expense of missing out on some potential winners.  We aren't going to be all sixteen games each week.  Instead, we will ideally bet only one or two that we are most confident about.  The actual success rates of given thresholds is discussed below in [Prediction Confidence](#prediction_confidence), but for the ROC curve, we would probably try to pick the optimum point that is at a 75% threshold or greater.  In this case, that would be at 0.75 to 0.80.
+Our goal in this particular task is to identify which team will win the game ahead of time so we can place a bet on that team.  While there are various strategies to betting, it's safe to say that on average we would prioritize a high degree of certainty in our prediction at the expense of missing out on some potential winners.  We aren't going to be all sixteen NFL games each week.  Besides being cost-prohibitive, most games will be too close a matchup to predict well.  Instead, we will ideally bet only one or two that we are most confident about.  The actual success rates of given thresholds is discussed below in [Prediction Confidence](#prediction_confidence), but for the ROC curve, we would probably try to pick the optimum point that is at a 75% threshold or greater.  In this case, that would be at FPR = 0.20 to 0.25.  This is arbitrary and depends on the bettor's personal requirements.  A deeper look at the actual success rate of bets for a given confidence level is explored below in the [Prediction Confidence](#prediction-confidence) section.
 
 <BR>
 
@@ -698,10 +708,10 @@ The power of the spread in determining which team will win the game is clearly v
 
 <BR>
 
-There doesn't appear to be a divide as sharp as the model's feature importance results suggest there is between the spread and the next two most important features.  After all, the difference in _Total DVOA_ and _Points Allowed per Game_ seem to be at least in the same ballpark as the spread for explaining the variance in the outcome of a game.  I was curious as to what was causing the apparent discrepancy and decided to dig a little deeper.
+There doesn't appear to be a divide as sharp as the model's feature importance results suggest there is between the spread and the next two most important features.  After all, the difference in _Total DVOA_ and _Points Allowed per Game_ seem to be at least in the same ballpark as the spread for explaining the variance in the outcome of a game.  Recognizing that a simple linear regression is not asking the same question as "which feature has the biggest impact" is important.  Linear regression attempts to explain the variance in a target variable (game outcomes) as a result of changes in the independent variable (spread, DVOA, etc.). Feature importance is determined a [couple of ways](#feature-separation-and-importance), and generally measures the information gained about class separation, or purity, when a given feature is evaluated.  That said, I was curious as to what was causing the apparent discrepancy and decided to dig a little deeper.
 
 ###### Prediction Confidence
-
+When a classifier makes predictions about which class to assign a data point to, it does so with a certain level of probability.  Predicting result of a football game, for example, would wor
 **hist of class 1 proba**
 
 
