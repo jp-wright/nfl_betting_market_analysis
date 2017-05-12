@@ -567,11 +567,12 @@ The results for predicting these two bets never got much above 51%.  Remembering
 
 #### The Winning Team
 ###### Winning Team Summary Statistics
-Statistic     | Mean (pts) | Std. Dev. | Coeff. of Var. | Min (pts) | Max (pts) | Min Sigma | Max Sigma
---------------|:----------:|:---------:|:--------------:|:---------:|:---------:|:---------:|:--------:|
-Home Team Win |    12.5    | 9.65      |  0.771         | 1.0       | 59.0      | -2.97     | 4.67     |
+Statistic     | Mean (pts) | Std. Dev. | Min (abs) (pts) | Max (abs) (pts) | Min Sigma | Max Sigma
+--------------|:----------:|:---------:|:---------------:|:---------------:|:---------:|:--------:|
+Home Team Win |    12.5    | 9.65      | 1.0             | 59.0            | -2.97     | 4.67     |
+Home Team Loss|   -10.5    | 8.50      | 1.0             | 46.0            | -1.36     | 6.64     |
 
-<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
+<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.  There were only twenty ties in 9064 games (0.22%) from 1978-2016.  As such, ties have been omitted. </sub>
 
 <BR>
 
@@ -608,7 +609,7 @@ At a threshold level of 0% confidence, we are saying _every_ game should be a "h
 
 So, of the ten games in our example dataset, let's say the first two are "home losses" and the remaining eight are "home wins". (This would be represented as `[0, 0, 1, 1, 1, 1, 1, 1, 1, 1]` in our model, equaling `[loss, loss, win, win, win, win, win, win, win, win]`.  Note, the model does _not_ know the answers which we have just seen.  All it sees is `[game 1, game 2, game 3, ..., game 10]`.  Each result is a mystery to it, hence the need to predict.  This is a very "duh" fact, but bears repeating in this explanatory example). Let's also say that our model says the first five games are assigned a 30% confidence of being a home win and the final five games are given an 80% confidence of being a home win.  For clarity, our game set would look like this (actual result in parentheses):  [__30%__ (loss), __30%__ (loss), __30%__ (win), __30%__ (win), __30%__ (win), __80%__ (win), __80%__ (win), __80%__ (win), __80%__ (win), __80%__ (win)].  
 
-If we set our threshold for "home win" acceptance at 50%, then all games listed below 50% would be labeled "home loss" and all games above would be labeled a "home win."  Our resulting predictions in this case would be as follows: [__loss__ (loss), __loss__ (loss), __loss__ (win), __loss__ (win), __loss__ (win), __win__ (win), __win__ (win), __win__ (win), __win__ (win), __win__ (win)].  So we have now five of the eight games that were actual wins predicted as wins.  Our __TPR is 5/8 = 62.5%__.  And we have neither of the games that were actually losses predicted as wins.  Our __FPR is 0/2 = 0.0%__.  Thus, we can say at the 50% threshold, our model has a TPR of 62.5% and an FPR of 0.0%.  
+If we set our threshold for "home win" acceptance at 50%, then all games listed below 50% would be labeled "home loss" and all games above would be labeled a "home win."  Our resulting predictions in this case would be as follows: [__loss__ (loss), __loss__ (loss), __loss__ (win), __loss__ (win), __loss__ (win), __win__ (win), __win__ (win), __win__ (win), __win__ (win), __win__ (win)].  So we have now five of the eight games that were actual wins predicted as wins.  Our __TPR is 5/8 = 62.5%__.  And we have neither of the games that were actually losses predicted as wins.  Our __FPR is 0/2 = 0.0%__.  Thus, we can say at the 50% threshold, our model has a TPR of 62.5% and an FPR of 0.0%.  (This would be an exceptionally great model and is an unreasonably high ratio for any real-world situation).
 
 We measure our TPR and FPR for every threshold of 'confidence' in the prediction, from 0% to 100% confident.  The ratio changes as the threshold changes, and we plot these changes to form a ROC curve.  Random guessing would equate to a 50/50 split of true positives to false positives for a binary classifier, so this is our baseline.  Anything below that is worse than random chance.  The higher the true positive rate at a given threshold, the better the model.  When wanting to evaluate the model _as a whole_, we use the area under the curve (AUC).  This value tells us how the classifier performs over its entire range of operation.  As in model tuning, we use a split subsample, or fold, of the data to test how well it performs on each split and average them together.  Here is this model's ROC curve for predicting whether the home team wins a game.
 
@@ -711,7 +712,10 @@ The power of the spread in determining which team will win the game is clearly v
 There doesn't appear to be a divide as sharp as the model's feature importance results suggest there is between the spread and the next two most important features.  After all, the difference in _Total DVOA_ and _Points Allowed per Game_ seem to be at least in the same ballpark as the spread for explaining the variance in the outcome of a game.  Recognizing that a simple linear regression is not asking the same question as "which feature has the biggest impact" is important.  Linear regression attempts to explain the variance in a target variable (game outcomes) as a result of changes in the independent variable (spread, DVOA, etc.). Feature importance is determined a [couple of ways](#feature-separation-and-importance), and generally measures the information gained about class separation, or purity, when a given feature is evaluated.  That said, I was curious as to what was causing the apparent discrepancy and decided to dig a little deeper.
 
 ###### Prediction Confidence
-When a classifier makes predictions about which class to assign a data point to, it does so with a certain level of probability.  Predicting result of a football game, for example, would wor
+Back in the [Receiver Operating Characteristic](#receiver-operating-characteristic) section, we discussed how a classifier makes predictions about which class to assign a data point to with a certain level of probability.  We can access these probabilities for each prediction and investigate their results on a granular level.  One reason to do this is, much like using the ROC curve, we want to identify different threshold ranges in which the model does well or poorly.  
+
+
+
 **hist of class 1 proba**
 
 
