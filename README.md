@@ -37,7 +37,7 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [Feature Importance](#over---under-feature-importance)
       + [Analysis](#over---under-analysis)
     + [Money Line](#money-line-results)
-    + [Predicting Bet Outcomes](#predicting-bet-outcomes)
+    + [Predicting the Winner](#predicting-the-winner)
       + **ROC** /**CMAT**
       + [Accuracy](#winning-team-accuracy)
       + [Feature Importance](#winning-team-feature-importance)
