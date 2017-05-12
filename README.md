@@ -807,51 +807,24 @@ This strategy leaves us with bets on the home team when they are favored by 6.0,
 ###### Premium Costs
 To understand [how much we will have to pay](#interpreting-odds-and-the-payout) as a premium, we have to look at the median money line for all games in the database which have the spreads we are interested in.
 
-Home Favorite | Road Money Line | Home Money Line | Home Team Win %
---------------|-----------------|-----------------|----------------
-6.0           | 220.0           | -260.0          | 0.693
-6.5           | 237.5           | -280.0          | 0.665
-7.0           | 255.0           | -310.0          | 0.718
-7.5           | 290.0           | -350.0          | 0.790
+Home Favorite | Road Money Line | Home Money Line | Home Team Win % | Games / Season | Frequency
+--------------|-----------------|-----------------|-----------------|----------------|----------
+-6.0          | 220.0           | -260.0          | 0.693           | 8.9            | ~ every 2 weeks
+-6.5          | 237.5           | -280.0          | 0.665           | 8.3            | ~ every 2 weeks
+-7.0          | 255.0           | -310.0          | 0.718           | 12.2           | ~ 2 every 3 weeks
+-7.5          | 290.0           | -350.0          | 0.790           | 5.6            | ~ every 3 weeks
 
-<sub>__Table 00:__ The relevant spreads for our betting approach, culled from __Table A1__ in the appendix, 1978-2016.</sub>
+<sub>__Table 00:__ The relevant spreads for our betting approach, culled from __Tables A1__ and __A2__ in the appendix, 1978-2016.</sub>
 
 <BR>
 
-We that the typical amount we have to wager as a premium to bet on a home favorite ranges from 2.6x to 3.5x what we want to win.  While the concept of risk, financial or otherwise, is relative for every individual, it stands to reason that wagering three-and-a-half times the amount of money you stand to win counts as a valid "risk."  In
+I want to touch on the historical winning percentages briefly, but will first discuss the wagering process.  We see that the typical amount we have to wager as a premium to bet on a home favorite with our spreads of interest ranges from 2.6x to 3.5x what we want to win.  While the concept of financial risk is relative for every individual, it holds to reason that wagering three-and-a-half times the amount of money you stand to win counts as a legitimate "risk."  If we had hoped to win $1,000 on a single bet, we'd have to wager $2,600 to $3,5000.  With such financial liability it makes sense to distribute our "risk" amongst many smaller bets, hoping the model's precision is accurate, allowing us to win many smaller bets and overcome a few small losses.  
 
-Spread  Num Games 1978-2016
-3.0     814
-3.5     476
-7.0     476
-6.0     349
-6.5     326
-4.0     320
-2.5     320
-2.0     244
-4.5     221
-7.5     220
-5.5     210
-1.0     210
-10.0    208
-5.0     191
-9.0     188
-8.0     170
-1.5     155
-9.5     144
-8.5     116
-10.5    110
-11.0     94
-13.5     91
-13.0     81
-14.0     65
-12.0     56
-11.5     47
-12.5     41
+The feasibility of such an approach depends on how many candidate games there are.  If there are enough to spread our informed bets around, then we can pursue this method.  A quick glance at __Table 00__ shows us that there does indeed appear to be enough of a sample for us to try to minimize our overall risk.  The two lines at -6.0 and -6.5 have a roughly equal rate of occurrence, about once every two weeks of a regular season.  Combined, that gives about once a week throughout the season.  For the two lines at -7.0 and -7.5, we have a bigger difference between the two but a combined count nearly identical to the 6s, giving us around one bet per week.  In sum, if we consider all four spreads we should expect to see around two games per week that we can wager on, totaling around 34 possible bets, or 12% of all NFL games in a season.
+
+  
 
 
-
-1371 6-7.5 = 35g/y  ..2/week
 
 
 
@@ -867,7 +840,7 @@ Spread  Num Games 1978-2016
 
 
 
-
+### Matchup Types
 
 
 Below are the results for each of the five Vegas-related targets investigated in this project.  
@@ -894,7 +867,7 @@ __90.4%__ of all spreads are <= +/- 10.
 
 ## Appendix
 ###### Table A1
-Home Favorite | Road Money Line | Home Money Line | Home Team Win %
+Road Spread | Road Money Line | Home Money Line | Home Team Win %
 ------------|-----------------|-----------------|----------------
 1.0         | 100.0           | -115.0          | 0.528
 1.5         | 105.0           | -125.0          | 0.496
@@ -923,9 +896,44 @@ Home Favorite | Road Money Line | Home Money Line | Home Team Win %
 13.0        | 500.0           | -700.0          | 0.864
 13.5        | 600.0           | -800.0          | 0.802
 14.0        | 675.0           | -950.0          | 0.830
+
 <sub>__Table A1:__ Historical values for spreads in which the home team was favored, 1978-2016.</sub>
 
+<BR>
+<BR>
 
+###### Table A2
+Spread  | Number Games (1978-2016)
+--------|------------------------
+3.0     | 814
+3.5     | 476
+7.0     | 476
+6.0     | 349
+6.5     | 326
+4.0     | 320
+2.5     | 320
+2.0     | 244
+4.5     | 221
+7.5     | 220
+5.5     | 210
+1.0     | 210
+10.0    | 208
+5.0     | 191
+9.0     | 188
+8.0     | 170
+1.5     | 155
+9.5     | 144
+8.5     | 116
+10.5    | 110
+11.0    |  94
+13.5    |  91
+13.0    |  81
+14.0    |  65
+12.0    |  56
+11.5    |  47
+12.5    |  41
+
+<sub>__Table A2:__ Historical counts for number of games with a given spread favoring the home team, 1978-2016.</sub>
 
 <BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
 
