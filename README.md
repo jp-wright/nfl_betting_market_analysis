@@ -754,18 +754,22 @@ The probability thresholds have a minimum of 0.15 and a maximum of 0.88.  No gam
 
 <img src="images/games_per_season_proba.png" align="right" alt="Games Per Season by Probability" width="600">
 <BR><BR>
-Since the number of games decreases as prediction confidence increases (in either direction), we want to make our bets count.  The smart approach would seem to be avoiding all games within the 0.40 to 0.60 range as a general rule, and perhaps even higher.  It's hard to sell oneself on a bet the model only has 62% confidence in, after all.  But making bets based on an arbitrary level of confidence is unwise and is only the initial step in choosing games to bet on.
+Since the number of games decreases as prediction confidence increases (in either direction), we want to make our bets count.  The smart approach would seem to be avoiding all games within the 0.40 to 0.60 range as a general rule, and perhaps even higher.  It's hard to sell oneself on a bet the model only has 62% confidence in, after all.  But making bets based on an arbitrary level of confidence is unwise and is easily bested by using the data in [Figure 721](#prediction-confidence) as a guide.
 
 <BR><BR>
 
 <div align="right">
 <sub><b>Figure 741:</b> The number of games for each probability threshold window.  We see here the <BR>
-inverse of the prediction precision results from <b>Figure 711</b>, where the clear majority of <BR>games occurs in the middle of the probability range and tails off sharply at either end.
+inverse of the prediction precision results from <i>Figure 711</i>, where the clear majority of <BR>games occurs in the middle of the probability range and tails off sharply at either end.
 </sub>
 </div>
 <BR>
 
-More instructive is to look at the cumulative precision and see
+Looking at the cumulative precision shows us the total precision for all predictions at and above a given threshold.  For Class 1 predictions (green points) we see a strongly positive trend as we progress higher in probability.  Once we get to, say, 0.70 probability, the precision for all predictions at or above 0.70 is 83% or higher.  That's a fantastic level of success with gambling.  Recall that the baseline for any prediction with the target of predicting the game being won by the home team is 58%.  So, we are 25% higher on average for all games predicted with a 0.70 confidence or higher.  
+
+So, shouldn't we just bet for the home team to win on every game that has a 70% or greater probability and ride off into the Nevada sunset?  Well, it's not quite that simple for two primary reasons, one of which we have already touched upon and the other a secret [lurking in the darkness](https://www.youtube.com/watch?v=i_6w1EUGRoU).  First, the number of games with a probability of the home team winning at or over 70% is around 19 per season, which is a smidge over one per week.  This isn't too bad, actually, but does make one susceptible to a few bad weeks in a row.  Depending on a bettor's financial reserves, he or she may not be able to afford to play (for any appreciable sum) after three or four consecutive losses.  
+
+Second, and a far bigger heartbreaker than the model's failure in regressing against the spread yielding  successful "wise bets" no better than chance (detailed below in the [Wise Bets Results](#wise-bets-results) section), is the [power of the spread](#the-power-of-the-spread).
 
 
 
