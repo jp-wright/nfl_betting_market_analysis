@@ -42,8 +42,8 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Predicting Bet Outcomes](#predicting-bet-outcomes)
     + [Predicting the Winner](#predicting-the-winner)
       + [Summary Stats](#winner-summary-stats)
-      + [Accuracy](#winning-team-accuracy)
-      + [Feature Importance](#winning-team-feature-importance)
+      + [Accuracy](#winner-accuracy)
+      + [Feature Importance](#winner-feature-importance)
     + Weather
       + TEMP/wind/wc plots
     + Wise Bets Results
@@ -123,10 +123,10 @@ Each bet has different odds depending on which side of the bet you take.  There 
 3. The money line  
 
 #### Interpreting Odds and the Payout
-When a money line or spread is negative for a given team, this means that team is favored to win.  As such, the payout for that bet is less favorable than for the underdog.  All odds are given relative to a wager of $100.  An example is easiest to demonstrate.  If Team A is the favorite and has odds (money line) of -200, this means you must bet $200 to win (net) $100 (the $200 you originally bet plus $100 in winnings).  Since Team A is favored this makes sense -- you must risk more money in order to profit since they're expected to win.  Conversely, if Team B is an underdog and has odds of +300, you will win (net) $300 with a wager of only $100.  Again, Team B is not expected to win, so to entice bettors to take the bet, the reward must be greater than the risk.
+When a money line or spread is negative for a given team, this means that team is favored to win.  As such, the payout for that bet is less favorable than for the underdog.  All odds are given relative to a wager of $100.  An example is easiest to demonstrate.  If Team A is the favorite and has odds (money line) of -200, this means you must bet $200 to win (net) $100 (the $200 you originally bet plus $100 in winnings).<sup>[__5__](#fn5)</sup>  Since Team A is favored this makes sense -- you must risk more money in order to profit since they're expected to win.  Conversely, if Team B is an underdog and has odds of +300, you will win (net) $300 with a wager of only $100.  Again, Team B is not expected to win, so to entice bettors to take the bet, the reward must be greater than the risk.
 
 #### The Spread
-The spread, also called the "line", is a measure of how much better Vegas thinks Team A is than Team B.  Vegas sets the spread in the amount of points the favored team is expected to win by.  A negative spread indicates a team is favored, positive an underdog.  For example, a spread of -3.0 means the favored team is expected to win by a field goal (3 points).  You can bet on either team, the favorite or underdog.  In order to win a bet on the spread, your team must exceed the spread in your favor.  So, if you bet on the favorite at -3.0, they must win by _more_ than 3 points for your bet to win.  If they win by exactly 3 points, the result is called a "push", and all money is returned to bettors, none having been won nor lost.  
+The spread, also called the "line", is a measure of how much better Vegas thinks Team A is than Team B.  In other words, it's a handicap.  Vegas sets the spread in the amount of points the favored team is expected to win by.  A negative spread indicates a team is favored, positive an underdog.  For example, a spread of -3.0 means the favored team is expected to win by a field goal (3 points).  You can bet on either team, the favorite or underdog.  In order to win a bet on the spread, your team must exceed the spread in your favor.  So, if you bet on the favorite at -3.0, they must win by _more_ than 3 points for your bet to win.  If they win by exactly 3 points, the result is called a "push", and all money is returned to bettors, none having been won nor lost.  
 
 Even moderate sports fans are doubtless familiar with the notion of "home field advantage," and we see it borne out in the history of the Vegas NFL spread.  The peaks in the distribution represent the most common increments of scoring in football: 3 points, 7 points, 10 points, and 13 points.  Note the aversion to setting the line at 0 points, as this is equivalent to simply picking the winner outright.  Also note the significant majority of lines are set favoring the home team, offering real evidence of the notion of "home field advantage."
 
@@ -494,13 +494,13 @@ The poignant aspect of the temperature charts is the towering prevalence of game
 
 <BR>
 
-Though I am unsure of the cause of the slight dip in the mid-200s (it's possibly due to temporary outdoor stadia being used while newer, domed stadia were being built), the overall trend of an increased percent of games being played in domes is obvious.  Currently one-quarter of the league's stadia are either domed or have retractable roofs.  Once the forthcoming Las Vegas Raiders finish building their new stadium in Nevada, nine of thirty-two teams will have the potential for a roofed stadium. <sup id="a1">[__5__](#fn5)</sup>
+Though I am unsure of the cause of the slight dip in the mid-200s (it's possibly due to temporary outdoor stadia being used while newer, domed stadia were being built), the overall trend of an increased percent of games being played in domes is obvious.  Currently one-quarter of the league's stadia are either domed or have retractable roofs.  Once the forthcoming Las Vegas Raiders finish building their new stadium in Nevada, nine of thirty-two teams will have the potential for a roofed stadium. <sup id="a1">[__6__](#fn6)</sup>
 
-Considering this impact on the Over/Under, recall that feature importance only tells us if having either _more_ or _less_ of the given feature increases the prediction of the model, not which one. With this in mind, I propose the following explanation for the apparent value of the weather-related and dome features in predicting the Over/Under: in the NFL, successfully passing the football is the catalyst for consistent scoring. <sup id="a1">[__6__](#fn6)</sup> Extreme weather (very high/low temperature, very windy, rain, snow) adversely affects the passing game more than the rushing game.  In a rainy game, for example, teams will run much more than pass because the ball is slippery, making it both hard to throw and to catch.  This decrease in passing will lead to a decrease in combined scoring.  
+Considering this impact on the Over/Under, recall that feature importance only tells us if having either _more_ or _less_ of the given feature increases the prediction of the model, not which one. With this in mind, I propose the following explanation for the apparent value of the weather-related and dome features in predicting the Over/Under: in the NFL, successfully passing the football is the catalyst for consistent scoring. <sup id="a1">[__7__](#fn7)</sup> Extreme weather (very high/low temperature, very windy, rain, snow) adversely affects the passing game more than the rushing game.  In a rainy game, for example, teams will run much more than pass because the ball is slippery, making it both hard to throw and to catch.  This decrease in passing will lead to a decrease in combined scoring.  
 
 But there's no bad weather in a dome.  So, the increase in domes means an increase in the number of games that are guaranteed to have good conditions, and a decrease in the number of games which can have bad ones.  With this reasoning, more dome games should equal more scoring.  There are also a handful of factors which influence the rise of domes, including the ability to draw fans on bad weather days, as well as what might be perceived as a competitive advantage for the home team by gearing their offense to more finesse passing (debatable).  Regardless of origin, the larger trend between increased number of dome games parallels the increase in the Over/Under set by Vegas.  
 
-While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__6__](#fn6)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
+While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__7__](#fn7)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
 
 ###### Passing vs Rushing Offense Over Time
 
@@ -569,7 +569,7 @@ The results for predicting these two bets never got much above 51%.  Remembering
 <BR>
 
 ### Predicting The Winner
-###### Winning Team Summary Statistics
+###### Winner Summary Statistics
 Statistic     | Mean (pts) | Std. Dev. | Min (abs) (pts) | Max (abs) (pts) | Min Sigma | Max Sigma
 --------------|:----------:|:---------:|:---------------:|:---------------:|:---------:|:--------:|
 Home Team Win |    12.5    | 9.65      | 1.0             | 59.0            | -2.97     | 4.67     |
@@ -585,7 +585,7 @@ While using SMOTE did slightly improve the _Home Team Win_ predictions, I didn't
 
 <BR>
 
-#### Winning Team Accuracy
+#### Winner Accuracy
 <img src="images/cmat_home_winner.png" align="right" alt="Confusion Matrix for Home Winner" width="600">
 
 
@@ -599,7 +599,7 @@ When our model makes a prediction that the home team won a game it has labeled t
 
 <BR>
 
-No model will get every prediction right (in the real world), so we need a way to measure how accurate and reliable our model is.  One method is the confusion matrix for our predictions.  A confusion matrix allows us to see how accurate our model is by showing us the counts of our true positives, true negatives, as well as our false positives and false negatives.  It gives a great cursory look at how our model is handling prediction.  Ideally the matrix would have predictions tallied only in its diagonal, where all "negative" data points were labeled "negative" and "positive" points labeled "positive" by the model.  But the confusion matrix offers only a glimpse at how well the model is predicting at a single threshold of confidence.  Another method of classification evaluation which allows us to obtain a "big picture" view of model performance is the ROC curve.
+No model will get every prediction right (in the real world), so we need a way to measure how accurate and reliable our model is.  One method is the confusion matrix for our predictions.  A confusion matrix allows us to see how accurate our model is by showing us the counts of our true positives, true negatives, as well as our false positives and false negatives.  It gives a great cursory look at how our model is handling prediction.  Ideally the matrix would have predictions tallied only in its diagonal, where all "negative" data points were labeled "negative" and "positive" points labeled "positive" by the model.  Despite, or rather because of, its simplicity, the confusion matrix offers only a glimpse at how well the model is predicting at a single threshold of confidence.  Another method of classification evaluation which allows us to obtain a "big picture" view of model performance is the ROC curve.
 
 <BR>
 
@@ -630,7 +630,7 @@ Our goal in this particular task is to identify which team will win the game ahe
 
 <BR>
 
-#### Winning Team Feature Importance
+#### Winner Feature Importance
 Perhaps the best evidence that Vegas "knows what they're doing" is this ranking of feature importances.  The Vegas spread is easily the most decisive statistic that found in predicting who will win a game.  Including dummied variables, there were around 345 total features included in this model.  For one to be roughly four times more important than any of the other 344 is telling.  Overall there are really five tiers to the top forty features:
 1. The spread: 11.66%
 2. Features 2-4: >2.0%
@@ -644,7 +644,7 @@ Perhaps the best evidence that Vegas "knows what they're doing" is this ranking 
 
 <BR>
 
-#### Winning Team Analysis
+#### Winner Analysis
 The predictive power of the spread in determining who will win an NFL game is worthy of further discussion below.  Before that, let's take a quick look at the other features which give insight into a game's winner.  While the old adage "defense wins championships" often feels trite and cliched, it might hold some statistical water as two defense-related metrics are the second (_points allowed per game_) and fifth (_defensive sigma above average_) most important features.  This topic warrants an entire project all its own, but the fact that even with competing against the entire litany of advanced metrics, _points allowed per game_ by the home team is the most predictive non-Vegas statistic for determining if the home team will win a game can't be discounted.  
 
 Perhaps unsurprisingly, the _difference in average passes completed per game_ is the third biggest predictor and passing-specific stats appear eight times in the top 40 features (see [Table 66](#passing-features)).  Echoing what was discussed in the [Passing vs Rushing Offense](#passing-vs-rushing-offense-over-time) section above, when one team is more proficient at passing than their opponent, they are more likely to win.  
@@ -668,7 +668,7 @@ Pass Att. / Gm                     | 5    | 0.92%
 ###### Rushing and Winning
 Other features that help predict whether a team will win or not read like a list of the usual suspects: superiority in advanced metrics like [DVOA](#advanced-metrics) and [EPA](#advanced-metrics), rushing stats per game, penalties and penalty yards per game, and 3rd and 4th down efficiency.  _Time of possession_ clocks in at \#29.  _Time of possession_ and the various _rushing_ stats (five total in the top 40 but none before tier 4) offer a textbook case of the "chicken and the egg" conundrum, however.  At first glance it is tempting to simply say "teams that have the ball more and have more rushing attempts per game win more."  Statistically, yes, our model says that is true.  
 
-But we must think about it one level deeper.  Doing so, we realize that teams which are leading _overwhelmingly_ run the ball more than teams that are trailing (Chase Stuart’s easily digestible “[game scripts](http://www.footballperspective.com/introducing-game-scripts-part-i/)” metric does a good job of capturing this).  As a result, teams that are trailing face far more rushes and subsequently give up more yards.  So, in a way the model is likely picking up that teams that allow more rushing yards than others are frequently trailing... and when you’re frequently trailing you are going to lose more often than win.  The fallacy (known in the stats community as the [“establish the run”](http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause) fallacy, popularized by Aaron Schatz at Football Outsiders back in 2003 <sup>[__7__](#fn7)</sup>) that so many jabbering heads on TV espouse of “run the ball to win!” is actually the inverse of what happens, and I suspect this is what the model also detects.  It’s the teams that are already winning which choose to run the ball, not vice versa.  [Figures 666](#time-of-possession-and-rushing-attempts) and [667](#passing=and-rushing-attempts-correlation-to-margin-of-victory)
+But we must think about it one level deeper.  Doing so, we realize that teams which are leading _overwhelmingly_ run the ball more than teams that are trailing (Chase Stuart’s easily digestible “[game scripts](http://www.footballperspective.com/introducing-game-scripts-part-i/)” metric does a good job of capturing this).  As a result, teams that are trailing face far more rushes and subsequently give up more yards.  So, in a way the model is likely picking up that teams that allow more rushing yards than others are frequently trailing... and when you’re frequently trailing you are going to lose more often than win.  The fallacy (known in the stats community as the [“establish the run”](http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause) fallacy, popularized by Aaron Schatz at Football Outsiders back in 2003 <sup>[__8__](#fn8)</sup>) that so many jabbering heads on TV espouse of “run the ball to win!” is actually the inverse of what happens, and I suspect this is what the model also detects.  It’s the teams that are already winning which choose to run the ball, not vice versa.  [Figures 666](#time-of-possession-and-rushing-attempts) and [667](#passing=and-rushing-attempts-correlation-to-margin-of-victory)
 
 ###### Time of Possession and Rushing Attempts
 <img src="images/top_v_rush_att.png" align="middle" alt="Time of Possession Correlation to Rush Attempts">
@@ -708,7 +708,7 @@ The power of the spread in determining which team will win the game is clearly v
 
 <img src="images/home_win_feats_matrix.png" align="middle" alt="Scatter Matrix of top three features for determining the winner">
 
-<sub>__Figure 669:__ The relationships between the three most important features in predicting the game winner, 1991-2016.</sub>
+<sub>__Figure 669:__ The relationships between the three most important features in predicting the game winner, 1991-2016.  We see that the basic linear relationship between each is roughly comparable in magnitude, making the spread's reported importance worthy of more investigation.  The 'Home Winner' category includes ties (0) just to illustrate their scarcity via the distribution plot.</sub>
 
 <BR>
 
@@ -770,11 +770,88 @@ inverse of the prediction precision results from <i>Figure 711</i>, where the cl
 
 Looking at the cumulative precision shows us the total precision for all predictions at and above a given threshold.  For Class 1 predictions (green points) we see a strongly positive trend as we progress higher in probability.  Once we get to, say, 0.70 probability, the precision for all predictions at or above 0.70 is 83% or higher.  That's a fantastic level of success with gambling.  Recall that the baseline for any prediction with the target of predicting the game being won by the home team is 58%.  So, we are 25% higher on average for all games predicted with a 0.70 confidence or higher.  
 
-So, shouldn't we just bet for the home team to win on every game that has a 70% or greater probability and ride off into the Nevada sunset?  Well, it's not quite that simple for two primary reasons, one of which we have already touched upon and the other a secret [lurking in the darkness](https://www.youtube.com/watch?v=i_6w1EUGRoU).  First, the number of games with a probability of the home team winning at or over 70% is around 19 per season, which is a smidge over one per week.  This isn't too bad, actually, but does make one susceptible to a few bad weeks in a row.  Depending on a bettor's financial reserves, he or she may not be able to afford to play (for any appreciable sum) after three or four consecutive losses.  
+So, shouldn't we just bet for the home team to win on every game that has a 70% or greater probability and ride off into the Nevada sunset?  It seems like a slam dunk -- choose the high-confidence bets and be guaranteed of success, right?  Well, it's not quite that simple for two primary reasons, one of which we have already touched upon and the other a secret [lurking in the darkness](https://www.youtube.com/watch?v=i_6w1EUGRoU).  
 
-Second, and a far bigger heartbreaker than the model's failure in regressing against the spread yielding  successful "wise bets" no better than chance (detailed below in the [Wise Bets Results](#wise-bets-results) section), is the [power of the spread](#the-power-of-the-spread).
+First, the number of games with a probability of the home team winning at or over 70% is around 19 per season, which is a smidge over one per week.  This isn't too bad, actually, but does make one susceptible to a few bad weeks in a row.  Depending on a bettor's financial reserves, he or she may not be able to afford to play (for any appreciable sum) after three or four consecutive losses.  
+
+Second, and the biggest heartbreaker of this project (more so than the model's yielding "wise bets" by predicting against the spread that performed no better than chance, which is detailed below in the [Wise Bets Results](#wise-bets-results) section), is the model's adherence to the [power of the spread](#the-power-of-the-spread).  Let's have a look at how the confidence level of each prediction for who will win a game correlates with the spread and another top-3 feature, the difference in average completions per game between the two teams.
+
+###### Predictions Mirror the Spread
+<img src="images/prediction_mirror_spread.png" align="middle" alt="Prediction mirrors spread">
+
+<sub>__Figure 751:__ Correlations between the confidence level of a prediction and two of the three most important features in deciding who will win a game.  The reliance of the model on the spread for making predictions is revealed here.  The red points denote the probability window (1%) in which the mean precision was below the prediction baseline of 58%, while the green represent those above 58%, just as in __Figure 711__</sub>
+
+<BR>
+
+__Figure 751__ shows us what's really going on "under the hood" when our model is assigning a probability to its predictions.  Back in [Figure 721](#cumulative-precision), we saw the model become more successful on predictions made with higher confidence, as expected.  Ideally we could use this data to find a cutoff point for our own bets, selecting only games that carried a certain level of confidence in order to secure a highly favorable chance at winning each bet.  This approach is still valid, but the picture painted by __Figure 751__ carries a deflating realization: the confidence level of predictions is a near-perfect mirror of the spread for the game.  
+
+Now we see where the spread assumes its dominant position among the most important features.  Compare the correlation of the prediction probability with the spread, the most important feature according to the model, to that of the third most important feature, the difference in average pass completions per game between the two teams playing.  While the completions delta statistic follows a general trend of increasing with probability, the spread is tightly hewn along the regression line.  Also, note that both regressions were plotted with a 2nd-order polynomial, but the spread is so dead-on that its line of best fit is still linear.
+
+Why is this such a big deal, one may ask?  While it's clear the spread helps our model be much more accurate in its predictions, our model's demonstrated reliance upon it undermines the whole motivation for this project: to identify games which are inaccurately valued by Vegas in order profit from our exploitation of an inefficiency in the betting market.  That hope is eviscerated with this result.  All the games our model is confident about are the same ones Vegas is confident about.  There is no "hidden" value in these bets.  The bettor will have to pay a (potentially hefty) premium when making these bets.  Needless to say, while it is not a shocking conclusion, it left me personally rather [disappointed](https://www.youtube.com/watch?v=_O1hM-k3aUY)!
+
+The lone positive that can be gleaned from this finding is that, yet again, oddsmakers (and their arrays of supercomputers) _do_ know what they're doing.  So if money isn't scarce, then paying the premium on a strong favorite that is corroborated by the model is likely a winning strategy in the long run.  With this in mind we examine next how to best use this betting approach.
+
+#### Betting Approach - Game Winner
+Following from the findings above are the following points of interest:
+1. The model traces the spread.  Teams more favored by the spread are indeed more likely to win.
+    + We will be betting on favorites.
+2. The accuracy of the model is not equal on both sides of the spread.  It is more reliable, due to a larger sample size, in predicting when a home team will when than when they will lose.  
+    + We will restrict our bets to home teams that are favored.
+3. The model starts to perform especially well -- around 78% or better precision -- on bets it gives a 0.70 confidence for the home team to win.  This equates to the home team being favored by around 6.2 points.  
+    + We will further restrict our bets to home teams that are favored by 6.0+ points.
+4. Betting on a favorite means paying a premium.  We have to wager more money than we will win.  Because of this, the most confident bets also carry the highest risk for the favorite-backer.  So, we want to avoid paying extreme premiums if the increase in prediction confidence is only marginal.  Looking at [Figure 721](#cumulative-precision) we see a mini-peak at 0.74 probability.  After this, there is a diminished return on precision for increase in probability, excluding the high-variance, small sample size results at the extreme.  0.74 probability equates to roughly a home team being favored by +7.5 points.
+    + We will forego bets on games where the home team is favored by more than 7.5 points, assuming the odds are proportional to such a line (discussed below)
+
+This strategy leaves us with bets on the home team when they are favored by 6.0, 6.5, 7.0, or 7.5 points.  There are two questions left to answer: how much money on average do we expect to pay as a premium for each line, and how many games are there within that range each year?
+
+###### Premium Costs
+To understand [how much we will have to pay](#interpreting-odds-and-the-payout) as a premium, we have to look at the median money line for all games in the database which have the spreads we are interested in.
+
+Home Favorite | Road Money Line | Home Money Line | Home Team Win %
+--------------|-----------------|-----------------|----------------
+6.0           | 220.0           | -260.0          | 0.693
+6.5           | 237.5           | -280.0          | 0.665
+7.0           | 255.0           | -310.0          | 0.718
+7.5           | 290.0           | -350.0          | 0.790
+
+<sub>__Table 00:__ The relevant spreads for our betting approach, culled from __Table A1__ in the appendix, 1978-2016.</sub>
+
+<BR>
+
+We that the typical amount we have to wager as a premium to bet on a home favorite ranges from 2.6x to 3.5x what we want to win.  While the concept of risk, financial or otherwise, is relative for every individual, it stands to reason that wagering three-and-a-half times the amount of money you stand to win counts as a valid "risk."  In
+
+Spread  Num Games 1978-2016
+3.0     814
+3.5     476
+7.0     476
+6.0     349
+6.5     326
+4.0     320
+2.5     320
+2.0     244
+4.5     221
+7.5     220
+5.5     210
+1.0     210
+10.0    208
+5.0     191
+9.0     188
+8.0     170
+1.5     155
+9.5     144
+8.5     116
+10.5    110
+11.0     94
+13.5     91
+13.0     81
+14.0     65
+12.0     56
+11.5     47
+12.5     41
 
 
+
+1371 6-7.5 = 35g/y  ..2/week
 
 
 
@@ -813,6 +890,43 @@ __90.4%__ of all spreads are <= +/- 10.
 
 
 
+
+
+## Appendix
+###### Table A1
+Home Favorite | Road Money Line | Home Money Line | Home Team Win %
+------------|-----------------|-----------------|----------------
+1.0         | 100.0           | -115.0          | 0.528
+1.5         | 105.0           | -125.0          | 0.496
+2.0         | 115.0           | -135.0          | 0.569
+2.5         | 120.0           | -140.0          | 0.531
+3.0         | 140.0           | -160.0          | 0.587
+3.5         | 160.0           | -190.0          | 0.607
+4.0         | 175.0           | -210.0          | 0.609
+4.5         | 180.0           | -220.0          | 0.647
+5.0         | 190.0           | -230.0          | 0.706
+5.5         | 200.0           | -240.0          | 0.666
+6.0         | 220.0           | -260.0          | 0.693
+6.5         | 237.5           | -280.0          | 0.665
+7.0         | 255.0           | -310.0          | 0.718
+7.5         | 290.0           | -350.0          | 0.790
+8.0         | 300.0           | -370.0          | 0.747
+8.5         | 310.0           | -380.0          | 0.810
+9.0         | 335.0           | -410.0          | 0.781
+9.5         | 357.5           | -452.5          | 0.812
+10.0        | 400.0           | -500.0          | 0.807
+10.5        | 430.0           | -575.0          | 0.772
+11.0        | 425.0           | -550.0          | 0.829
+11.5        | 445.0           | -575.0          | 0.872
+12.0        | 490.0           | -630.0          | 0.857
+12.5        | 477.5           | -640.0          | 0.829
+13.0        | 500.0           | -700.0          | 0.864
+13.5        | 600.0           | -800.0          | 0.802
+14.0        | 675.0           | -950.0          | 0.830
+<sub>__Table A1:__ Historical values for spreads in which the home team was favored, 1978-2016.</sub>
+
+
+
 <BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
 
 
@@ -823,6 +937,7 @@ __90.4%__ of all spreads are <= +/- 10.
 <a name="fn2">2</a>: https://www.inc.com/slate/jordan-weissmann-is-illegal-sports-betting-a-400-billion-industry.html  
 <a name="fn3">3</a>: https://www.boydsbets.com/super-bowl-how-much-bet/  
 <a name="fn4">4</a>: http://mentalfloss.com/article/26730/how-wind-chill-calculated  
-<a name="fn5">5</a>: https://en.wikipedia.org/wiki/List_of_current_National_Football_League_stadiums  
-<a name="fn6">6</a>: https://fifthdown.blogs.nytimes.com/2010/08/31/why-passing-is-more-important-than-running-in-the-n-f-l/  
-<a name="fn7">7</a>: http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause
+<a name="fn5">5</a>: https://www.sportingcharts.com/dictionary/sports-betting/money-line.aspx
+<a name="fn6">6</a>: https://en.wikipedia.org/wiki/List_of_current_National_Football_League_stadiums  
+<a name="fn7">7</a>: https://fifthdown.blogs.nytimes.com/2010/08/31/why-passing-is-more-important-than-running-in-the-n-f-l/  
+<a name="fn8">8</a>: http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause
