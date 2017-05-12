@@ -256,14 +256,14 @@ The cover and over/under classes are very close to being ideally balanced, but t
 This imbalance is not drastic, but does mean that stratification during train-test splitting to ensure both the train and the test splits receive an equal ratio of each class is wise.  Other class imbalance fixes attempted were using the cost-minimizing `'balanced'` class weighting in the Random Forest model, which made substantial difference in the efficacy of the model.  Alternatively, the oversampling SMOTE package by __imblearn__ was used for the GBC and SVC models.  Its impact was typically mild, but always positive, offering a few percentage points of improvement for the Receiver Operating Characteristic Area Under the Curve (AUC).  In particular, the Gradient Boosted Tree classifier by __XGBoost__ handled the 58/42 class imbalance rather well out of the box.  The full breakdown of classes is shown below for reference.
 
 ###### Class Ratios
-Target            | Data     | Majority Class | Minority Class | Majority % | Minority % | Counts
-------------------|----------|----------------|----------------|------------|------------|------------
-Road Cover        | 1978     | Yes            | No             | 51.4%      | 48.6%      | 4514 - 4274
-Road Cover        | Advanced | Yes            | No             | 51.7%      | 48.3%      | 2843 - 2655
-Over/Under Result | 1978     | Over           | Under          | 50.6%      | 49.4%      | 4449 - 4338
-Over/Under Result | Advanced | Over           | Under          | 51.0%      | 49.0%      | 2805 - 2693
-Home Team Win     | 1978     | Win            | Loss           | 58.2%      | 41.8%      | 5114 - 3674
-Home Team Win     | Advanced | Win            | Loss           | 57.9%      | 42.1%      | 3183 - 2315
+Target            | Data     | Majority Class | Minority Class | Majority % | Minority % | Counts     | Total |
+------------------|----------|----------------|----------------|------------|------------|------------|--------
+Road Cover        | 1978     | Yes            | No             | 51.4%      | 48.6%      | 4514 - 4274| 8788
+Road Cover        | Advanced | Yes            | No             | 51.7%      | 48.3%      | 2843 - 2655| 5498
+Over/Under Result | 1978     | Over           | Under          | 50.6%      | 49.4%      | 4449 - 4338| 8787
+Over/Under Result | Advanced | Over           | Under          | 51.0%      | 49.0%      | 2805 - 2693| 5498
+Home Team Win     | 1978     | Win            | Loss           | 58.2%      | 41.8%      | 5114 - 3674| 8788
+Home Team Win     | Advanced | Win            | Loss           | 57.9%      | 42.1%      | 3183 - 2315| 5498
 
 <sub>__Table 2:__ Breakdown of classification targets within the two primary datasets, 1978-2016 and 1994-2016 (_Advanced_).  Only the __Home Team Win__ target has a moderate class imbalance.  </sub>
 
@@ -572,13 +572,13 @@ Statistic     | Mean (pts) | Std. Dev. | Min (abs) (pts) | Max (abs) (pts) | Min
 Home Team Win |    12.5    | 9.65      | 1.0             | 59.0            | -2.97     | 4.67     |
 Home Team Loss|   -10.5    | 8.50      | 1.0             | 46.0            | -1.36     | 6.64     |
 
-<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.  There were only twenty ties in 9064 games (0.22%) from 1978-2016.  As such, ties have been omitted. </sub>
+<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.  There were only twenty ties in 9064 games (0.22%) from 1978-2016 and nine such games from 1994-2016.  As such, ties have been omitted. </sub>
 
 <BR>
 
-Recall from [Table 2](#class-ratios) that the lone imbalanced class was the _Home Team Win_ class, which is simply a binary class of "yes" or "no" results depending on if the home team won ("yes") or lost ("no").  Also recall that home teams win at a 58% rate over time, meaning the class is 58% 'yes' and 42% 'no'.  Methods of addressing this moderate imbalance were discussed in the [Classification](#classification) section as well.  Ultimately I decided to use the _advanced_ database and to not use SMOTE oversampling for class psuedo-balancing.  
+Recall from [Table 2](#class-ratios) that the lone imbalanced class was the _Home Team Win_ class, which is simply a binary class of "yes" or "no" results depending on if the home team won ("yes") or lost ("no").  Also recall that of the 5498 games used in this model, home teams win at a 58% rate over time, meaning the class is 58% 'yes' and 42% 'no'.   Methods of addressing this moderate imbalance were discussed in the [Classification](#classification) section as well.  Ultimately I decided to use the _advanced_ database and to not use SMOTE oversampling for class psuedo-balancing.  
 
-While using SMOTE did improve the _Home Team Win_ predictions, I didn't like the idea of 'artificial' games being used in the database because it made extrapolating results to the actual games that occurred more difficult.  The idea of having 'false' games included if I were to use a plot detailing the breakdown of how a specific metric impacts the chances of a team winning was unappealing.  If I decided to use only the 'true' games, would the trends match up to what was claimed by the SMOTE-driven results?  Having the luxury of a Gradient Boosted Classifier that handled the 'imbalanced' classes rather well (as noted in [Table 4](#classification-outcomes)) made the decision easier, admittedly.
+While using SMOTE did slightly improve the _Home Team Win_ predictions, I didn't like the idea of 'artificial' games being used in the database because it made extrapolating results to the actual games that occurred more difficult.  The idea of having 'false' games included if I were to use a plot detailing the breakdown of how a specific metric impacts the chances of a team winning was unappealing.  If I decided to use only the 'true' games, would the trends match up to what was claimed by the SMOTE-driven results?  Having the luxury of a Gradient Boosted Classifier that handled the 'imbalanced' classes rather well (as noted in [Table 4](#classification-outcomes)) made the decision easier, admittedly.  
 
 <BR>
 
@@ -711,7 +711,7 @@ The power of the spread in determining which team will win the game is clearly v
 
 There doesn't appear to be a divide as sharp as the model's feature importance results suggest there is between the spread and the next two most important features.  After all, the difference in _Total DVOA_ and _Points Allowed per Game_ seem to be at least in the same ballpark as the spread for explaining the variance in the outcome of a game.  Recognizing that a simple linear regression is not asking the same question as "which feature has the biggest impact" is important.  Linear regression attempts to explain the variance in a target variable (game outcomes) as a result of changes in the independent variable (spread, DVOA, etc.). Feature importance is determined a [couple of ways](#feature-separation-and-importance), and generally measures the information gained about class separation, or purity, when a given feature is evaluated.  That said, I was curious as to what was causing the apparent discrepancy and decided to dig a little deeper.
 
-###### Prediction Confidence
+##### Prediction Confidence
 Back in the [Receiver Operating Characteristic](#receiver-operating-characteristic) section, we discussed how a classifier makes predictions about which class to assign a data point to with a certain level of probability.  We can access these probabilities for each prediction and investigate their results on a granular level.  One reason to do this is, much like using the ROC curve, we want to identify different threshold ranges in which the model does well or poorly.  Again, as the goal is to identify games which make wise bets, we are likely more interested in the _precision_ of our predictions (how many of the predictions we make are correct?) compared to the _recall_ (the ratio of games out of the dataset that are "positive" which we correctly identify).  (In short, think _quality_ over _quantity_).
 
 <img src="images/precision_by_proba_thresh.png" align="middle" alt="Precision by probability window">
@@ -724,15 +724,49 @@ Back in the [Receiver Operating Characteristic](#receiver-operating-characterist
 
 Our model has the expected parabolic horseshoe curve we expect for precision.  At either extreme of the plot we are much more confident about our prediction.  Far to the left our probability of a game being classified as a home win (the "positive" class) is very low, meaning the probability of it being a home loss is very high.  The opposite is true on the far right of the graph.  As we progress toward the middle, where confidence in prediction waivers -- probability of 0.5 represents a 50/50 toss-up -- we see the precision dip.  The model just isn't sure about how to predict these games and gives a low confidence in its prediction correspondingly.  
 
-The class ratio for predicting a game's winner is, as mentioned previously, 58% home winner and 42% road winner.  This means the _minimum_ level of accuracy we would ever accept is 58%, because all we have to do is label _every_ game a "home win" and we will be right 58% of the time.  Thus, our baseline is not the traditional 50% but rather 58%.  With this in mind, I colored each data point relative to this baseline.  Red is below, blue is above.  This helps to demonstrate the strong and weak points of the model over the entire probability range.  Again, the densest cluster of red points comes in the middle of the plot, where the predictions are least confident.  This makes sense.  Interestingly, once the model determines a game is going to be won by the home team with at least 70% probability (x-axis), it averages an above-baseline precision for every probability interval thereafter. It bears repeating that unless the precision is 1.0, there are some games in the given probability interval that it predicted incorrectly. 
+The class ratio for predicting a game's winner is, as mentioned previously, 58% home winner and 42% road winner.  This means the _minimum_ level of accuracy we would ever accept is 58%, because all we have to do is label _every_ game a "home win" and we will be right 58% of the time.  Thus, our baseline is not the traditional 50% but rather 58%.  With this in mind, I colored each data point relative to this baseline.  Red is below, blue is above.  This helps to demonstrate the strong and weak points of the model over the entire probability range.  Again, the densest cluster of red points comes in the middle of the plot, where the predictions are least confident.  This makes sense.  Interestingly, once the model determines a game is going to be won by the home team with at least 70% probability (x-axis), it averages an above-baseline precision for every probability interval thereafter. It bears repeating that unless the precision is 1.0, there are some games in the given probability interval that it predicted incorrectly.
+
+###### Cumulative Precision
+<img src="images/cumulative_precision_below-above_50perc_proba.png" align="middle" alt="Cumulative Precision above .5p">
+
+<sub>__Figure 721:__ Cumulative precision bifurcated at 0.50 probability threshold and colored by class of prediction, with blue being "home loss" and green being "home win".  The aim of this plot is to serve as a "betting cutoff" locator by allowing the user to see that all games with a 0.70 probability or higher average around an 83% success rate or better.  Hence, choosing to bet in favor of the home team winning only on games at or above the 0.70 probability threshold would ideally lead to a greater than 83% win rate over time.</sub>
+
+<BR>
+
+Piggybacking on [Figure 721](#prediction-confidence), I wanted to take a look at while I'll term the "cumulative precision" for each side of the classification split.  Starting at 0.5 probability, in the center of the plot, proceed either left or right.  On either side are mean precision values for all the predictions of the respective class at that threshold and beyond.  
+
+Since this is a bit of an uncommon plot, let me explain with more detail.  The blue data points represent predictions for class 0, "home loss", and green are class 1, "home win."  Starting at 0.51 and going to the right, each data point shows the mean precision for all predictions made for class "home win" at this threshold and above (the cumulative games at or beyond the threshold).  As we go further right, the confidence threshold for predicting a "home win" gets higher and our mean precision increases as a result.  However, the number of games per threshold range goes _down_ the further from the center we go.  That is, more games are near a 50/50 probability than are a 90% probability of being predicted correctly.  This makes sense, and we see it in [Figure 731](#games-per-season-by-confidence-level) below.  
+
+The same description is true of the blue data points, which are below the .05 probability threshold and denote games that are predicted to be a "home loss."  In general, we see the model is less accurate in its predictions for games that are meant to be home losses than for games meant to be home wins.  My first hunch as to why this occurs is that it is simply a result of "home loss" being the minority class by a 42% to 58% ratio.  This means there are fewer games of this class to learn from in the training data and predicting these types of games is less precise.  
+
+Also, with fewer games it means each incorrect prediction weighs more heavily on the aggregated result.  Conversely, it also means that the model has to make fewer correct predictions to have a perfect score, which is what we observe in the final four data points at the top left.  The two left-most points of the quartet are actually the same prediction: all predictions made at or below the threshold of 0.16.  There's only one prediction in this range, at 0.15, and it was correct.  So, as described above, if we start at 0.50 and go down in probability (left), when we arrive at 0.16 the only data point left is at 0.15.  Thus, all predictions at or below 0.16 were correct, as they were for 0.15 as well.  Because results from small sample sizes can be misleading, it is essential to understand how the sample sizes for each prediction range change.
+
+The consequence of having fewer games at the tails of the prediction ranges means that the more confident we are about predicting a game, the fewer games we will have to make such a confident bet on.  In order to get a sensible handle on just how many or few games this pattern left us, I charted the distribution of games per season across all probability thresholds alongside the distribution of probabilities for predicting a "home win."  
+
+###### Games Per Season by Confidence Level
+<img src="images/games_per_season_proba_subplot.png" align="middle" alt="Games Per Season by Probability Dist">
+
+<sub>__Figure 731:__ The distributions for the number of games per season across all probability thresholds and for all the probabilities themselves.</sub>
+
+<BR>
+
+The probability thresholds have a minimum of 0.15 and a maximum of 0.88.  No game lies outside of this nearly symmetric range.  However, the distribution of the probabilities is not quite as symmetric, with a noticeable density above the 0.50 probability divide.  This is a direct consequence of the 58%-to-42% class imbalance.  Since there are more games in the "home win" class, we expect and observe that our model makes more predictions for the "home win" result (above 0.50) than for the "home loss" result (below 0.50).  Looking at the peak of the kernel density estimate outline, we see it falls right at 0.60, which is close to 58%.  In fact, the true mean of all "home win" probabilities is .573 -- very, very close to 0.58!  (The reason the KDE peak is not 0.573 is simply a relic of the binning for the histogram).  
+
+<img src="images/games_per_season_proba.png" align="right" alt="Games Per Season by Probability" width="600">
+<BR><BR>
+Since the number of games decreases as prediction confidence increases (in either direction), we want to make our bets count.  The smart approach would seem to be avoiding all games within the 0.40 to 0.60 range as a general rule, and perhaps even higher.  It's hard to sell oneself on a bet the model only has 62% confidence in, after all.  But making bets based on an arbitrary level of confidence is unwise and is only the initial step in choosing games to bet on.
+
+<BR><BR>
+
+<div align="right">
+<sub><b>Figure 741:</b> The number of games for each probability threshold window.  We see here the inverse of the prediction precision <BR> results from [Figure 711](#prediction-confidence), where the clear majority of games occurs in the middle of the probability range and tails off sharply at either end.
+</sub>
+</div>
+<BR>
+
+More instructive is to look at the cumulative precision and see
 
 
-
-**hist of class 1 proba**
-
-
-
-**Proba**
 
 
 
