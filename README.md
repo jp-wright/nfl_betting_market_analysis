@@ -759,7 +759,8 @@ Since the number of games decreases as prediction confidence increases (in eithe
 <BR><BR>
 
 <div align="right">
-<sub><b>Figure 741:</b> The number of games for each probability threshold window.  We see here the inverse of the prediction precision <BR> results from [Figure 711](#prediction-confidence), where the clear majority of games occurs in the middle of the probability range and tails off sharply at either end.
+<sub><b>Figure 741:</b> The number of games for each probability threshold window.  We see here the <BR>
+inverse of the prediction precision results from [Figure 711](#prediction-confidence), where the clear majority of games occurs in the middle of the probability range and tails off sharply at either end.
 </sub>
 </div>
 <BR>
