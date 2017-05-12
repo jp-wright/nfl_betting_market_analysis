@@ -29,16 +29,19 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [Feature Overlaps](#feature-overlaps)
 5. [Results](#results)
     + [Spread Results](#spread-results)
+      + [Summary Stats](#spread-summary-stats)
       + [Accuracy](#spread-accuracy)
       + [Feature Importance](#feature-importance)
       + [Analysis](#spread-analysis)
     + [Over/Under](#over---under)
+      + [Summary Stats](#over---under-summary-stats)
       + [Accuracy](#over---under-accuracy)
       + [Feature Importance](#over---under-feature-importance)
       + [Analysis](#over---under-analysis)
     + [Money Line](#money-line-results)
+    + [Predicting Bet Outcomes](#predicting-bet-outcomes)
     + [Predicting the Winner](#predicting-the-winner)
-      + **ROC** /**CMAT**
+      + [Summary Stats](#winner-summary-stats)
       + [Accuracy](#winning-team-accuracy)
       + [Feature Importance](#winning-team-feature-importance)
     + Weather
@@ -565,7 +568,7 @@ The results for predicting these two bets never got much above 51%.  Remembering
 
 <BR>
 
-#### The Winning Team
+### Predicting The Winner
 ###### Winning Team Summary Statistics
 Statistic     | Mean (pts) | Std. Dev. | Min (abs) (pts) | Max (abs) (pts) | Min Sigma | Max Sigma
 --------------|:----------:|:---------:|:---------------:|:---------------:|:---------:|:--------:|
