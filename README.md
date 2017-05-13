@@ -785,9 +785,9 @@ Second, and the biggest heartbreaker of this project (more so than the model's y
 
 __Figure 751__ shows us what's really going on "under the hood" when our model is assigning a probability to its predictions.  Back in [Figure 721](#cumulative-precision), we saw the model become more successful on predictions made with higher confidence, as expected.  Ideally we could use this data to find a cutoff point for our own bets, selecting only games that carried a certain level of confidence in order to secure a highly favorable chance at winning each bet.  This approach is still valid, but the picture painted by __Figure 751__ carries a deflating realization: the confidence level of predictions is a near-perfect mirror of the spread for the game.  
 
-Now we see where the spread assumes its dominant position among the most important features.  Compare the correlation of the prediction probability with the spread, the most important feature according to the model, to that of the third most important feature, the difference in average pass completions per game between the two teams playing.  While the completions delta statistic follows a general trend of increasing with probability, the spread is tightly hewn along the regression line.  Also, note that both regressions were plotted with a 2nd-order polynomial, but the spread is so dead-on that its line of best fit is still linear.
+Now we see where the spread assumes its dominant position among the most important features.  Compare the correlation of the prediction probability with the spread, the most important feature according to the model, to that of the third most important feature, the difference in average pass completions per game between the two teams playing.  While the completions delta statistic follows a general trend of increasing with probability, the spread is tightly hewn along the regression line (the simple OLS R<sup>2</sup> is .838 for the confidence level and the spread).  Also, note that both regressions were plotted with a 2nd-order polynomial, but the spread is so dead-on that its line of best fit is still linear.
 
-Why is this such a big deal, one may ask?  While it's clear the spread helps our model be much more accurate in its predictions, our model's demonstrated reliance upon it undermines the whole motivation for this project: to identify games which are inaccurately valued by Vegas in order profit from our exploitation of an inefficiency in the betting market.  That hope is eviscerated with this result.  All the games our model is confident about are the same ones Vegas is confident about.  There is no "hidden" value in these bets.  The bettor will have to pay a (potentially hefty) premium when making these bets.  Needless to say, while it is not a shocking conclusion, it left me personally rather [disappointed](https://www.youtube.com/watch?v=_O1hM-k3aUY)!
+Why is this such a big deal, one may ask?  While it's clear the spread helps our model be much more accurate in its predictions, our model's demonstrated reliance upon it undermines the whole motivation for this project: to identify games which are inaccurately valued by Vegas in order profit from our exploitation of an inefficiency in the betting market.  That hope is eviscerated with this result.  All the games our model is confident about are the same ones Vegas is confident about.  There is no great "hidden" value in these bets.  The bettor will have to pay a (potentially hefty) premium when making these bets.  Needless to say, while it is not a shocking conclusion, it left me personally rather [disappointed](https://www.youtube.com/watch?v=_O1hM-k3aUY)!
 
 The lone positive that can be gleaned from this finding is that, yet again, oddsmakers (and their arrays of supercomputers) _do_ know what they're doing.  So if money isn't scarce, then paying the premium on a strong favorite that is corroborated by the model is likely a winning strategy in the long run.  With this in mind we examine next how to best use this betting approach.
 
@@ -797,14 +797,14 @@ Following from the findings above are the following points of interest:
     + We will be betting on favorites.
 2. The accuracy of the model is not equal on both sides of the spread.  It is more reliable, due to a larger sample size, in predicting when a home team will when than when they will lose.  
     + We will restrict our bets to home teams that are favored.
-3. The model starts to perform especially well -- around 78% or better precision -- on bets it gives a 0.70 confidence for the home team to win.  This equates to the home team being favored by around 6.2 points.  
+3. The model starts to perform reliably well -- around 71% or better precision -- on bets it gives a 0.70 or better confidence for the home team to win.  This equates to the home team being favored by around 6.2 points.  
     + We will further restrict our bets to home teams that are favored by 6.0+ points.
-4. Betting on a favorite means paying a premium.  We have to wager more money than we will win.  Because of this, the most confident bets also carry the highest risk for the favorite-backer.  So, we want to avoid paying extreme premiums if the increase in prediction confidence is only marginal.  Looking at [Figure 721](#cumulative-precision) we see a mini-peak at 0.74 probability.  After this, there is a diminished return on precision for increase in probability, excluding the high-variance, small sample size results at the extreme.  0.74 probability equates to roughly a home team being favored by +7.5 points.
+4. Betting on a favorite means paying a premium.  We have to wager more money than we will win.  Because of this, the most confident bets also carry the highest risk for the favorite-backer.  So, we want to avoid paying extreme premiums if the increase in prediction confidence is only marginal.  Accepting that the cumulative precision is only a loose and optimistic-by-nature guide, looking at [Figure 721](#cumulative-precision) we see a mini-peak at 0.74 probability.  After this, there is a diminished return on precision for increase in probability, excluding the high-variance, small sample size results at the extreme.  0.74 probability equates to roughly a home team being favored by +7.5 points.
     + We will forego bets on games where the home team is favored by more than 7.5 points, assuming the odds are proportional to such a line (discussed below)
 
 This strategy leaves us with bets on the home team when they are favored by 6.0, 6.5, 7.0, or 7.5 points.  There are two questions left to answer: how much money on average do we expect to pay as a premium for each line, and how many games are there within that range each year?
 
-###### Premium Costs
+###### The Favorite Tax
 To understand [how much we will have to pay](#interpreting-odds-and-the-payout) as a premium, we have to look at the median money line for all games in the database which have the spreads we are interested in.
 
 Home Favorite | Road Money Line | Home Money Line | Home Team Win % | Games / Season | Frequency
@@ -822,13 +822,20 @@ I want to touch on the historical winning percentages briefly, but will first di
 
 The feasibility of such an approach depends on how many candidate games there are.  If there are enough to spread our informed bets around, then we can pursue this method.  A quick glance at __Table 00__ shows us that there does indeed appear to be enough of a sample for us to try to minimize our overall risk.  The two lines at -6.0 and -6.5 have a roughly equal rate of occurrence, about once every two weeks of a regular season.  Combined, that gives about once a week throughout the season.  For the two lines at -7.0 and -7.5, we have a bigger difference between the two but a combined count nearly identical to the 6s, giving us around one bet per week.  In sum, if we consider all four spreads we should expect to see around two games per week that we can wager on, totaling around 34 possible bets, or 12% of all NFL games in a season.
 
-  
+So, why even use the model?  Why not just bet all games with the home team favored by 6.0 - 7.5 points?  Well, while it is clear the model follows the spread, not all games in this range are equally confident.  As mentioned above, there is no great hidden value to be found betting against Vegas, but the model does still _outperform_ the spread alone.  Here is a table showing the actual values for the spread range of interest.
 
+Home Favorite | Historical Home Win % | Model Home Win % | Model ∆
+--------------|-----------------------|------------------|--------
+6.0           | 0.693                 | 0.719            | +0.026
+6.5           | 0.665                 | 0.722            | +0.057
+7.0           | 0.718                 | 0.719            | +0.001
+7.5           | 0.790                 | 0.919            | +0.129
 
+<sub>__Table 1Billion:__ Table showing the difference between the model's predictions and the historical outcomes.  Taken from __Tables A1__ and __A2__ in the appendix.
 
+<BR>
 
-
-
+One important point to make about these results is that the model's predictions were made on 1,100 games after being trained on 4,488 games, while the historical averages are real data from 9,046 games.  Depending on the random draw of the samples the model is trained on and then tested on, some degree of fluctuation in these percentages is guaranteed.  Thus, taking the outcomes above as written in stone is not the correct way to view this problem.  Instead, it stands to show that the model is predicting well enough to compare with historical data and is a valid tool to use in making bets.  
 
 <BR>
 <BR>
@@ -866,8 +873,8 @@ __90.4%__ of all spreads are <= +/- 10.
 
 
 ## Appendix
-###### Table A1
-Road Spread | Road Money Line | Home Money Line | Home Team Win %
+###### Table A1 - Money Line And Win % Values as Home Favorite, 1978-2016
+Home Favorite | Road Money Line | Home Money Line | Home Team Win %
 ------------|-----------------|-----------------|----------------
 1.0         | 100.0           | -115.0          | 0.528
 1.5         | 105.0           | -125.0          | 0.496
@@ -897,13 +904,11 @@ Road Spread | Road Money Line | Home Money Line | Home Team Win %
 13.5        | 600.0           | -800.0          | 0.802
 14.0        | 675.0           | -950.0          | 0.830
 
-<sub>__Table A1:__ Historical values for spreads in which the home team was favored, 1978-2016.</sub>
-
 <BR>
 <BR>
 
-###### Table A2
-Spread  | Number Games (1978-2016)
+###### Table A2 - Number of Games by Spread, 1978-2016
+Home Favorite  | Number Games
 --------|------------------------
 3.0     | 814
 3.5     | 476
@@ -933,9 +938,272 @@ Spread  | Number Games (1978-2016)
 11.5    |  47
 12.5    |  41
 
-<sub>__Table A2:__ Historical counts for number of games with a given spread favoring the home team, 1978-2016.</sub>
+<BR>
+<BR>
 
-<BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
+###### Table A3 - Home Win % by All Spreads, 1978-2016
+Home Spread	| Home Win % | Home Spread | Home Win %
+------------|------------|-------------|-----------
+23.0        | 0.000      | -0.0        | 0.558
+19.0        | 1.000      | -1.0        | 0.528   
+18.5        | 0.000      | -1.5        | 0.496   
+17.5        | 0.000      | -2.0        | 0.569
+16.5        | 1.000      | -2.5        | 0.531
+16.0        | 0.000      | -3.0        | 0.587
+15.5        | 0.000      | -3.5        | 0.607
+15.0        | 0.000      | -4.0        | 0.609
+14.5        | 0.000      | -4.5        | 0.647
+14.0        | 0.250      | -5.0        | 0.706
+13.5        | 0.000      | -5.5        | 0.666
+13.0        | 0.307      | -6.0        | 0.693
+12.5        | 0.200      | -6.5        | 0.665
+12.0        | 0.125      | -7.0        | 0.718
+11.5        | 0.500      | -7.5        | 0.790
+11.0        | 0.173      | -8.0        | 0.747
+10.5        | 0.192      | -8.5        | 0.810
+10.0        | 0.297      | -9.0        | 0.781
+ 9.5        | 0.170      | -9.5        | 0.812
+ 9.0        | 0.313      | -10.0       | 0.807
+ 8.5        | 0.250      | -10.5       | 0.772
+ 8.0        | 0.276      | -11.0       | 0.829
+ 7.5        | 0.268      | -11.5       | 0.872
+ 7.0        | 0.255      | -12.0       | 0.857
+ 6.5        | 0.291      | -12.0       | 0.857
+ 6.0        | 0.340      | -12.5       | 0.829
+ 5.5        | 0.311      | -13.0       | 0.864
+ 5.0        | 0.375      | -13.5       | 0.802
+ 4.5        | 0.277      | -14.0       | 0.830
+ 4.0        | 0.357      | -14.5       | 0.864
+ 3.5        | 0.383      | -15.0       | 0.950
+ 3.0        | 0.431      | -15.5       | 1.000
+ 2.5        | 0.504      | -16.0       | 0.941
+ 2.0        | 0.461      | -16.5       | 1.000
+ 1.5        | 0.519      | -17.0       | 0.900
+ 1.0        | 0.479      | -17.5       | 0.800
+|           |            | -18.0       | 1.000
+|           |            | -18.5       | 1.000
+|           |            | -19.0       | 1.000
+|           |            | -19.5       | 1.000
+|           |            | -20.0       | 1.000
+|           |            | -20.5       | 1.000
+|           |            | -21.5       | 1.000
+|           |            | -22.5       | 1.000
+|           |            | -24.0       | 1.000
+|           |            | -24.5       | 1.000
+|           |            | -26.5       | 1.000
+
+<BR>
+<BR>
+
+###### Table A4- Model Accuracy by Spread
+Home Spread | Mean Home Win Proba | Prediction Win %
+------------|----------------|-----------------
+14.0 | 0.24 | 0.500
+13.5 | 0.28 | 1.000
+12.5 | 0.26 | 1.000
+12.0 | 0.27 | 1.000
+11.5 | 0.37 | 0.000
+11.0 | 0.22 | 1.000
+10.5 | 0.24 | 1.000
+10.0 | 0.34 | 0.857
+9.5 | 0.27 | 0.875
+9.0 | 0.29 | 0.429
+8.5 | 0.32 | 0.500
+8.0 | 0.32 | 0.500
+7.5 | 0.36 | 0.700
+7.0 | 0.31 | 0.714
+6.5 | 0.35 | 0.684
+6.0 | 0.32 | 0.714
+5.5 | 0.34 | 0.688
+5.0 | 0.37 | 0.400
+4.5 | 0.31 | 0.786
+4.0 | 0.33 | 0.471
+3.5 | 0.41 | 0.645
+3.0 | 0.43 | 0.525
+2.5 | 0.43 | 0.387
+2.0 | 0.44 | 0.700
+1.5 | 0.51 | 0.600
+1.0 | 0.53 | 0.476
+-0.0 | 0.55 | 0.545
+-1.0 | 0.53 | 0.667
+-1.5 | 0.55 | 0.586
+-2.0 | 0.57 | 0.500
+-2.5 | 0.56 | 0.500
+-3.0 | 0.58 | 0.612
+-3.5 | 0.60 | 0.629
+-4.0 | 0.62 | 0.676
+-4.5 | 0.61 | 0.657
+-5.0 | 0.66 | 0.533
+-5.5 | 0.68 | 0.611
+-6.0 | 0.65 | 0.719
+-6.5 | 0.68 | 0.722
+-7.0 | 0.73 | 0.719
+-7.5 | 0.78 | 0.919
+-8.0 | 0.75 | 0.762
+-8.5 | 0.76 | 0.692
+-9.0 | 0.78 | 0.800
+-9.5 | 0.79 | 0.950
+-10.0 | 0.79 | 0.833
+-10.5 | 0.80 | 0.714
+-11.0 | 0.81 | 1.000
+-11.5 | 0.76 | 1.000
+-12.0 | 0.79 | 0.800
+-12.5 | 0.82 | 1.000
+-13.0 | 0.82 | 0.818
+-13.5 | 0.82 | 0.875
+-14.0 | 0.86 | 0.857
+-14.5 | 0.85 | 0.800
+-15.0 | 0.82 | 1.000
+-15.5 | 0.86 | 1.000
+-16.5 | 0.79 | 1.000
+-17.0 | 0.79 | 1.000
+-18.5 | 0.80 | 1.000
+-20.5 | 0.84 | 1.000
+
+<BR>
+<BR>
+
+###### Table A4 - Model Predictions for Home Winner by Probability
+Prob. Home Team Win | Road Win % | Mean Home Spread | Prob. Home Team Win | Home Win % | Mean Home Spread
+--------------------|------------|------------------|---------------------|------------|------------------
+0.15                | 1.00       | 12.50            | 0.50                | 0.38       | -0.81           
+0.17                | 1.00       | 9.50             | 0.51                | 0.73       | -1.30   
+0.19                | 0.50       | 12.50            | 0.52                | 0.53       | -0.18         
+0.20                | 1.00       | 9.33             | 0.53                | 0.40       | -0.88     
+0.22                | 0.60       | 6.90             | 0.54                | 0.52       | -2.22
+0.23                | 1.00       | 7.30             | 0.55                | 0.55       | -2.16          
+0.24                | 0.60       | 7.40             | 0.56                | 0.50       | -2.12
+0.25                | 1.00       | 8.50             | 0.57                | 0.62       | -2.78    
+0.26                | 0.50       | 7.06             | 0.58                | 0.60       | -2.38      
+0.27                | 0.57       | 6.00             | 0.59                | 0.72       | -3.16     
+0.28                | 0.64       | 6.64             | 0.60                | 0.52       | -2.98      
+0.29                | 0.85       | 6.12             | 0.61                | 0.54       | -3.01    
+0.30                | 0.80       | 6.45             | 0.62                | 0.75       | -4.03
+0.31                | 0.54       | 5.04             | 0.63                | 0.54       | -3.96  
+0.32                | 0.67       | 6.67             | 0.64                | 0.78       | -4.91
+0.33                | 0.82       | 5.97             | 0.65                | 0.82       | -4.84      
+0.34                | 0.82       | 5.09             | 0.66                | 0.62       | -5.31     
+0.35                | 0.50       | 5.25             | 0.67                | 0.58       | -6.34         
+0.36                | 0.75       | 4.38             | 0.68                | 0.56       | -6.09  
+0.37                | 0.62       | 4.74             | 0.69                | 0.65       | -5.91    
+0.38                | 0.73       | 3.97             | 0.70                | 0.75       | -6.46     
+0.39                | 0.50       | 4.95             | 0.71                | 0.71       | -7.25   
+0.40                | 0.54       | 4.35             | 0.72                | 0.79       | -7.41     
+0.41                | 0.56       | 3.72             | 0.73                | 0.91       | -7.14  
+0.42                | 0.67       | 2.07             | 0.74                | 0.82       | -7.27     
+0.43                | 0.54       | 3.00             | 0.75                | 0.80       | -7.43    
+0.44                | 0.47       | 2.73             | 0.76                | 0.82       | -9.35       
+0.45                | 0.60       | 1.63             | 0.77                | 0.92       | -8.08    
+0.46                | 0.53       | 1.06             | 0.78                | 0.64       | -8.64       
+0.47                | 0.65       | 0.94             | 0.79                | 0.94       | -9.53    
+0.48                | 0.40       | 1.05             | 0.80                | 0.92       | -10.12      
+0.49                | 0.53       | -0.61            | 0.81                | 0.76       | -9.67            
+|                   |            |                  | 0.82                | 0.82       | -10.26            
+|                   |            |                  | 0.83                | 0.80       | -11.67            
+|                   |            |                  | 0.84                | 0.88       | -10.66            
+|                   |            |                  | 0.85                | 0.91       | -10.00            
+|                   |            |                  | 0.86                | 0.88       | -10.75            
+|                   |            |                  | 0.87                | 1.00       | -11.64            
+|                   |            |                  | 0.88                | 0.83       | -12.08            
+
+
+###### Table A5 - Historical 'Cumulative' Home Win Percent (bifurcated), 1978-2016
+(To be compared against model's "cumulative precision above threshold")
+Home Spread | Home Win Percent | Home Spread | Home Win Percent
+------------|------------------|-------------|-----------------
+23.0        | 0.00             | -0.0        | 0.67
+19.0        | 0.50             | -1.0        | 0.68
+18.5        | 0.33             | -1.5        | 0.68
+17.5        | 0.25             | -2.0        | 0.69
+16.5        | 0.40             | -2.5        | 0.69
+16.0        | 0.29             | -3.0        | 0.70
+15.5        | 0.22             | -3.5        | 0.72
+15.0        | 0.18             | -4.0        | 0.74
+14.5        | 0.10             | -4.5        | 0.75
+14.0        | 0.15             | -5.0        | 0.76
+13.5        | 0.12             | -5.5        | 0.76
+13.0        | 0.16             | -6.0        | 0.77
+12.5        | 0.17             | -6.5        | 0.78
+12.0        | 0.16             | -7.0        | 0.79
+11.5        | 0.20             | -7.5        | 0.81
+11.0        | 0.19             | -8.0        | 0.82
+10.5        | 0.19             | -8.5        | 0.83
+10.0        | 0.22             | -9.0        | 0.83
+9.5         | 0.21             | -9.5        | 0.83
+9.0         | 0.23             | -10.0       | 0.84
+8.5         | 0.23             | -10.5       | 0.85
+8.0         | 0.24             | -11.0       | 0.86
+7.5         | 0.24             | -11.5       | 0.86
+7.0         | 0.25             | -12.0       | 0.86
+6.5         | 0.26             | -12.5       | 0.86
+6.0         | 0.27             | -13.0       | 0.87
+5.5         | 0.27             | -13.5       | 0.87
+5.0         | 0.28             | -14.0       | 0.90
+4.5         | 0.28             | -14.5       | 0.93
+4.0         | 0.29             | -15.0       | 0.95
+3.5         | 0.31             | -15.5       | 0.95
+3.0         | 0.34             | -16.0       | 0.94
+2.5         | 0.36             | -16.5       | 0.95
+2.0         | 0.36             | -17.0       | 0.94
+1.5         | 0.37             | -17.5       | 0.96
+1.0         | 0.38             | -18.0       | 1.00
+|           |                  | -18.5       | 1.00
+|           |                  | -19.0       | 1.00
+|           |                  | -19.5       | 1.00
+|           |                  | -20.0       | 1.00
+|           |                  | -20.5       | 1.00
+|           |                  | -21.5       | 1.00
+|           |                  | -22.5       | 1.00
+|           |                  | -24.0       | 1.00
+|           |                  | -24.5       | 1.00
+
+
+
+###### Table A6 - Model 'Cumulative' Accuracy (bifurcated), 1978-2016
+Pred. Proba | Road Win Percent | Mean Home Spread | Pred. Proba | Home Win Percent | Mean Home Spread
+------------|------------------|------------------|-------------|------------------|-----------------
+0.16        | 1.00             | 12.50            | 0.50        | 0.71             | -4.56
+0.17        | 1.00             | 12.50            | 0.51        | 0.75             | -5.35
+0.18        | 1.00             | 11.00            | 0.52        | 0.76             | -5.44
+0.19        | 1.00             | 11.00            | 0.53        | 0.76             | -5.58
+0.20        | 0.90             | 11.75            | 0.54        | 0.77             | -5.79
+0.21        | 0.88             | 10.71            | 0.55        | 0.78             | -5.92
+0.22        | 0.88             | 10.71            | 0.56        | 0.78             | -6.11
+0.23        | 0.80             | 8.47             | 0.57        | 0.79             | -6.28
+0.24        | 0.79             | 8.20             | 0.58        | 0.79             | -6.46
+0.25        | 0.78             | 8.06             | 0.59        | 0.80             | -6.65
+0.26        | 0.77             | 8.07             | 0.60        | 0.80             | -6.82
+0.27        | 0.75             | 7.85             | 0.61        | 0.81             | -7.07
+0.28        | 0.74             | 7.55             | 0.62        | 0.81             | -7.43
+0.29        | 0.72             | 7.32             | 0.63        | 0.82             | -7.69
+0.30        | 0.72             | 7.10             | 0.64        | 0.82             | -7.97
+0.31        | 0.72             | 7.02             | 0.65        | 0.83             | -8.16
+0.32        | 0.71             | 6.74             | 0.66        | 0.83             | -8.44
+0.33        | 0.71             | 6.73             | 0.67        | 0.83             | -8.57
+0.34        | 0.71             | 6.63             | 0.68        | 0.84             | -8.71
+0.35        | 0.71             | 6.50             | 0.69        | 0.84             | -8.86
+0.36        | 0.71             | 6.40             | 0.70        | 0.85             | -9.05
+0.37        | 0.70             | 6.25             | 0.71        | 0.85             | -9.17
+0.38        | 0.70             | 6.07             | 0.72        | 0.85             | -9.29
+0.39        | 0.70             | 5.91             | 0.73        | 0.85             | -9.53
+0.40        | 0.70             | 5.87             | 0.74        | 0.85             | -9.66
+0.41        | 0.70             | 5.78             | 0.75        | 0.85             | -9.80
+0.42        | 0.69             | 5.70             | 0.76        | 0.86             | -10.01
+0.43        | 0.69             | 5.47             | 0.77        | 0.86             | -10.08
+0.44        | 0.69             | 5.35             | 0.78        | 0.86             | -10.26
+0.45        | 0.69             | 5.20             | 0.79        | 0.87             | -10.43
+0.46        | 0.68             | 5.01             | 0.80        | 0.87             | -10.57
+0.47        | 0.68             | 4.79             | 0.81        | 0.87             | -10.62
+0.48        | 0.68             | 4.59             | 0.82        | 0.88             | -10.88
+0.49        | 0.67             | 4.48             | 0.83        | 0.89             | -11.04
+|           |                  |                  | 0.84        | 0.90             | -10.84
+|           |                  |                  | 0.85        | 0.90             | -10.94
+|           |                  |                  | 0.86        | 0.90             | -11.43
+|           |                  |                  | 0.87        | 0.89             | -11.85
+|           |                  |                  | 0.88        | 0.83             | -12.08
+
+
+<BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
 
 
 
