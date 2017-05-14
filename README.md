@@ -897,30 +897,27 @@ Here we put our money where our mouth is.  In an effort to keep things manageabl
 The test data we use is 1,100 games, or about 4.23 NFL seasons' worth of games.  
 
 
+best:
+.71-.82
+
+
+worst:
+.55-.72
 
 
 
-### Matchup Types
 
 
-Below are the results for each of the five Vegas-related targets investigated in this project.  
+### Types of Game Matchups
+<img src="images/4wayGameTypeClusterTSNE.gif" align="middle" alt="t-SNE of Game Type Clusters">
 
-__90.4%__ of all spreads are <= +/- 10.
+<sub>__Figure 3451:__ t-SNE..........</sub>
 
 
 
 <BR>
 
 ## Future Considerations
-
-
-
-
-
-2.
-3.  
-
-
 
 
 
