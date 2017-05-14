@@ -868,7 +868,7 @@ Method | Min Home Favorite | Max Home Favorite | Total Games | Bet Win %
 Spread | 6.0               | 7.5               | 1,371       | 70.7
 Model  | 5.9 (mean)        | 7.4 (mean)        | 124         | 74.3
 
-<sub< __Table 67:__ The model compares favorably to the spread, but suffers from a smaller sample size.</sub>
+<sub> __Table 67:__ The model compares favorably to the spread, but suffers from a smaller sample size.</sub>
 
 <BR>
 
@@ -880,7 +880,7 @@ Method | Min Home Favorite | Max Home Favorite | Total Games | Bet Win %
 Spread | 2.5               | 13.0              | 124         | 74.2
 Model  | 5.9 (mean)        | 7.4 (mean)        | 124         | 74.3
 
-<sub< __Table 68:__ Using the same games, the spread is now equal to the model.</sub>
+<sub> __Table 68:__ Using the same games, the spread is now equal to the model.</sub>
 
 <BR>
 
