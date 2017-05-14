@@ -802,7 +802,7 @@ Following from the findings above are the following points of interest:
 4. Betting on a favorite means paying a premium.  We have to wager more money than we will win.  Because of this, the most confident bets also carry the highest risk for the favorite-backer.  So, we want to avoid paying extreme premiums if the increase in prediction confidence is only marginal.  Accepting that the cumulative precision is only a loose and optimistic-by-nature guide, looking at [Figure 721](#cumulative-precision) we see a mini-peak at 0.74 probability.  After this, there is a diminished return on precision for increase in probability, excluding the high-variance, small sample size results at the extreme.  0.74 probability equates to roughly a home team being favored by +7.5 points.
     + We will forego bets on games where the home team is favored by more than 7.5 points, assuming the odds are proportional to such a line (discussed below)
 
-This strategy leaves us with bets on the home team when they are favored by 6.0, 6.5, 7.0, or 7.5 points.  There are two questions left to answer: how much money on average do we expect to pay as a premium for each line, and how many games are there within that range each year?
+These are loose guides to help formulate our approach.  This strategy leaves us with bets on the home team when they are favored by 6.0, 6.5, 7.0, or 7.5 points.  There are two questions left to answer: how much money on average do we expect to pay as a premium for each line, and how many games are there within that range each year?
 
 ###### The Favorite Tax
 To understand [how much we will have to pay](#interpreting-odds-and-the-payout) as a premium, we have to look at the median money line for all games in the database which have the spreads we are interested in.
@@ -822,7 +822,7 @@ I want to touch on the historical winning percentages briefly, but will first di
 
 The feasibility of such an approach depends on how many candidate games there are.  If there are enough to spread our informed bets around, then we can pursue this method.  A quick glance at __Table 00__ shows us that there does indeed appear to be enough of a sample for us to try to minimize our overall risk.  The two lines at -6.0 and -6.5 have a roughly equal rate of occurrence, about once every two weeks of a regular season.  Combined, that gives about once a week throughout the season.  For the two lines at -7.0 and -7.5, we have a bigger difference between the two but a combined count nearly identical to the 6s, giving us around one bet per week.  In sum, if we consider all four spreads we should expect to see around two games per week that we can wager on, totaling around 34 possible bets, or 12% of all NFL games in a season.
 
-So, why even use the model?  Why not just bet all games with the home team favored by 6.0 - 7.5 points?  Well, while it is clear the model follows the spread, not all games in this range are equally confident.  As mentioned above, there is no great hidden value to be found betting against Vegas, but the model does still _outperform_ the spread alone.  Here is a table showing the actual values for the spread range of interest.
+So, why even use the model?  Why not just bet all games with the home team favored by 6.0 - 7.5 points?  Well, while it is clear the model follows the spread, not all games in this range are equally confident.  As mentioned above, there is no great hidden value to be found betting against Vegas, but the model does still outperform the spread alone.  Here is a table showing the actual values for the spread range of interest.
 
 Home Favorite | Historical Home Win % | Model Home Win % | Model ∆
 --------------|-----------------------|------------------|--------
@@ -835,13 +835,15 @@ Home Favorite | Historical Home Win % | Model Home Win % | Model ∆
 
 <BR>
 
-One important point to make about these results is that the model's predictions were made on 1,100 games after being trained on 4,488 games, while the historical averages are real data from 9,046 games.  Depending on the random draw of the samples the model is trained on and then tested on, some degree of fluctuation in these percentages is guaranteed.  Thus, taking the outcomes above as written in stone is not the correct way to view this problem.  Instead, it stands to show that the model is predicting well enough to compare with historical data and is a valid tool to use in making bets.  
+It appears the model is effectively using the other data in the database to make more precise predictions than the spread alone.  One important point to make about these results is that the model's predictions were made on 1,100 games after being trained on 4,488 games, while the historical averages are real data from 9,046 games.  Depending on the random draw of the samples the model is trained on and then tested on, some degree of fluctuation in these percentages is guaranteed.  Such variance is just a fact of smaller sample sizes.  Thus, taking the outcomes above as written in stone is not the correct way to view this problem.  Instead, it stands to show that the model is predicting well enough to compare with historical data and is a valid tool to use in making bets.  
 
 <BR>
 <BR>
 
 ### Wise Bets Results
+Here we put our money where our mouth is.  Using our spread range of a home team being favored by 6.0 to 7.5 points translates into a prediction probability of 0.69 (spread = 5.98) to 0.74 (spread = 7.57).  This will be our range for probabilities by which to select games for betting.  In an effort to keep things manageable, we will agree to wager the exact money line for each game that falls into our confidence window.  This means that for every bet we win, we net $100.  For every bet we lose, we lose the amount of the money line, around $260 - $350.
 
+The test data we use is about 4.3 NFL seasons' worth of games.  
 
 
 
@@ -995,70 +997,70 @@ Home Spread	| Home Win % | Home Spread | Home Win %
 <BR>
 <BR>
 
-###### Table A4- Model Accuracy by Spread
+###### Table A4 - Model Accuracy by Spread
 Home Spread | Mean Home Win Proba | Prediction Win %
 ------------|----------------|-----------------
-14.0 | 0.24 | 0.500
-13.5 | 0.28 | 1.000
-12.5 | 0.26 | 1.000
-12.0 | 0.27 | 1.000
-11.5 | 0.37 | 0.000
-11.0 | 0.22 | 1.000
-10.5 | 0.24 | 1.000
-10.0 | 0.34 | 0.857
-9.5 | 0.27 | 0.875
-9.0 | 0.29 | 0.429
-8.5 | 0.32 | 0.500
-8.0 | 0.32 | 0.500
-7.5 | 0.36 | 0.700
-7.0 | 0.31 | 0.714
-6.5 | 0.35 | 0.684
-6.0 | 0.32 | 0.714
-5.5 | 0.34 | 0.688
-5.0 | 0.37 | 0.400
-4.5 | 0.31 | 0.786
-4.0 | 0.33 | 0.471
-3.5 | 0.41 | 0.645
-3.0 | 0.43 | 0.525
-2.5 | 0.43 | 0.387
-2.0 | 0.44 | 0.700
-1.5 | 0.51 | 0.600
-1.0 | 0.53 | 0.476
--0.0 | 0.55 | 0.545
--1.0 | 0.53 | 0.667
--1.5 | 0.55 | 0.586
--2.0 | 0.57 | 0.500
--2.5 | 0.56 | 0.500
--3.0 | 0.58 | 0.612
--3.5 | 0.60 | 0.629
--4.0 | 0.62 | 0.676
--4.5 | 0.61 | 0.657
--5.0 | 0.66 | 0.533
--5.5 | 0.68 | 0.611
--6.0 | 0.65 | 0.719
--6.5 | 0.68 | 0.722
--7.0 | 0.73 | 0.719
--7.5 | 0.78 | 0.919
--8.0 | 0.75 | 0.762
--8.5 | 0.76 | 0.692
--9.0 | 0.78 | 0.800
--9.5 | 0.79 | 0.950
--10.0 | 0.79 | 0.833
--10.5 | 0.80 | 0.714
--11.0 | 0.81 | 1.000
--11.5 | 0.76 | 1.000
--12.0 | 0.79 | 0.800
--12.5 | 0.82 | 1.000
--13.0 | 0.82 | 0.818
--13.5 | 0.82 | 0.875
--14.0 | 0.86 | 0.857
--14.5 | 0.85 | 0.800
--15.0 | 0.82 | 1.000
--15.5 | 0.86 | 1.000
--16.5 | 0.79 | 1.000
--17.0 | 0.79 | 1.000
--18.5 | 0.80 | 1.000
--20.5 | 0.84 | 1.000
+14.0        | 0.24           | 0.500
+13.5        | 0.28           | 1.000
+12.5        | 0.26           | 1.000
+12.0        | 0.27           | 1.000
+11.5        | 0.37           | 0.000
+11.0        | 0.22           | 1.000
+10.5        | 0.24           | 1.000
+10.0        | 0.34           | 0.857
+9.5         | 0.27           | 0.875
+9.0         | 0.29           | 0.429
+8.5         | 0.32           | 0.500
+8.0         | 0.32           | 0.500
+7.5         | 0.36           | 0.700
+7.0         | 0.31           | 0.714
+6.5         | 0.35           | 0.684
+6.0         | 0.32           | 0.714
+5.5         | 0.34           | 0.688
+5.0         | 0.37           | 0.400
+4.5         | 0.31           | 0.786
+4.0         | 0.33           | 0.471
+3.5         | 0.41           | 0.645
+3.0         | 0.43           | 0.525
+2.5         | 0.43           | 0.387
+2.0         | 0.44           | 0.700
+1.5         | 0.51           | 0.600
+1.0         | 0.53           | 0.476
+-0.0        | 0.55           | 0.545
+-1.0        | 0.53           | 0.667
+-1.5        | 0.55           | 0.586
+-2.0        | 0.57           | 0.500
+-2.5        | 0.56           | 0.500
+-3.0        | 0.58           | 0.612
+-3.5        | 0.60           | 0.629
+-4.0        | 0.62           | 0.676
+-4.5        | 0.61           | 0.657
+-5.0        | 0.66           | 0.533
+-5.5        | 0.68           | 0.611
+-6.0        | 0.65           | 0.719
+-6.5        | 0.68           | 0.722
+-7.0        | 0.73           | 0.719
+-7.5        | 0.78           | 0.919
+-8.0        | 0.75           | 0.762
+-8.5        | 0.76           | 0.692
+-9.0        | 0.78           | 0.800
+-9.5        | 0.79           | 0.950
+-10.0       | 0.79           | 0.833
+-10.5       | 0.80           | 0.714
+-11.0       | 0.81           | 1.000
+-11.5       | 0.76           | 1.000
+-12.0       | 0.79           | 0.800
+-12.5       | 0.82           | 1.000
+-13.0       | 0.82           | 0.818
+-13.5       | 0.82           | 0.875
+-14.0       | 0.86           | 0.857
+-14.5       | 0.85           | 0.800
+-15.0       | 0.82           | 1.000
+-15.5       | 0.86           | 1.000
+-16.5       | 0.79           | 1.000
+-17.0       | 0.79           | 1.000
+-18.5       | 0.80           | 1.000
+-20.5       | 0.84           | 1.000
 
 <BR>
 <BR>
