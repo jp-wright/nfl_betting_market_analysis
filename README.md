@@ -909,7 +909,7 @@ worst:
 
 
 ### Types of Game Matchups
-<img src="images/4wayGameTypeClusterTSNE.gif" align="middle" alt="t-SNE of Game Type Clusters">
+<img src="images/4wayGameTypeClusterTSNE.gif" align="middle" alt="t-SNE of Game Type Clusters" width="650">
 
 <sub>__Figure 3451:__ t-SNE..........</sub>
 
