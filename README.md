@@ -176,26 +176,26 @@ All things considered, you must risk more money when betting on a home team as t
 
 
 ## Wise Bets
-Games that pass a user-set threshold of deviation from the model's prediction, either in a point spread or in odds to win, are labeled as __wise bets__.
+Games that pass a user-set threshold of deviation from the model's prediction, either in a point spread, over/under, or in odds to win are labeled as __wise bets__.
 
+###### Spread Wise Bets
 A game whose actual spread deviates from the predicted spread by the user-set point threshold or more will be labeled a "wise bet".  The underlying approach to finding mis-valued spreads works as follows.  The key factor for a spread is its _flexibility_. As Vegas receives more bets on a particular team at a given spread value, they can adjust the spread in order to balance the wagers on the opposing team, reducing the bookmakers' risk by taking near equal money on both sides.  (Vegas typically does not win big on any given game.  They win small amounts consistently by playing percentages very carefully).  
 
 This flexibility in the line is the key component I aimed to use in snuffing out inefficiency in the spread.  If the betting public has a possibly inaccurate perception about a given team, they will either over- or under-bet for that team, forcing Vegas oddsmakers to compensate by artificially adjusting the spread in order to entice bettors to make wagers against their (inaccurate) perception and even out the money wagered.  
 
-Because of this, the initial aim of this project was simple: I wanted __to identify which factors best predict games that have spreads that are incorrectly set, to label these games as potentially "wise bets," and to examine the results of these games in hopes of finding that a favorable percentage would be winning bets.__
+Because of this, the initial aim of this project was simple: I wanted to identify which factors best predict games that have spreads that are incorrectly set, to label these games as potentially "wise bets," and to examine the results of these games in hopes of finding that a favorable percentage would be winning bets.
 
-Secondarily, we can do the same for the Over/Under as well as the Money Line.  The Money Line is slightly different, since it is concerned only with the binary outcome of win/lose.
+###### Over-Under Wise Bets
+Secondarily, we can do the same for the Over/Under: use our model to predict the over/under for a game and then bet on games whose predicted over/under deviates by a set amount from the actual over/under.
 
-
-
-
-
-
+###### Money Line Wise Bets
+Last, we can simply try to predict the winner of a game (this bet is made using the money line, hence the money line name).  These bets are divided into picking either the home team or the road team.  Home teams win more and are favored more, accordingly.  We can use our model to learn as many trends as possible for a given matchup and predict whether the home team will win or lose with a certain degree of confidence.  We can then bet on games that exceed a set level of confidence.
 
 
 <BR>
 <BR>
 <BR>
+
 
 ## Model Selection
 Four models were tested in this project: two tree ensemble methods, Random Forests (RF) and Gradient Boosted Trees (GBT), as well as Support Vector Machines (SVM) and finally ElasticNet regression.  The GBT models are from __XGBoost__ while the rest are from __Sci-Kit Learn__.
@@ -316,9 +316,10 @@ Home Team Win     | Advanced | GBC   | AUC <br> AUC (SMOTE) <br> F1 | 0.711 <br>
 One tactic when struggling to find viable class separation is to analyze your data with dimensional reduction.  A popular method of this type of dimensionality reduction is Principal Component Analysis (PCA), which uses some higher-level mathematics to reduce the input data to core, or principal, components based on the amount of observed variance along a given rotational axis of the data.  The result is _not_ simply a set of input features, but rather the 'fundamental' relationships -- components -- between the features and the variance in the data.  If there exists a way to mathematically represent the data in a way that makes it separable in N-dimensions, PCA can tell us.  We can select for the number of components we want returned, which makes PCA ready-made for 2D and 3D visualizations.  
 
 The results of using PCA to analyze the initial target and driving force of this project, the spread, were not encouraging.  Using the model's predictions for the spread to label games as potential "wise bets" or not, PCA showed a inseparable blob in two dimensions.  
-![PCA 2D Spread](images/2d3pwisebetPCA.png "2D PCA results for the spread")
 
-<sub>__Figure 1:__ The first two principal components failed to give any viable separation for wise bets derived from the Vegas spread -- there is no line that can be drawn to reasonably divide the two classes.  
+<img src="images/2d3pwisebetPCA.png" alt="PCA 2D Spread">  
+
+<sub>__Figure 4:__ The first two principal components failed to give any viable separation for wise bets derived from the Vegas spread -- there is no line that can be drawn to reasonably divide the two classes.  
 
 <BR>
 
@@ -330,7 +331,7 @@ Unlike the simplistic pyramid example, applying PCA in three dimensions to the w
 
 <img src="images/3d_pca_gifs1/3D_PCA.gif" width="600" align="middle" alt="3D PCA for Vegas Spread wise bets">
 
-<sub>__Figure 2:__ Three dimensions -- each axis is a principal component -- are unfortunately not enough to find a hyperplane of sufficient division between games that are wise bets and games that aren't.  There is no underlying structure to the classes, here.  They're distributed in a roughly globular manner, and almost randomly so.  The hyperplane was obtained by using a linear SVM model.
+<sub>__Figure 5:__ Three dimensions -- each axis is a principal component -- are unfortunately not enough to find a hyperplane of sufficient division between games that are wise bets and games that aren't.  There is no underlying structure to the classes, here.  They're distributed in a roughly globular manner, and almost randomly so.  The hyperplane was obtained by using a linear SVM model.
 
 <BR>
 
@@ -342,7 +343,7 @@ A second dimensional reduction algorithm, or manifold learner, that is commonly 
 
 <BR><BR><BR><BR>
 <div align="right">
-<sub><b>Figure 354:</b> The results of increasing levels of perplexity for t-SNE dimension reduction on the Vegas
+<sub><b>Figure 6:</b> The results of increasing levels of perplexity for t-SNE dimension reduction on the Vegas
 <BR> spread bets. While there is eventual clustering, the classes never become linearly separable.</sub>
 </div>
 
@@ -358,10 +359,10 @@ With no apparent real success in determining which games should be considered a 
 
 <img src="images/feature_overlap_vegas_spread.png" align="middle" alt="Important Feature Overlap" >
 
-<sub>__Figure 4:__ The advanced metrics of DVOA, EPA, ANY/A, and PORT show very little horizontal separation for games that were labeled as a "wise bet" and those that weren't.  Ideally we would see a distribution of all blue and a separate one of all red beside it for a given metric.  Note: Axis tick labels are removed to help focus simply on bin separation, and the counts have been normalized since the raw count of "wise bet" games is a mere fraction of the total games.</sub>
+<sub>__Figure 7:__ The advanced metrics of DVOA, EPA, ANY/A, and PORT show very little horizontal separation for games that were labeled as a "wise bet" and those that weren't.  Ideally we would see a distribution of all blue and a separate one of all red beside it for a given metric.  Note: Axis tick labels are removed to help focus simply on bin separation, and the counts have been normalized since the raw count of "wise bet" games is a mere fraction of the total games.</sub>
 
 
-#### Types of Game Matchups
+#### Game Type Clusters
 Unable to get any confirmation of class separability so far, I decided to cluster all matchups to see if there were distinct "types" of games.  After some trial and error, it became clear that there were basically four distinct types of NFL games.
 
 1. Home team is much better overall.
@@ -373,7 +374,7 @@ Applying the t-SNE algorithm to these now-clustered games, we see that they are 
 
 <img src="images/4wayGameTypeClusterTSNE.gif" align="middle" alt="t-SNE of Game Type Clusters" width="650">
 
-<sub>__Figure 3451:__ The t-SNE progressions for the clustered game types.  Initially separability looks uncertain, but as the perplexity increases we finally arrive at a dimensional reduction which shows four distinct classes. </sub>
+<sub>__Figure 8:__ The t-SNE progressions for the clustered game types.  Initially separability looks uncertain, but as the perplexity increases we finally arrive at a dimensional reduction which shows four distinct classes. </sub>
 
 Again, we can only t-SNE we can only use the t-SNE to comment about the existing data and cannot mathematically make inferences about future data.  That said, seeing the classes separate out is quite nice, and in the rough shape of a football, no less.  My data has a sick sense of humor... it's been hiding something all along....
 
@@ -403,12 +404,12 @@ Spread    |    2.58    | 5.89      |  2.28          | -23.0      | 26.5       | 
 Home MoV  |    2.87    | 14.6      |  5.07          | -46.0      | 59.0       |  -3.34     | 3.84   
 
 
-<sub>__Table 333:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
+<sub>__Table 5:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
 
 <BR>
 
 #### Spread Accuracy
-If we can predict the line accurately, we can identify games that are improperly valued by Vegas and choose to bet those games.  The best result obtained was a MAE of 2.32 points.  The spread average is 2.58 points with a standard deviation of 5.91 points.  (See [Table 333](#spread-summary-statistics).  Unfortunately this means that, on average, any prediction's true value can be within a window of 4.64 points -- not great.  
+If we can predict the line accurately, we can identify games that are improperly valued by Vegas and choose to bet those games.  The best result obtained was a MAE of 2.32 points.  The spread average is 2.58 points with a standard deviation of 5.91 points.  (See [Table 5](#spread-summary-statistics).  Unfortunately this means that, on average, any prediction's true value can be within a window of 4.64 points -- not great.  
 
 If we predicted a spread for the road team an upcoming game to be +1.0 point (meaning they were a 1-point underdog), which is the 8th most common out of 47 unique recorded lines, then using our average error, the "true" spread of the game might ought to be 1.0 - 2.32 = -1.32 points, or 1.0 + 2.32 = +3.32 points.  In the case of -1.32 points, the road team would now be favored and would likely cause us to change our bet.  Conversely, in the case of +3.32 points, the home team would now be favored by _over_ a field goal, which is the easiest score to make in football and would likely change our bet.  
 
@@ -419,7 +420,7 @@ The most important features tend to be the _matchup delta_ features I engineered
 
 <img src="images/road_spread_feats.png" align="middle" alt="Important features to predict the spread" >
 
-<sub>__Figure 400:__ The 40 most important features in predicting the spread are dominated by the _matchup_ features, including ten of the first twelve.  After the first 15 features, relative importance begins to level off with larger groupings of equally important features. </sub>
+<sub>__Figure 9:__ The 40 most important features in predicting the spread are dominated by the _matchup_ features, including ten of the first twelve.  After the first 15 features, relative importance begins to level off with larger groupings of equally important features. </sub>
 
 <BR>
 
@@ -430,7 +431,7 @@ Apart from these metrics, it is interesting to see _hours of rest_ be so statist
 
 <img src="images/road_spread_rolling_avg.png" align="middle" alt="Historical Rolling Average for the Spread" >
 
-<sub>__Figure 400:__ The spread has changed measurably over time.  The rolling average was computed with a window of four years and a second order polynomial fit line.
+<sub>__Figure 10:__ The spread has changed measurably over time.  The rolling average was computed with a window of four years and a second order polynomial fit line.
 
 <BR>
 
@@ -438,11 +439,11 @@ I was unsure if the observed change is due to Vegas becoming better at predictio
 
 <img src="images/home_mov_rolling_avg.png" align="middle" alt="Historical Rolling Average for Home Team Margin of Victory" >
 
-<sub>__Figure 400:__ The average margin of victory for home teams isn't smoothed very well with a four year rolling average window.  Its trend mirrors that of the Vegas spread overall, but has pronounced differences in any given year.
+<sub>__Figure 11:__ The average margin of victory for home teams isn't smoothed very well with a four year rolling average window.  Its trend mirrors that of the Vegas spread overall, but has pronounced differences in any given year.
 
 <BR>
 
-We see that overall, the trends follow the same general path of peaking in the early- to mid-1990s and falling thereafter.  But a year-by-year inspection shows significant discrepancies.  Take 1995, for example.  It was the season of the lowest average home margin of victory for 30 years, but that year and the one after both saw Vegas _increase_ the average spread in favor of the home teams!  In general I suspect the average margin of victory has too much variance for Vegas to react with knee-jerk spread dampening or inflating.  While margin of victory trends over time are informative, they are clearly not the sole explanation for the changes with time in the average spread.  We can see the summary statistics in [Table 333](#spread-summary-statistics) back up what the graphs above show us.
+We see that overall, the trends follow the same general path of peaking in the early- to mid-1990s and falling thereafter.  But a year-by-year inspection shows significant discrepancies.  Take 1995, for example.  It was the season of the lowest average home margin of victory for 30 years, but that year and the one after both saw Vegas _increase_ the average spread in favor of the home teams!  In general I suspect the average margin of victory has too much variance for Vegas to react with knee-jerk spread dampening or inflating.  While margin of victory trends over time are informative, they are clearly not the sole explanation for the changes with time in the average spread.  We can see the summary statistics in [Table 5](#spread-summary-statistics) back up what the graphs above show us.
 
 
 <BR>
@@ -455,12 +456,12 @@ Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min (pts) | Max (pts) | Mi
 ----------|:----------:|:---------:|:--------------:|:---------:|:---------:|:---------:|:-------:|
 Over/Under |    41.6   | 4.58      |  0.11          | 28.0      | 63.0      | -2.97     | 4.67    |
 
-<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
+<sub>__Table 6:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.</sub>
 
 <BR>
 
 #### Over-Under Accuracy
-Predicting the Over/Under is a bit easier for the model, as the data is more tightly clustered around its mean than the Vegas Spread. (See [Table 33](#over/under-summary-statistics)).  The lowest MAE for predicting the Over/Under was 1.86 points.  As with the spread, if we consider the range this gives us for prediction, we have a 3.72-point window.  However, unlike the spread, where a scoring play can be good (if made by the team we've bet on) or bad (if made by their opponent), all scoring plays for an Over/Under bet are either good (if we bet the Over) or bad (if we bet the Under).  
+Predicting the Over/Under is a bit easier for the model, as the data is more tightly clustered around its mean than the Vegas Spread. (See [Table 6](#over/under-summary-statistics)).  The lowest MAE for predicting the Over/Under was 1.86 points.  As with the spread, if we consider the range this gives us for prediction, we have a 3.72-point window.  However, unlike the spread, where a scoring play can be good (if made by the team we've bet on) or bad (if made by their opponent), all scoring plays for an Over/Under bet are either good (if we bet the Over) or bad (if we bet the Under).  
 
 This allows us to use the 1.86-point MAE as our error instead of the 3.72 window.  If the real Over/Under is 43.0 points and our predicted Over/Under is 44.0 points, and we choose the Over, we are not worried about the +1.86-point error in prediction since we are already expecting more than 44 points to be scored. So 44.0 + 1.86 = 45.86 points for the upper bound of prediction is actually _better_ for us, since this says the game should go even further over. The reverse is true for betting the Under.
 
@@ -482,7 +483,7 @@ Rank | Statistic         | Importance (%) | Rank | Statistic          | Importan
 8    | Wind Chill        | 1.89           |  16  | Roof Dome          | 1.31
 
 
-<sub>__Table 99:__ Top 16 features for predicting the Over/Under show many stats related to scoring and yardage, but also surprisingly temperature, wind, and whether or not the game is played in a dome.
+<sub>__Table 7:__ Top 16 features for predicting the Over/Under show many stats related to scoring and yardage, but also surprisingly temperature, wind, and whether or not the game is played in a dome.
 
 <BR>
 
@@ -491,17 +492,17 @@ The Over/Under has been climbing since the year 2000.  Initially the change was 
 
 <img src="images/over-under_rolling_avg.png" align="middle" alt="Historical rolling average of Over/Under" >
 
-<sub>__Figures 411:__ The Over/Under has been on an upward climb since 2000, and has especially skyrocketed the last ten years.
+<sub>__Figures 12:__ The Over/Under has been on an upward climb since 2000, and has especially skyrocketed the last ten years.
 
 <BR>
 
-Looking at [Table 99](#over-under-top-features), the two most important statistics are the two we'd hope to see: how many points each team scores per game.  Following that is a surprising result -- the season!  This sparked me to investigate the Over/Under change over time as I did with the spread above.  It is examined below.  The remainder of the important statistics can be categorized as either "team related" or "game related".  The team-related statistics are sensible, related to how many points allowed and yards teams average.  But the game-related features are interesting and worth a quick word.
+Looking at [Table 7](#over-under-top-features), the two most important statistics are the two we'd hope to see: how many points each team scores per game.  Following that is a surprising result -- the season!  This sparked me to investigate the Over/Under change over time as I did with the spread above.  It is examined below.  The remainder of the important statistics can be categorized as either "team related" or "game related".  The team-related statistics are sensible, related to how many points allowed and yards teams average.  But the game-related features are interesting and worth a quick word.
 
 Wind chill and temperature only differ below 50° F, so seeing them paired is partly a consequence of their having the same information for all temps above 50° F.  I think there is also a relationship between the weather variables and the roof variables.  First, a quick graphical glance, then my thoughts below.
 
 <img src="images/temp_with_domes.png" align="middle" alt="Temp distribution with domes" >
 
-<sub>__Figure 4005:__ The distribution of game-time temperatures from 1978-2016 show an expected distribution, except for the occurrence of dome games which spikes the count for 67 °F.
+<sub>__Figure 13:__ The distribution of game-time temperatures from 1978-2016 show an expected distribution, except for the occurrence of dome games which spikes the count for 67 °F.
 
 <BR>
 
@@ -509,7 +510,7 @@ The poignant aspect of the temperature charts is the towering prevalence of game
 
 <img src="images/percent_games_domes.png" align="middle" alt="Percent of games per year in a dome" >
 
-<sub>__Figures 410:__ The trend in percent of games played in a dome is clear: more, more, more.  This trend also mirrors the increase in Over/Unders set by Vegas.
+<sub>__Figures 14:__ The trend in percent of games played in a dome is clear: more, more, more.  This trend also mirrors the increase in Over/Unders set by Vegas.
 
 <BR>
 
@@ -522,24 +523,20 @@ But there's no bad weather in a dome.  So, the increase in domes means an increa
 While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__7__](#fn7)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
 
 ###### Passing vs Rushing Offense Over Time
-
 <img src="images/combined_pass_rush_att_rolling_avg.png" align="middle" alt="Passing vs. Rushing Attempts Trend over time" >
 
-<sub>__Figures 4193:__ Five-year rolling averages of Passing attempts (left), which has grown at an alarming rate over the last decade-plus, and rushing attempts (right), which dropped precipitously two decades ago and has somewhat stabilized since, 1950-2016.</sub>
-
-<BR>
-
+<sub>__Figures 15:__ Five-year rolling averages of Passing attempts (left), which has grown at an alarming rate over the last decade-plus, and rushing attempts (right), which dropped precipitously two decades ago and has somewhat stabilized since, 1950-2016.</sub>
 
 <BR>
 
 These two rolling average plots of passing offense (left) and rushing offense (right) since 1950 show starkly different trends in league-wide offensive approach.  During the 1960s the high-flying AFL seems to have bolstered passing game, but was promptly suppressed once the leagues merged in 1970.  In 1978 and 1979 major rule changes were implemented that made pass defense more difficult, causing the first initial rise in passing offense.  To my surprise, it leveled off and remained consistent for the remainder of the 1980s and 1990s.  Beginning in 2005, however, the league began to experience its own Cambrian explosion of passing attacks, growing each year for a decade straight.  Conversely, rushing offense plummeted for fifteen consecutive years before coming to a roughly stable resting point.   
 
-As interesting as the topic of how the league changes schematically as a whole over time is, the point of this investigation was to see if we could explain the dramatic rise in Over/Unders.  I think its safe to say we can do so to a large degree with passing offense alone, as we predicted above.  Take a minute to compare [Figure 411](#over---under-analysis) and [Figure 4193](#passing-vs-rushing-offense-over-time).  The sharp rise in passing offense parallels that in the Over/Under, while rushing offense seems to have little to no correlation.  When comparing multiple variables at a time, a scatter matrix can help illuminate trends between all combinations of the targets.
+As interesting as the topic of how the league changes schematically as a whole over time is, the point of this investigation was to see if we could explain the dramatic rise in Over/Unders.  I think its safe to say we can do so to a large degree with passing offense alone, as we predicted above.  Take a minute to compare [Figure 12](#over---under-analysis) and [Figure 15](#passing-vs-rushing-offense-over-time).  The sharp rise in passing offense parallels that in the Over/Under, while rushing offense seems to have little to no correlation.  When comparing multiple variables at a time, a scatter matrix can help illuminate trends between all combinations of the targets.
 
 ###### Offense and Over-Under Scatter Matrix
 <img src="images/pass_rush_over-under_matrix.png" align="middle" alt="Scatter Matrix for Passing, Rushing, and Over/Under" >
 
-<sub>__Figure 4443:__ Scatter matrix of five-year rolling average passing offense, rushing offense, and the Over/Under per season since 1978.  Passing offense is clearly positively correlated with the Over/Under, while rushing offense has almost no observed correlation.</sub>
+<sub>__Figure 16:__ Scatter matrix of five-year rolling average passing offense, rushing offense, and the Over/Under per season since 1978.  Passing offense is clearly positively correlated with the Over/Under, while rushing offense has almost no observed correlation.</sub>
 
 
 
@@ -557,7 +554,7 @@ As noted above in the [NFL Betting Primer](#nfl-betting-primer) section, the mon
 ###### Spread and Money Line Linear Relationship
 <img src="images/spread_vs_moneyline.png" align="middle" alt="spread_vs_moneyline" width="800">
 
-<sub>__Figure 4443:__ The relationship between the spread and moneyline looks to be perfectly described by a 3rd degree polynomial (not pictured), but a closer look at the _density_ of the spread values, shows that over 94.51% are concentrated between -10 and +10.  This range comprises the center of this plot, which is highlighted with a grey box, and is easily described by a linear regression.</sub>
+<sub>__Figure 17:__ The relationship between the spread and moneyline looks to be perfectly described by a 3rd degree polynomial (not pictured), but a closer look at the _density_ of the spread values, shows that over 94.51% are concentrated between -10 and +10.  This range comprises the center of this plot, which is highlighted with a grey box, and is easily described by a linear regression.</sub>
 
 <BR>
 
@@ -568,7 +565,7 @@ The point to take home is that the spread and the money line are essentially two
 
 <BR>
 <div align="right">
-<sub><b>Figure 4444:</b> Further illustrating the near-identical relationship between the spread and the money
+<sub><b>Figure 18:</b> Further illustrating the near-identical relationship between the spread and the money
 <BR>
 line is their five-year rolling averages which appear as nearly carbon copies of each other.</sub>
 </div>
@@ -594,7 +591,7 @@ Statistic     | Mean (pts) | Std. Dev. | Min (abs) (pts) | Max (abs) (pts) | Min
 Home Team Win |    12.5    | 9.65      | 1.0             | 59.0            | -2.97     | 4.67     |
 Home Team Loss|   -10.5    | 8.50      | 1.0             | 46.0            | -1.36     | 6.64     |
 
-<sub>__Table 33:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.  There were only twenty ties in 9064 games (0.22%) from 1978-2016 and nine such games from 1994-2016.  As such, ties have been omitted. </sub>
+<sub>__Table 8:__ Summary statistics showing the much wider spread of margin of victory, which is echoed in the rolling averages for each statistic.  There were only twenty ties in 9064 games (0.22%) from 1978-2016 and nine such games from 1994-2016.  As such, ties have been omitted. </sub>
 
 <BR>
 
@@ -602,7 +599,7 @@ Recall from [Table 2](#class-ratios) that the lone imbalanced class was the _Hom
 
 <img src="images/game_winner_dist.png" align="middle" alt="Ratio of Home to Road Winner" width="800">
 
-<sub>__Figure 1123:__ Histogram for games won by the home team vs. by the road team.  Ties are so rare they barely show up.  This plot shows the classes suffer from imbalance, but not severely so.</sub>
+<sub>__Figure 19:__ Histogram for games won by the home team vs. by the road team.  Ties are so rare they barely show up.  This plot shows the classes suffer from imbalance, but not severely so.</sub>
 
 
 While using SMOTE did slightly improve the _Home Team Win_ predictions, I didn't like the idea of 'artificial' games being used in the database because it made extrapolating results to the actual games that occurred more difficult.  The idea of having 'false' games included if I were to use a plot detailing the breakdown of how a specific metric impacts the chances of a team winning was unappealing.  If I decided to use only the 'true' games, would the trends match up to what was claimed by the SMOTE-driven results?  Having the luxury of a Gradient Boosted Classifier that handled the 'imbalanced' classes rather well (as noted in [Table 4](#classification-outcomes)) made the decision easier, admittedly.  
@@ -618,7 +615,7 @@ When our model makes a prediction that the home team won a game it has labeled t
 <BR>
 
 <div align="right">
-<sub><b>Figure 55874:</b> A confusion matrix of predictions for classifying games won by the home team.  <br>The model errs on the side of naming more games are home wins than actually are.</sub>
+<sub><b>Figure 20:</b> A confusion matrix of predictions for classifying games won by the home team.  <br>The model errs on the side of naming more games are home wins than actually are.</sub>
 </div>
 
 <BR>
@@ -642,11 +639,11 @@ We measure our TPR and FPR for every threshold of 'confidence' in the prediction
 
 <img src="images/roc_home_winner.png" align="middle" alt="ROC Curve for Home Winner">
 
-<sub>__Figure 5544:__ The ROC curve for predicting if the home team will win.  Some deviation is present between each fold of data.  The _threshold_ level for each prediction is ideally 1-FPR.  So, at the FPR of 0.6, the threshold for our predictions is 0.40, or 40%.  This means the bottom left corner represents the un-achievable 100% confidence level (no data point is good enough to be classified as the "positive" class), while the top right corner represents the opposite, a 0% confidence level (every data point is classified as "positive").</sub>
+<sub>__Figure 21:__ The ROC curve for predicting if the home team will win.  Some deviation is present between each fold of data.  The _threshold_ level for each prediction is ideally 1-FPR.  So, at the FPR of 0.6, the threshold for our predictions is 0.40, or 40%.  This means the bottom left corner represents the un-achievable 100% confidence level (no data point is good enough to be classified as the "positive" class), while the top right corner represents the opposite, a 0% confidence level (every data point is classified as "positive").</sub>
 
 <BR>
 
-An AUC of 0.68 is appreciable for the challenging task of identifying the winner of a game.  But as seen in [Figure 5544](#receiver-operating-characteristic), the ROC curve lets us choose a single threshold value for comparison.  Depending on the question we are trying to answer, we might have a strong preference for a higher or lower threshold.  The canonical example is cancer detection, where we would want a fairly low threshold to label a patient as "positive" for cancer.  A low threshold means we will have more cases that are labeled as "positive," both true and false, and fewer total negatives conversely.  
+An AUC of 0.68 is appreciable for the challenging task of identifying the winner of a game.  But as seen in [Figure 21](#receiver-operating-characteristic), the ROC curve lets us choose a single threshold value for comparison.  Depending on the question we are trying to answer, we might have a strong preference for a higher or lower threshold.  The canonical example is cancer detection, where we would want a fairly low threshold to label a patient as "positive" for cancer.  A low threshold means we will have more cases that are labeled as "positive," both true and false, and fewer total negatives conversely.  
 
 We can tolerate more false positives because a cancer diagnosis comes with extensive follow up appointments to both confirm the diagnosis and plan treatment if a growth is malignant.  These will weed out the false positives.  But a false negative is a critical error that sends a patient home thinking they're healthy when in reality they've cancerous tumors.  Since this is the result we most want to avoid, we choose a threshold that optimizes our ROC score at a low threshold.  
 
@@ -664,14 +661,14 @@ Perhaps the best evidence that Vegas "knows what they're doing" is this ranking 
 
 <img src="images/home_winner_feats.png" align="middle" alt="Feature Importances for Predicting Game Winner">
 
-<sub>__Figure 555:__ The 40 most important features in predicting the game's winner.  The spread for the game is the easy winner.</sub>
+<sub>__Figure 22:__ The 40 most important features in predicting the game's winner.  The spread for the game is the easy winner.</sub>
 
 <BR>
 
 #### Winner Analysis
 The predictive power of the spread in determining who will win an NFL game is worthy of further discussion below.  Before that, let's take a quick look at the other features which give insight into a game's winner.  While the old adage "defense wins championships" often feels trite and cliched, it might hold some statistical water as two defense-related metrics are the second (_points allowed per game_) and fifth (_defensive sigma above average_) most important features.  This topic warrants an entire project all its own, but the fact that even with competing against the entire litany of advanced metrics, _points allowed per game_ by the home team is the most predictive non-Vegas statistic for determining if the home team will win a game can't be discounted.  
 
-Perhaps unsurprisingly, the _difference in average passes completed per game_ is the third biggest predictor and passing-specific stats appear eight times in the top 40 features (see [Table 66](#passing-features)).  Echoing what was discussed in the [Passing vs Rushing Offense](#passing-vs-rushing-offense-over-time) section above, when one team is more proficient at passing than their opponent, they are more likely to win.  
+Perhaps unsurprisingly, the _difference in average passes completed per game_ is the third biggest predictor and passing-specific stats appear eight times in the top 40 features (see [Table 9](#passing-features)).  Echoing what was discussed in the [Passing vs Rushing Offense](#passing-vs-rushing-offense-over-time) section above, when one team is more proficient at passing than their opponent, they are more likely to win.  
 
 ###### Passing Features in Top 40
 Statistic                          | Tier | Importance (%)
@@ -685,19 +682,19 @@ Difference in Pass Att. / Gm       | 4    | 1.23%
 Difference in Pass TD Allowed / Gm | 5    | 0.92%
 Pass Att. / Gm                     | 5    | 0.92%
 
-<sub>__Table 66:__ The eight passing-related statistics that appear in the top 40 features for predicting a game's winner.
+<sub>__Table 9:__ The eight passing-related statistics that appear in the top 40 features for predicting a game's winner.
 
 <BR>
 
 ###### Rushing and Winning
 Other features that help predict whether a team will win or not read like a list of the usual suspects: superiority in advanced metrics like [DVOA](#advanced-metrics) and [EPA](#advanced-metrics), rushing stats per game, penalties and penalty yards per game, and 3rd and 4th down efficiency.  _Time of possession_ clocks in at \#29.  _Time of possession_ and the various _rushing_ stats (five total in the top 40 but none before tier 4) offer a textbook case of the "chicken and the egg" conundrum, however.  At first glance it is tempting to simply say "teams that have the ball more and have more rushing attempts per game win more."  Statistically, yes, our model says that is true.  
 
-But we must think about it one level deeper.  Doing so, we realize that teams which are leading _overwhelmingly_ run the ball more than teams that are trailing (Chase Stuart’s easily digestible “[game scripts](http://www.footballperspective.com/introducing-game-scripts-part-i/)” metric does a good job of capturing this).  As a result, teams that are trailing face far more rushes and subsequently give up more yards.  So, in a way the model is likely picking up that teams that allow more rushing yards than others are frequently trailing... and when you’re frequently trailing you are going to lose more often than win.  The fallacy (known in the stats community as the [“establish the run”](http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause) fallacy, popularized by Aaron Schatz at Football Outsiders back in 2003 <sup>[__8__](#fn8)</sup>) that so many jabbering heads on TV espouse of “run the ball to win!” is actually the inverse of what happens, and I suspect this is what the model also detects.  It’s the teams that are already winning which choose to run the ball, not vice versa.  [Figures 666](#time-of-possession-and-rushing-attempts) and [667](#passing=and-rushing-attempts-correlation-to-margin-of-victory)
+But we must think about it one level deeper.  Doing so, we realize that teams which are leading _overwhelmingly_ run the ball more than teams that are trailing (Chase Stuart’s easily digestible “[game scripts](http://www.footballperspective.com/introducing-game-scripts-part-i/)” metric does a good job of capturing this).  As a result, teams that are trailing face far more rushes and subsequently give up more yards.  So, in a way the model is likely picking up that teams that allow more rushing yards than others are frequently trailing... and when you’re frequently trailing you are going to lose more often than win.  The fallacy (known in the stats community as the [“establish the run”](http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause) fallacy, popularized by Aaron Schatz at Football Outsiders back in 2003 <sup>[__8__](#fn8)</sup>) that so many jabbering heads on TV espouse of “run the ball to win!” is actually the inverse of what happens, and I suspect this is what the model also detects.  It’s the teams that are already winning which choose to run the ball, not vice versa.  [Figures 23](#time-of-possession-and-rushing-attempts) and [667](#passing=and-rushing-attempts-correlation-to-margin-of-victory)
 
 ###### Time of Possession and Rushing Attempts
 <img src="images/top_v_rush_att.png" align="middle" alt="Time of Possession Correlation to Rush Attempts">
 
-<sub>__Figure 666:__ The correlation of increased time of possession with increased rushing attempts, 1978-2016.</sub>
+<sub>__Figure 23:__ The correlation of increased time of possession with increased rushing attempts, 1978-2016.</sub>
 
 <BR>
 
@@ -708,13 +705,13 @@ The relationship between rushing attempts and time of possession is stark but se
 ###### Passing and Rushing Attempts Correlation to Margin of Victory
 <img src="images/pass_v_rush_margin_vic.png" align="middle" alt="Passing and Rushing Correlation to Margin of Victory">
 
-<sub>__Figure 667:__ The relationship between average number of passing attempts and rushing attempts with average margin of victory, 1978-2016.</sub>
+<sub>__Figure 24:__ The relationship between average number of passing attempts and rushing attempts with average margin of victory, 1978-2016.</sub>
 
 <BR>
 
 A second look at the concept of "rushing because we're winning" is to see how the number of rushing attempts correlates to average margin of victory.  There is a distinct positive relationship, while the same regression for number of passing attempts is actually slightly negative.  The old adage "correlation is not causation" applies here.  Someone uninterested in the underlying mechanics of the relationship, or nearly every sports TV talking head, would take one glance and conclude that the secret to winning more games is simply to run the ball more.  But as discussed above in the [Rushing and Winning](#rushing-and-winning) section, the inverse of this is actually true.  
 
-Properly understood from this context, [Figure 667](#passing=and-rushing-attempts-correlation-to-margin-of-victory) shows that the bigger a team's lead, the more they're going to run the ball.  Conversely, teams that are trailing have to pass to catch up.  Again, as mentioned above, on average passing using less of the clock per play than rushing, and also covers more yardage.  Thus, we see the negative relationship of "bigger deficit correlates with more passing."
+Properly understood from this context, [Figure 24](#passing=and-rushing-attempts-correlation-to-margin-of-victory) shows that the bigger a team's lead, the more they're going to run the ball.  Conversely, teams that are trailing have to pass to catch up.  Again, as mentioned above, on average passing using less of the clock per play than rushing, and also covers more yardage.  Thus, we see the negative relationship of "bigger deficit correlates with more passing."
 
 ###### Turnovers
 Turnovers appear in tier 5 with _difference in average turnovers caused per game_.  This is a tough one.  We know that in any game turnovers are massively important.  They directly rob one team of a possession and gift one to the other (usually with advantageous field position).  This model doesn’t see a team's average turnover rate as being supremely __predictive__ because they are in some degree unpredictable.  Team A may be averaging 2.2 turnovers per game and Team B may average 1.8, but they might fluctuate a good deal between games (high).  These differences don’t appear to be extremely predictive (about as predictive as the difference in 1st downs per team, penalties per team, or passing yards per team).  
@@ -728,11 +725,11 @@ I was a bit surprised to see _hours of rest_ omitted from this list.  I expected
 Some of the less important items are routinely the _day of the week_ the game is played on.  This makes sense since the day of the game is shared by both teams, so it is usually not a dividing feature.  However, we did see that hours of rest do matter, so teams that play on Sunday night then on Thursday reasonably have a disadvantage.  Another seemingly unimportant variable is the _surface_ and _stadium_.  Domes, retractable roofs, open stadiums, astroturf, sport turf, dessograss, field turf, natural grass... none of these variables have much impact at all compared to the actual team-centered and matchup-centered stats.
 
 ###### The Power of the Spread
-The power of the spread in determining which team will win the game is clearly valuable to the model.  But to understand why the model gains more information from the spread than from other statistics takes a bit of digging.  Other statistics have similar correlations to the outcome of a game, as shown here in __Figure 669__.  
+The power of the spread in determining which team will win the game is clearly valuable to the model.  But to understand why the model gains more information from the spread than from other statistics takes a bit of digging.  Other statistics have similar correlations to the outcome of a game, as shown here in __Figure 25__.  
 
 <img src="images/home_win_feats_matrix.png" align="middle" alt="Scatter Matrix of top three features for determining the winner">
 
-<sub>__Figure 669:__ The relationships between the three most important features in predicting the game winner, 1991-2016.  We see that the basic linear relationship between each is roughly comparable in magnitude, making the spread's reported importance worthy of more investigation.  The 'Home Winner' category includes ties (0) just to illustrate their scarcity via the distribution plot.</sub>
+<sub>__Figure 25:__ The relationships between the three most important features in predicting the game winner, 1991-2016.  We see that the basic linear relationship between each is roughly comparable in magnitude, making the spread's reported importance worthy of more investigation.  The 'Home Winner' category includes ties (0) just to illustrate their scarcity via the distribution plot.</sub>
 
 <BR>
 
@@ -743,11 +740,11 @@ Back in the [Receiver Operating Characteristic](#receiver-operating-characterist
 
 <img src="images/precision_by_proba_thresh.png" align="middle" alt="Precision by probability window">
 
-<sub>__Figure 711:__ The precision of our model for predicting the winner of a game by 1% probability threshold window.  The baseline for prediction of this target is 58%, since that is the ratio of home wins to home losses, represented by the thin horizontal black line.  The data points are colored corresponding to their value above or below this baseline, with red being worse than and blue being better than.</sub>
+<sub>__Figure 26:__ The precision of our model for predicting the winner of a game by 1% probability threshold window.  The baseline for prediction of this target is 58%, since that is the ratio of home wins to home losses, represented by the thin horizontal black line.  The data points are colored corresponding to their value above or below this baseline, with red being worse than and blue being better than.</sub>
 
 <BR>
 
-[Figure 711](#prediction-confidence) shows the mean precision for all predictions of whether a game will be won by the home team in an escalating 1% probability window, starting at 0% probability (which has no predictions) and ending at 100% probability (which also has no predictions).  At a 40%-41% threshold, we have a mean precision of 0.55 for all the predictions in this probability range, while at 41%-42% the precision is about 0.56.  Some ranges have no predictions made while others have a great number of them.  This is discussed further below.
+[Figure 26](#prediction-confidence) shows the mean precision for all predictions of whether a game will be won by the home team in an escalating 1% probability window, starting at 0% probability (which has no predictions) and ending at 100% probability (which also has no predictions).  At a 40%-41% threshold, we have a mean precision of 0.55 for all the predictions in this probability range, while at 41%-42% the precision is about 0.56.  Some ranges have no predictions made while others have a great number of them.  This is discussed further below.
 
 Our model has the expected parabolic horseshoe curve we expect for precision.  At either extreme of the plot we are much more confident about our prediction.  Far to the left our probability of a game being classified as a home win (the "positive" class) is very low, meaning the probability of it being a home loss is very high.  The opposite is true on the far right of the graph.  As we progress toward the middle, where confidence in prediction waivers -- probability of 0.5 represents a 50/50 toss-up -- we see the precision dip.  The model just isn't sure about how to predict these games and gives a low confidence in its prediction correspondingly.  
 
@@ -756,13 +753,13 @@ The class ratio for predicting a game's winner is, as mentioned previously, 58% 
 ###### Cumulative Precision
 <img src="images/cumulative_precision_below-above_50perc_proba.png" align="middle" alt="Cumulative Precision above .5p">
 
-<sub>__Figure 721:__ Cumulative precision bifurcated at 0.50 probability threshold and colored by class of prediction, with blue being "home loss" and green being "home win".  The aim of this plot is to serve as a "betting cutoff" locator by allowing the user to see that all games with a 0.70 probability or higher average around an 83% success rate or better.  Hence, choosing to bet in favor of the home team winning only on games at or above the 0.70 probability threshold would ideally lead to a greater than 83% win rate over time.</sub>
+<sub>__Figure 27:__ Cumulative precision bifurcated at 0.50 probability threshold and colored by class of prediction, with blue being "home loss" and green being "home win".  The aim of this plot is to serve as a "betting cutoff" locator by allowing the user to see that all games with a 0.70 probability or higher average around an 83% success rate or better.  Hence, choosing to bet in favor of the home team winning only on games at or above the 0.70 probability threshold would ideally lead to a greater than 83% win rate over time.</sub>
 
 <BR>
 
-Piggybacking on [Figure 721](#prediction-confidence), I wanted to take a look at while I'll term the "cumulative precision" for each side of the classification split.  Starting at 0.5 probability, in the center of the plot, proceed either left or right.  On either side are mean precision values for all the predictions of the respective class at that threshold and beyond.  
+Piggybacking on [Figure 27](#prediction-confidence), I wanted to take a look at while I'll term the "cumulative precision" for each side of the classification split.  Starting at 0.5 probability, in the center of the plot, proceed either left or right.  On either side are mean precision values for all the predictions of the respective class at that threshold and beyond.  
 
-Since this is a bit of an uncommon plot, let me explain with more detail.  The blue data points represent predictions for class 0, "home loss", and green are class 1, "home win."  Starting at 0.51 and going to the right, each data point shows the mean precision for all predictions made for class "home win" at this threshold and above (the cumulative games at or beyond the threshold).  As we go further right, the confidence threshold for predicting a "home win" gets higher and our mean precision increases as a result.  However, the number of games per threshold range goes _down_ the further from the center we go.  That is, more games are near a 50/50 probability than are a 90% probability of being predicted correctly.  This makes sense, and we see it in [Figure 731](#games-per-season-by-confidence-level) below.  
+Since this is a bit of an uncommon plot, let me explain with more detail.  The blue data points represent predictions for class 0, "home loss", and green are class 1, "home win."  Starting at 0.51 and going to the right, each data point shows the mean precision for all predictions made for class "home win" at this threshold and above (the cumulative games at or beyond the threshold).  As we go further right, the confidence threshold for predicting a "home win" gets higher and our mean precision increases as a result.  However, the number of games per threshold range goes _down_ the further from the center we go.  That is, more games are near a 50/50 probability than are a 90% probability of being predicted correctly.  This makes sense, and we see it in [Figure 28](#games-per-season-by-confidence-level) below.  
 
 The same description is true of the blue data points, which are below the .05 probability threshold and denote games that are predicted to be a "home loss."  In general, we see the model is less accurate in its predictions for games that are meant to be home losses than for games meant to be home wins.  My first hunch as to why this occurs is that it is simply a result of "home loss" being the minority class by a 42% to 58% ratio.  This means there are fewer games of this class to learn from in the training data and predicting these types of games is less precise.  
 
@@ -773,7 +770,7 @@ The consequence of having fewer games at the tails of the prediction ranges mean
 ###### Games Per Season by Confidence Level
 <img src="images/games_per_season_proba_subplot.png" align="middle" alt="Games Per Season by Probability Dist">
 
-<sub>__Figure 731:__ The distributions for the number of games per season across all probability thresholds and for all the probabilities themselves.</sub>
+<sub>__Figure 28:__ The distributions for the number of games per season across all probability thresholds and for all the probabilities themselves.</sub>
 
 <BR>
 
@@ -781,12 +778,12 @@ The probability thresholds have a minimum of 0.15 and a maximum of 0.88.  No gam
 
 <img src="images/games_per_season_proba.png" align="right" alt="Games Per Season by Probability" width="600">
 <BR><BR>
-Since the number of games decreases as prediction confidence increases (in either direction), we want to make our bets count.  The smart approach would seem to be avoiding all games within the 0.40 to 0.60 range as a general rule, and perhaps even higher.  It's hard to sell oneself on a bet the model only has 62% confidence in, after all.  But making bets based on an arbitrary level of confidence is unwise and is easily bested by using the data in [Figure 721](#prediction-confidence) as a guide.
+Since the number of games decreases as prediction confidence increases (in either direction), we want to make our bets count.  The smart approach would seem to be avoiding all games within the 0.40 to 0.60 range as a general rule, and perhaps even higher.  It's hard to sell oneself on a bet the model only has 62% confidence in, after all.  But making bets based on an arbitrary level of confidence is unwise and is easily bested by using the data in [Figure 26](#prediction-confidence) as a guide.
 
 <BR><BR>
 
 <div align="right">
-<sub><b>Figure 741:</b> The number of games for each probability threshold window.  We see here the <BR>
+<sub><b>Figure 29:</b> The number of games for each probability threshold window.  We see here the <BR>
 inverse of the prediction precision results from <i>Figure 711</i>, where the clear majority of <BR>games occurs in the middle of the probability range and tails off sharply at either end.
 </sub>
 </div>
@@ -797,7 +794,7 @@ As more games are played during a season the sample size for the underlying stat
 
 <img src="images/GamesPlayed-PredConf.png" align="middle" alt="Impact of games played on prediction confidence.">
 
-<sub>__Figure 9731:__ The change in prediction confidence as number of games played goes up.  Games are binned into two games played per group. </sub>
+<sub>__Figure 30:__ The change in prediction confidence as number of games played goes up.  Games are binned into two games played per group. </sub>
 
 <BR>
 
@@ -815,14 +812,14 @@ In the second half of the season, all four are above the mean and three of the f
 
 <img src="images/GamesPlayed-TotDVOA.png" align="middle" alt="Impact of games played on total DVOA.">
 
-<sub>__Figure 9731:__ The change in total DVOA by games played. </sub>
+<sub>__Figure 31:__ The change in total DVOA by games played. </sub>
 
 <BR>
 
 The trend is more pronounced here.  Looking at the raw "under the hood" stats like DVOA shows the impact of sample size on the metric itself, which subsequently impacts the model's predictions.  With only one or two games played, the variance in the DVOA metric is quite large, over 50% in some cases, compared to the later weeks of the season.  As we increase the number of games played we see a condensing of the data, more bunched around the mean, giving shorter and thicker violins.  This reduction in variance due to increased sample size is what we expect, but it is neat to see it backed up by the data for real NFL teams.
 
 ##### Can We Make Money
-Looking back at [Figure 721](#cumulative-precision), the cumulative precision shows us that once we get to, say, 0.70 probability, the precision for all predictions at or above 0.70 is 83% or higher.  That's encouraging, but we must remember this is the mean precision for all bets above (or below) a set threshold.  We'd expect the accuracy of prediction to be higher for bets the model was more confident about.  Regardless, if we believe we can be correct 83% of the time on all bets above 0.70 confidence,  shouldn't we just bet for the home team to win on every game that has a 70% or greater probability and ride off into the Nevada sunset?  It seems like a slam dunk -- choose the high-confidence bets and be guaranteed of success, right?  Well, it's not quite that simple for two primary reasons, one of which we have already touched upon and the other a secret [lurking in the darkness](https://www.youtube.com/watch?v=i_6w1EUGRoU).  
+Looking back at [Figure 27](#cumulative-precision), the cumulative precision shows us that once we get to, say, 0.70 probability, the precision for all predictions at or above 0.70 is 83% or higher.  That's encouraging, but we must remember this is the mean precision for all bets above (or below) a set threshold.  We'd expect the accuracy of prediction to be higher for bets the model was more confident about.  Regardless, if we believe we can be correct 83% of the time on all bets above 0.70 confidence,  shouldn't we just bet for the home team to win on every game that has a 70% or greater probability and ride off into the Nevada sunset?  It seems like a slam dunk -- choose the high-confidence bets and be guaranteed of success, right?  Well, it's not quite that simple for two primary reasons, one of which we have already touched upon and the other a secret [lurking in the darkness](https://www.youtube.com/watch?v=i_6w1EUGRoU).  
 
 First, the number of games with a probability of the home team winning at or over 70% is around 19 per season, which is a smidge over one per week.  This isn't too bad, actually, but does make one susceptible to a few bad weeks in a row.  Depending on a bettor's financial reserves, he or she may not be able to afford to play (for any appreciable sum) after three or four consecutive losses.  
 
@@ -831,11 +828,11 @@ Second, and the biggest heartbreaker of this project (more so than the model's y
 ###### Predictions Mirror the Spread
 <img src="images/prediction_mirror_spread.png" align="middle" alt="Prediction mirrors spread">
 
-<sub>__Figure 751:__ Correlations between the confidence level of a prediction and two of the three most important features in deciding who will win a game.  The reliance of the model on the spread for making predictions is revealed here.  The red points denote the probability window (1%) in which the mean precision was below the prediction baseline of 58%, while the green represent those above 58%, just as in __Figure 711__</sub>
+<sub>__Figure 32:__ Correlations between the confidence level of a prediction and two of the three most important features in deciding who will win a game.  The reliance of the model on the spread for making predictions is revealed here.  The red points denote the probability window (1%) in which the mean precision was below the prediction baseline of 58%, while the green represent those above 58%, just as in __Figure 26__</sub>
 
 <BR>
 
-__Figure 751__ shows us what's really going on "under the hood" when our model is assigning a probability to its predictions.  Back in [Figure 721](#cumulative-precision), we saw the model become more successful on predictions made with higher confidence, as expected.  Ideally we could use this data to find a cutoff point for our own bets, selecting only games that carried a certain level of confidence in order to secure a highly favorable chance at winning each bet.  This approach is still valid, but the picture painted by __Figure 751__ carries a deflating realization: the confidence level of predictions is a near-perfect mirror of the spread for the game.  
+__Figure 32__ shows us what's really going on "under the hood" when our model is assigning a probability to its predictions.  Back in [Figure 721](#cumulative-precision), we saw the model become more successful on predictions made with higher confidence, as expected.  Ideally we could use this data to find a cutoff point for our own bets, selecting only games that carried a certain level of confidence in order to secure a highly favorable chance at winning each bet.  This approach is still valid, but the picture painted by __Figure 32__ carries a deflating realization: the confidence level of predictions is a near-perfect mirror of the spread for the game.  
 
 Now we see where the spread assumes its dominant position among the most important features.  Compare the correlation of the prediction probability with the spread, the most important feature according to the model, to that of the third most important feature, the difference in average pass completions per game between the two teams playing.  While the completions delta statistic follows a general trend of increasing with probability, the spread is tightly hewn along the regression line (the simple OLS R<sup>2</sup> is .838 for the confidence level and the spread).  Also, note that both regressions were plotted with a 2nd-order polynomial, but the spread is so dead-on that its line of best fit is still linear.
 
@@ -849,7 +846,7 @@ There are two ways we can make bets, now.  The first is constructed without havi
 ##### Betting by the Spread
 If we didn't have access to this model going forward and only had the graphs above, we might consider looking at the rough equivalents for the spread of the probability thresholds that seemed to have success.  The model starts to perform reliably well -- around 71% or better precision -- on bets it gives a 0.70 or better confidence for the home team to win.  This equates to the home team being favored by around 6.2 points.  So, we would restrict our bets to home teams that have are favored by 6.0+ points.
 
-But betting on a favorite means paying a premium.  We have to wager more money than we will win.  Because of this, the most confident bets also carry the highest financial risk for the favorite-backer.  So, we would want to avoid paying _extreme_ premiums if the increase in prediction confidence is only marginal (that is, we want a steeper slope of accuracy to spread).  Accepting that the cumulative precision is only a loose and optimistic-by-nature guide, looking at [Figure 721](#cumulative-precision) we see a mini-peak at 0.74 probability.  After this, there is a diminished return on precision for increase in probability, excluding the high-variance, small sample size results at the extreme.  A 0.74 probability equates roughly to a home team being favored by +7.5 points. So, we could forego bets on games where the home team is favored by more than 7.5 points.  
+But betting on a favorite means paying a premium.  We have to wager more money than we will win.  Because of this, the most confident bets also carry the highest financial risk for the favorite-backer.  So, we would want to avoid paying _extreme_ premiums if the increase in prediction confidence is only marginal (that is, we want a steeper slope of accuracy to spread).  Accepting that the cumulative precision is only a loose and optimistic-by-nature guide, looking at [Figure 27](#cumulative-precision) we see a mini-peak at 0.74 probability.  After this, there is a diminished return on precision for increase in probability, excluding the high-variance, small sample size results at the extreme.  A 0.74 probability equates roughly to a home team being favored by +7.5 points. So, we could forego bets on games where the home team is favored by more than 7.5 points.  
 
 These are loose guides to help formulate our approach.  This strategy would leave us with bets on the home team when they are favored by 6.0, 6.5, 7.0, or 7.5 points.  There would be two questions left to answer: how much money on average do we expect to pay as a premium for each line, and how many games are there within that range each year?
 
@@ -863,13 +860,13 @@ Home Favorite | Road Money Line | Home Money Line | Home Team Win % | Games / Se
 7.0           | 255.0           | -310.0          | 0.718           | 12.2           | ~ 2 every 3 weeks
 7.5           | 290.0           | -350.0          | 0.790           | 5.6            | ~ every 3 weeks
 
-<sub>__Table 00:__ The relevant spreads for our betting approach, culled from __Tables A1__ and __A2__ in the appendix, 1978-2016.</sub>
+<sub>__Table 10:__ The relevant spreads for our betting approach, culled from __Tables A1__ and __A2__ in the appendix, 1978-2016.</sub>
 
 <BR>
 
 I'll touch on the historical winning percentages below, but will first discuss the wagering process.  We see that the typical amount we have to wager as a premium to bet on a home favorite with our spreads of interest ranges from 2.6x to 3.5x what we want to win.  While the concept of financial risk is relative for every individual, it holds to reason that wagering three-and-a-half times the amount of money you stand to win counts as a legitimate "risk."  If we had hoped to win $1,000 on a single bet, we'd have to wager $2,600 to $3,5000.  With such financial liability it makes sense to distribute our "risk" amongst many smaller bets, hoping the model's precision is accurate, allowing us to win many smaller bets and overcome a few small losses.  
 
-The feasibility of such an approach depends on how many candidate games there are.  If there are enough to spread our informed bets around, then we can pursue this method.  A quick glance at __Table 00__ shows us that there does indeed appear to be enough of a sample for us to try to minimize our overall risk.  The two lines at -6.0 and -6.5 have a roughly equal rate of occurrence, about once every two weeks of a regular season.  Combined, that gives about once a week throughout the season.  For the two lines at -7.0 and -7.5, we have a bigger difference between the two but a combined count nearly identical to the 6s, giving us around one bet per week.  In sum, if we consider all four spreads there are 1,371 games in the database, meaning we should expect to see around two games per week that we can wager on, totaling around 34 possible bets, or 12% of all NFL games in a season.  Of these 1,371 games, 970 were predicted correctly by Vegas straight-up, which gives a 70.7% win rate for these four values of the spread.
+The feasibility of such an approach depends on how many candidate games there are.  If there are enough to spread our informed bets around, then we can pursue this method.  A quick glance at __Table 10__ shows us that there does indeed appear to be enough of a sample for us to try to minimize our overall risk.  The two lines at -6.0 and -6.5 have a roughly equal rate of occurrence, about once every two weeks of a regular season.  Combined, that gives about once a week throughout the season.  For the two lines at -7.0 and -7.5, we have a bigger difference between the two but a combined count nearly identical to the 6s, giving us around one bet per week.  In sum, if we consider all four spreads there are 1,371 games in the database, meaning we should expect to see around two games per week that we can wager on, totaling around 34 possible bets, or 12% of all NFL games in a season.  Of these 1,371 games, 970 were predicted correctly by Vegas straight-up, which gives a 70.7% win rate for these four values of the spread.
 
 ##### Betting by Model Probabilities
 So, why even use the model?  Why not just bet all games with the home team favored by 6.0 - 7.5 points?  Well, while it is clear the model follows the spread, not all games in this range are equally confident.  As mentioned above, there is no great hidden value to be found betting against Vegas, but the model does still outperform the spread alone.  Here is a table showing the actual values for the spread range of interest.  
@@ -881,7 +878,7 @@ Home Favorite | Historical Home Win % | Model Home Win % | Model ∆
 7.0           | 0.718                 | 0.719            | +0.001
 7.5           | 0.790                 | 0.919            | +0.129
 
-<sub>__Table 1Billion:__ Table showing the difference between the marginal differences between model's predictions and the historical outcomes.  Taken from __Tables A1__ and __A2__ in the appendix.
+<sub>__Table 11:__ Table showing the difference between the marginal differences between model's predictions and the historical outcomes.  Taken from __Tables A1__ and __A2__ in the appendix.
 
 <BR>
 
@@ -901,11 +898,11 @@ Home Win Probability | Home Win % | Mean Home Favorite | Number of Games
 | 0.74               | 0.82       | 7.27               | 11
 | 0.75               | 0.80       | 7.43               | 15
 
-<sub> __Table 66:__ Home team winning percentage as grouped by the model's prediction probabilities for the home team to win.  </sub>
+<sub> __Table 12:__ Home team winning percentage as grouped by the model's prediction probabilities for the home team to win.  </sub>
 
 <BR>
 
-In __Table 66__ we see the home team winning percentages for each probability in the range selected above in [Betting by the Spread](#betting-by-the-spread) (that is, home favorites of 6.0 - 7.5 points).  First, the mean home spread jumps around -- it is not exactly linear with the probabilities.  This verifies what we discussed above in the [intro](betting-by-model-probabilities) to this section, that the model is finding some small but valuable information in the database which makes it more precise than the spread alone.  Second, note the high variance in the winning percentage for each given probability.  This is a result of the small sample sizes -- for example, out of the 1,100 games in the test dataset only 16 were given a probability of 0.68 <= x < 0.69 for the home team to win. And so on for the rest of the probabilities.   
+In __Table 12__ we see the home team winning percentages for each probability in the range selected above in [Betting by the Spread](#betting-by-the-spread) (that is, home favorites of 6.0 - 7.5 points).  First, the mean home spread jumps around -- it is not exactly linear with the probabilities.  This verifies what we discussed above in the [intro](betting-by-model-probabilities) to this section, that the model is finding some small but valuable information in the database which makes it more precise than the spread alone.  Second, note the high variance in the winning percentage for each given probability.  This is a result of the small sample sizes -- for example, out of the 1,100 games in the test dataset only 16 were given a probability of 0.68 <= x < 0.69 for the home team to win. And so on for the rest of the probabilities.   
 
 But we wouldn't want to bet with only a single-point probability.  Instead we'd want to use a range, such as 0.68 - 0.75, which would give us 124 games worth of bets.  Of these 124 games, 92 were predicted correctly, giving us a 74.3% win rate from the model.  This compares favorably to the method of using the spread.
 
@@ -915,7 +912,7 @@ Method | Min Home Favorite | Max Home Favorite | Total Games | Bet Win %
 Spread | 6.0               | 7.5               | 1,371       | 70.7
 Model  | 5.9 (mean)        | 7.4 (mean)        | 124         | 74.3
 
-<sub> __Table 67:__ The model compares favorably to the spread, but suffers from a smaller sample size.</sub>
+<sub> __Table 13:__ The model compares favorably to the spread, but suffers from a smaller sample size.</sub>
 
 <BR>
 
@@ -927,7 +924,7 @@ Method | Min Home Favorite | Max Home Favorite | Total Games | Bet Win %
 Spread | 2.5               | 13.0              | 124         | 74.2
 Model  | 5.9 (mean)        | 7.4 (mean)        | 124         | 74.3
 
-<sub> __Table 68:__ Using the same games, the spread is now equal to the model.</sub>
+<sub> __Table 14:__ Using the same games, the spread is now equal to the model.</sub>
 
 <BR>
 
@@ -944,7 +941,7 @@ Here we put our money where our mouth is.  In an effort to keep things manageabl
 
 <img src="images/72_to_81_max_None.gif" align="middle" alt="Winnings from optimum probability thresholds">
 
-<sub>__Figure 851:__ The running balance after each bet made by using the optimum thresholds in the model. The test data we use is 1,100 games, or about 4.23 NFL seasons' worth of games.</sub>
+<sub>__Figure 33:__ The running balance after each bet made by using the optimum thresholds in the model. The test data we use is 1,100 games, or about 4.23 NFL seasons' worth of games.</sub>
 
 <BR>
 
@@ -956,7 +953,7 @@ Second, the amount wagered is shown as the dotted black line.  In it we see some
 
 <img src="images/72_to_81_max_1000.png" align="middle" alt="Winnings from optimum probability thresholds">
 
-<sub>__Figure 861:__ The same running balance plot as in __Figure 851__ except with a maximum bet cutoff at $1,000. </sub>
+<sub>__Figure 34:__ The same running balance plot as in __Figure 33__ except with a maximum bet cutoff at $1,000. </sub>
 
 <BR>
 
@@ -973,7 +970,7 @@ $600          | 104      | 127       | 81.89%| $46,055       | $3,130         | 
 $550          | 96       | 119       | 80.67%| $41,455       | $2,330         | $19.58      | $17.79 in risk
 $500          | 95       | 118       | 80.50%| $40,905       | $2,230         | $18.89      | $18.34 in risk
 
-<sub> __Table 999:__ Results from using different limits for a maximum bet.  The winningest model doesn't necessarily minimize risk. No bets between $750 and $1,000 existed, so those cutoffs were omitted.</sub>
+<sub> __Table 15:__ Results from using different limits for a maximum bet.  The winningest model doesn't necessarily minimize risk. No bets between $750 and $1,000 existed, so those cutoffs were omitted.</sub>
 
 <BR>
 
@@ -985,22 +982,62 @@ As a closing argument to this project, I wanted to hammer home this point by fin
 
 <img src="images/55_to_72_max_None_500x500.gif" align="middle" alt="Progression of using the worst threshold">
 
-<sub>__Figure 3951:__ The results of using the worst probability interval on this model.  So, don't do this.</sub>
+<sub>__Figure 35:__ The results of using the worst probability interval on this model.  So, don't do this.</sub>
 
 
-
-
-
-
+<BR>
+<BR>
+<BR>
 
 
 ## Future Considerations
+There can be many improvements made.  Most deal with added data.
+1. Account for injuries.  Very granular data work, but could restrict it to key positions like QB, WR, S, DE, etc.  This would allow a _much_ more accurate prediction on the few games where a team is playing without their starting QB, for example.  I'm not sure the model would pick up on this or not, but we could simply have a dummy column called "Starting_QB", 1 for yes and 0 for any backup.  It might be drowned out because its a fairly uncommon occurrence, statistically speaking.  But it might not.  Also, would want to have some team-level injury information.  How many players are injured (using the NFL's injury designations) for a given game?  This will absolutely increase model accuracy.
 
+2. Compute ANY/A per QB, not per team.  Thus, if a team loses their starting QB, we can use the backup's career or projected ANY/A in his place.  
 
+3. Utilize the many remaining statistical tables from PFR I scraped.  These include:
+    + Individual passing and rushing stats.
+    + Individual defensive stats.
+    + Kicking stats
+    + Play-by-play charts, with types of scoring plays and side of field info.
+
+4. Miles traveled and direction traveled.  Traveling has an observed effect on player performance.  This would be very doable since we already have the location of each game by virtue of knowing which team is the home team and which is the visiting team, we could simply fill in the distance for each game.  Come to think of it, this is easy enough I should have done it initially.  Dang.
+
+5. Coaching.  I'm not sure how to implement this yet, but somehow tracking and accounting for coaching would be great.  My first hunch is that there are only a few coaches that _actually_ matter for their teams (Belichick, Carroll, Reid, Harbaugh...) and the rest are just middling presences on the sideline.
+
+6. Date.  I have the date information, but I didn't break it down into features the model could use.  My thinking is that I wonder if certain types of teams, which could be categorized by their per game statistics such as rushing attempts per game or passing yards per game, etc., start to have more or less success as the season changes from summer to winter.  
+
+7. Break down scoring by offense, defense, and special teams just to produce easily quantifiable stats that the model might be able to find a through line with.
+
+8. Big one: contract years! Players playing in a contract year are surely going to play better than non-contract years (their livelihood depends on it). Would need to tally number of starters in a contract year.  Could then also break down by position.
+
+9. Team age.  Average age of each position group, such as LB, QB, WR, etc., and then also total team age (could use Football Outsider's snap-weighted age metric)  
+
+10. Game type clusters and how they break down into the various predictions.
+
+11. TV Announcers.  We all know certain announcers are curses for certain teams.  Just kidding. ;)
+
+<BR>
+<BR>
 
 ## Glossary
++ __DVOA:__ Defense-adjusted Value Over Average
+    + Football Outsiders' proprietary metric developed by Aaron Schatz.  Breaks down into overall, offense, defense, and special teams.  Is based on success rate of a given play being defined by down-and-distance as well as game scenario and situation.  The metric is normalized and reported in percentages above the mean of 0.0.
 
++ __EPA:__ Expected Points Added
+    + Similar to DVOA, though uses fewer inputs. Based on expected outcome of a play for an average team having the ball on a given yard line with a given number of yards to go.  Originally devised by Bob Carroll and Pete Palmer in their seminal work, "The Hidden Game of Football."   A common range is +/- 15, negative being bad.  
 
++ __ANY/A:__ Adjusted-Net Yards per Attempt
+    + A passing-only metric which takes all passing-related statistics as input and returns a single number, usually in the range of 4.0 (very bad) to 10.0 (very good).  This means that for each attempted pass (sacks included!) that a QB makes, he ended up with X net yards for his team.  I'm unsure who developed it but Chase Stuart is the person who updated it to reflect the modern increase in value of passing.
+
++ __Pythagenport Win %__
+    + A twice-modified metric that stems from the "godfather" of modern sports analytics (also termed "Sabremetrics"), Bill James.  James created the one-stat-fits-all metric called the Pythagorean Win Expectancy for baseball in the 1970s.  It was a glorified ratio of a team's runs score to runs surrendered that described "true" team quality irrespective of their W-L record very well.  It's loose visual resemblance to the Greek mathematician's famous right triangle equation earned it its name.  
+
+        Current Houston Rockets GM, Darryl Morrey, adapted it for football in the late 1990s, with a fixed exponent that caused it to under-or-overrate teams on the extremes.  Chase Davenport adjusted it to account for a team's "scoring environment", which gives it flexibility and slightly rewards teams that have equal ratio of statistical success with more total points, as more points means a larger sample size by which to increase certainty of the rating.
+
+<BR>
+<BR>
 
 
 ## Appendix
@@ -1334,7 +1371,13 @@ Pred. Proba | Road Win Percent | Mean Home Spread | Pred. Proba | Home Win Perce
 |           |                  |                  | 0.88        | 0.83             | -12.08
 
 
-<BR><BR><BR><BR><BR><BR><BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
 
 
 
