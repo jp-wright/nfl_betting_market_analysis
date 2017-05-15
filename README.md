@@ -786,7 +786,10 @@ The consequence of having fewer games at the tails of the prediction ranges mean
 The probability thresholds have a minimum of 0.15 and a maximum of 0.88.  No game lies outside of this nearly symmetric range.  However, the distribution of the probabilities is not quite as symmetric, with a noticeable density above the 0.50 probability divide.  This is a direct consequence of the 58%-to-42% class imbalance.  Since there are more games in the "home win" class, we expect and observe that our model makes more predictions for the "home win" result (above 0.50) than for the "home loss" result (below 0.50).  Looking at the peak of the kernel density estimate outline, we see it falls right at 0.60, which is close to 58%.  In fact, the true mean of all "home win" probabilities is .573 -- very, very close to 0.58!  (The reason the KDE peak is not 0.573 is simply a relic of the binning for the histogram).  
 
 <img src="images/games_per_season_proba.png" align="right" alt="Games Per Season by Probability" width="600">
-<BR><BR>
+
+<BR>
+<BR>
+
 Since the number of games decreases as prediction confidence increases (in either direction), we want to make our bets count.  The smart approach would seem to be avoiding all games within the 0.40 to 0.60 range as a general rule, and perhaps even higher.  It's hard to sell oneself on a bet the model only has 55% confidence in, after all.  But making bets based on an arbitrary level of confidence is unwise and is easily bested by using the data in [Figure 26](#prediction-confidence) as a guide.
 
 <BR><BR>
@@ -796,6 +799,7 @@ Since the number of games decreases as prediction confidence increases (in eithe
 inverse of the prediction precision results from <i>Figure 711</i>, where the clear majority of <BR>games occurs in the middle of the probability range and tails off sharply at either end.
 </sub>
 </div>
+
 <BR>
 
 ##### Number of Games Played Impacts Confidence Level
