@@ -1426,7 +1426,7 @@ Pred. Proba | Road Win Percent | Mean Home Spread | Pred. Proba | Home Win Perce
 <a name="fn2">2</a>: https://www.inc.com/slate/jordan-weissmann-is-illegal-sports-betting-a-400-billion-industry.html  
 <a name="fn3">3</a>: https://www.boydsbets.com/super-bowl-how-much-bet/  
 <a name="fn4">4</a>: http://mentalfloss.com/article/26730/how-wind-chill-calculated  
-<a name="fn5">5</a>: https://www.sportingcharts.com/dictionary/sports-betting/money-line.aspx
+<a name="fn5">5</a>: https://www.sportingcharts.com/dictionary/sports-betting/money-line.aspx  
 <a name="fn6">6</a>: https://en.wikipedia.org/wiki/List_of_current_National_Football_League_stadiums  
 <a name="fn7">7</a>: https://fifthdown.blogs.nytimes.com/2010/08/31/why-passing-is-more-important-than-running-in-the-n-f-l/  
 <a name="fn8">8</a>: http://www.footballperspective.com/introducing-game-scripts-part-i/  
