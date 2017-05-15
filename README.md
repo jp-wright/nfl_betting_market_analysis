@@ -991,11 +991,21 @@ With different betting limits we observe a few noteworthy results.  The win perc
 #### The Probabilities Vegas Wants You to Use
 The result above is the rosiest possible outcome.  This bears repeating -- while our predictions were made fairly, our review of them was not.  We examined every possible outcome from every betting threshold and cherry picked the best one.  While this is a smart approach to using the model for future bets because we do want to know which confidence thresholds are likely to give us the best results going forward, it is no guarantee that these results actually _would_ be repeated by betting on future games.  Just think, if the games we made the predictions above on had not yet happened, how would we know to use the thresholds of 0.72 to 0.81?  Yes, we would perform the same experiment we just did on previous years' data, but it very well could have shown us the best threshold for that dataset was, say, 0.69 to 0.77.  Using that same range on the games in the test we ran above would produce some sub-optimal result!  It _is_ possible that the probability window of 0.72 to 0.81 we found above will be successful on future bets.  But we should be aware of the uncertainty inherent in our task. This, of course, the nature of prediction, and especially so of predicting sports outcomes.  
 
-As a closing argument to this project, I wanted to hammer home this point by finding the _worst_ confidence interval for our model and plotting it.  Seeing is believing, so get ready to believe you can go broke  while betting on sports (especially if you ignore my model. Joking....).  Here's how to lose $
+As a closing argument to this project, I wanted to hammer home this point by finding the _worst_ confidence interval for our model and plotting it.  Seeing is believing, so get ready to believe you can go broke  while betting on sports (especially if you ignore my model. Joking....).  Here's how to lose $4,685:
 
 <img src="images/55_to_72_max_None_800x800.gif" align="middle" alt="Progression of using the worst threshold">
 
 <sub>__Figure 35:__ The results of using the worst probability interval on this model.  I just got an email from three oddsmakers in Vegas, and they _love_ this model.  Possibly their favorite they've ever seen, they said.  So, don't do this.</sub>
+
+<BR>
+
+###### Risk/Reward Ratio for the Worst Probability Range
+Max Bet Limit | Bets Won | Bets Made | Win % | Total Wagered | Net Winnings   | Net Per Bet | Risk/Reward Ratio
+--------------|----------|-----------|-------|---------------|----------------|-------------|------------------
+None          | 256      | 408       | 62.74%| $58,042       | -$4,685        | -$11.48     | $58,042 in risk
+
+
+<sub> __Table 16:__ Results from using different limits for a maximum bet.  The winningest model doesn't necessarily minimize risk. No bets between $750 and $1,000 existed, so those cutoffs were omitted. With a negative net result, all money wagered was the 'risk' with no subsequent reward.  If you win 62% of your bets on the underdog, you'd be the most successful bettor in recorded history.  But winning only 62% of the bets for the favorite is grossly inadequate.  You never recoup your reward for the money you've risked.</sub>
 
 
 <BR>
