@@ -796,14 +796,14 @@ Since the number of games decreases as prediction confidence increases (in eithe
 
 <div align="right">
 <sub><b>Figure 29:</b> The number of games for each probability threshold window.  We see here the <BR>
-inverse of the prediction precision results from <i>Figure 711</i>, where the clear majority of <BR>games occurs in the middle of the probability range and tails off sharply at either end.
+inverse of the prediction precision results from <b>Figure 26</b>, where the clear majority of <BR>games occurs in the middle of the probability range and tails off sharply at either end.
 </sub>
 </div>
 
 <BR>
 
 ##### Number of Games Played Impacts Confidence Level
-As more games are played during a season the sample size for the underlying statistics describing each team grows.  With a larger sample size, might we not see an increase in the probability of a game's prediction, as the model has data that is more representative of the "true" quality of a team and can be more certain about its probability of winning or losing?  If a team is averaging 31 1st downs and 32.0 points per game after one game... then they had a great first game.  Congrats.  But if a team is averaging those same levels of performance after thirteen games, then we can feel more strongly about that team actually being excellent.  To take a quick gander into this, I binned the teams in the database by number of games played and charted the change in prediction confidence.
+As more games are played during a season the sample size for the underlying statistics describing each team grows.  With a larger sample size might we not see an increase in the probability of a game's prediction? More games means the model has data that is more representative of the "true" quality of a team and can be more certain about its probability of winning or losing.  If a team is averaging 29 first downs and 32 points per game after only one game... then they had a great first game.  Congrats.  But if a team is averaging those same levels of performance after thirteen games, then we can feel more strongly about that team actually being excellent.  To take a quick gander at this, I binned the teams in the database by number of games played and charted the change in prediction confidence.
 
 <img src="images/GamesPlayed-PredConf.png" align="middle" alt="Impact of games played on prediction confidence.">
 
@@ -814,14 +814,14 @@ As more games are played during a season the sample size for the underlying stat
 For those who aren't familiar with a violin plot, here are the key aspects:
 1. The white dot is the mean for the given group.
 2. The thick black vertical bar that is above and below the white mean dot is the inner-quartile range (25th-percentile on bottom, 75th-percentile on top)
-3. The 'violins' extend upward and downward to cover all the data points in the group, with the tips of the 'violins' ending at the most extreme outliers in the group.  
+3. The 'violins' extend upward and downward to cover all the data points in the group, with their tips ending at the most extreme outliers in the group.  
     (_Note:_ In some groups, like 11-12 and 15-16, we some some data points outside violin plot, on their own.  This is because I used an option to have the violins do a 'hard cut' at the end, in order to prevent misleading the reader with pretty-but-inaccurate flowing tips)
 4. The thickness of the violins is representative of the distribution of the data (pretend the plot was rotated 90°; the curve of the violin is just a distribution plot).  A thick area means more concentration of data points.
     (_Note:_ There are various options regarding how to plot distribution.  For clarity, these plots use density across groups, not within each group).
 
-Well, there is no _major_ trend after all.  On _average_ prediction confidence bounces around the 56% to 58% range regardless of games played.  The mean of all prediction probabilities is 57.2%.  However, closer inspection reveals a pattern that divides the season in half.  Of the first four groupings of games played, one is below mean (1-2), and two others are just a hair above the mean (5-6, 7-8).  All three of these groups are within the 95% confidence interval for the mean (the light gray border around the dashed regression line).
+Well, there is no _major_ trend after all.  On _average_ prediction confidence bounces around the 56% to 58% range regardless of games played.  The mean of all prediction probabilities is 57.3%.  However, closer inspection reveals a pattern that divides the season in half.  Of the first four groupings of games played, one is below mean (1-2), and two others are just a hair above the mean (5-6, 7-8).  All three of these groups' means are within the 95% confidence interval for the mean (the light gray border around the dashed regression line).
 
-In the second half of the season, all four are above the mean and three of the four (9-10, 11-12, 15-16) are significantly so.  All four groups's means are also above the regression line's 95% confidence interval.  This suggests that, yes, the more games played by a team the more confident the model is about its prediction.  Finding this interesting, I did the same plot for teams' _Total DVOA_, the third most important feature for this model in predicting winners.
+In the second half of the season, all four are above the mean and three of the four (9-10, 11-12, 15-16) are significantly so.  All four groups's means are also above the regression line's 95% confidence interval.  This suggests that, yes, the more games played by a team the more confident the model is about its prediction.  It's not drastic, but it appears to exist.  Finding this interesting, I did the same plot for teams' _Total DVOA_, the third most important feature for this model's prediction of winners.
 
 <img src="images/GamesPlayed-TotDVOA.png" align="middle" alt="Impact of games played on total DVOA.">
 
@@ -829,32 +829,32 @@ In the second half of the season, all four are above the mean and three of the f
 
 <BR>
 
-The trend is more pronounced here.  Looking at the raw "under the hood" stats like DVOA shows the impact of sample size on the metric itself, which subsequently impacts the model's predictions.  With only one or two games played, the variance in the DVOA metric is quite large, over 50% in some cases, compared to the later weeks of the season.  As we increase the number of games played we see a condensing of the data, more bunched around the mean, giving shorter and thicker violins.  This reduction in variance due to increased sample size is what we expect, but it is neat to see it backed up by the data for real NFL teams.
+The trend is more pronounced here.  Looking at the raw "under the hood" stats like DVOA shows the impact of sample size on the metric itself, which subsequently impacts the model's predictions.  With only one or two games played, the variance in the DVOA metric is quite large compared to the later weeks of the season.  As we increase the number of games played we see a condensing of the data, more bunched around the mean, giving shorter and thicker violins.  This reduction in variance due to increased sample size is what we expect, but it is neat to see it backed up by the data for real NFL teams.
 
 #### Can We Make Money
-Looking back at [Figure 27](#cumulative-precision), the cumulative precision shows us that once we get to, say, 0.70 probability, the precision for all predictions at or above 0.70 is 83% or higher.  That's encouraging, but we must remember this is the mean precision for all bets above (or below) a set threshold.  We'd expect the accuracy of prediction to be higher for bets the model was more confident about.  Regardless, if we believe we can be correct 83% of the time on all bets above 0.70 confidence,  shouldn't we just bet for the home team to win on every game that has a 70% or greater probability and ride off into the Nevada sunset?  It seems like a slam dunk -- choose the high-confidence bets and be guaranteed of success, right?  Well, it's not quite that simple for two primary reasons, one of which we have already touched upon and the other a secret [lurking in the darkness](https://www.youtube.com/watch?v=i_6w1EUGRoU).  
+Looking back at [Figure 27](#cumulative-precision), the cumulative precision shows us that the precision for all predictions at or above 0.70 is 83% or higher.  That's encouraging, but we must remember this is the mean precision for all bets above (or below) a set threshold.  We expect the accuracy of prediction to be higher for bets the model was more confident about.  If we believe we can be correct 83% of the time on all bets above 0.70 confidence,  shouldn't we just bet for the home team to win on every game that has a 70% or greater probability and ride off into the Nevada sunset?  It seems like a slam dunk -- choose the high-confidence bets and be guaranteed of success, right?  Well, it's not quite that simple for two primary reasons, one of which we have already touched upon and the other a secret [lurking in the darkness](https://www.youtube.com/watch?v=i_6w1EUGRoU).  
 
-First, the number of games with a probability of the home team winning at or over 70% is around 19 per season, which is a smidge over one per week.  This isn't too bad, actually, but does make one susceptible to a few bad weeks in a row.  Depending on a bettor's financial reserves, he or she may not be able to afford to play (for any appreciable sum) after three or four consecutive losses.  
+First, the number of games with a probability of the home team winning at or over 70% is around three to four a week.  This isn't too bad, actually, but does make one susceptible to a few bad weeks in a row.  Depending on a bettor's financial reserves, he or she may not be able to afford to play (for any appreciable sum) after three or four consecutive losses.  
 
-Second, and the biggest heartbreaker of this project (more so than the model's yielding "wise bets" by predicting against the spread that performed no better than chance, which is detailed below in the [Wise Bets Results](#wise-bets-results) section), is the model's adherence to the [power of the spread](#the-power-of-the-spread).  Let's have a look at how the confidence level of each prediction for who will win a game correlates with the spread and another top-3 feature, the difference in average completions per game between the two teams.
+Second, and the biggest heartbreaker of this project (more so than the model's yielding "wise bets" by finding predicted deviation from the spread that performed no better than chance), is the model's adherence to the [power of the spread](#the-power-of-the-spread).  Let's have a look at how the confidence level of each prediction for who will win a game correlates with the spread and another top-3 feature, the difference in average completions per game between the two teams.
 
 ###### Predictions Mirror the Spread
 <img src="images/prediction_mirror_spread.png" align="middle" alt="Prediction mirrors spread">
 
-<sub>__Figure 32:__ Correlations between the confidence level of a prediction and two of the three most important features in deciding who will win a game.  The reliance of the model on the spread for making predictions is revealed here.  The red points denote the probability window (1%) in which the mean precision was below the prediction baseline of 58%, while the green represent those above 58%, just as in __Figure 26__</sub>
+<sub>__Figure 32:__ Correlations between the _binned_ confidence level of a prediction and two of the three most important features in deciding who will win a game.  The R<sup>2</sup> for the spread is 0.920 and .730 for the passes completed.  The reliance of the model on the spread for making predictions is revealed here.  The red points denote the probability window (1%) in which the mean precision was below the prediction baseline of 58%, while the green represent those above 58%, just as in __Figure 26__</sub>
 
 <BR>
 
-__Figure 32__ shows us what's really going on "under the hood" when our model is assigning a probability to its predictions.  Back in [Figure 721](#cumulative-precision), we saw the model become more successful on predictions made with higher confidence, as expected.  Ideally we could use this data to find a cutoff point for our own bets, selecting only games that carried a certain level of confidence in order to secure a highly favorable chance at winning each bet.  This approach is still valid, but the picture painted by __Figure 32__ carries a deflating realization: the confidence level of predictions is a near-perfect mirror of the spread for the game.  
+__Figure 32__ shows us what's really going on "under the hood" when our model is assigning a probability to its predictions.  Back in [Figure 27](#cumulative-precision), we saw the model become more successful on predictions made with higher confidence, as expected.  Ideally we could use this data to find a cutoff point for our own bets, selecting only games that carried a certain level of confidence in order to secure a highly favorable chance at winning each bet.  This approach is still valid, but the picture painted by __Figure 32__ carries a deflating realization: the confidence level of predictions is a close mirror of the spread for the game.  
 
-Now we see where the spread assumes its dominant position among the most important features.  Compare the correlation of the prediction probability with the spread, the most important feature according to the model, to that of the third most important feature, the difference in average pass completions per game between the two teams playing.  While the completions delta statistic follows a general trend of increasing with probability, the spread is tightly hewn along the regression line (the simple OLS R<sup>2</sup> is .838 for the confidence level and the spread).  Also, note that both regressions were plotted with a 2nd-order polynomial, but the spread is so dead-on that its line of best fit is still linear.
+Now we see where the spread assumes its dominant position among the most important features.  Compare the correlation of the prediction probability with the spread, the most important feature according to the model, to that of the third most important feature, the difference in average pass completions per game between the two teams playing.  While the completions delta statistic follows a general trend of increasing with probability, the spread is tightly hewn along the regression line (the simple OLS R<sup>2</sup> is .838 for the confidence level and the spread without being binned into .01 probability groups, and 0.920 for the binned regression shown in [Figure 32](#predictions-mirror-the-spread)).  Also, note that both regressions were plotted with a 2nd-order polynomial, but the spread is so dead-on that its line of best fit is still linear.
 
 Why is this such a big deal, one may ask?  While it's clear the spread helps our model be much more accurate in its predictions, our model's demonstrated reliance upon it undermines the whole initial motivation for this project: to identify games which are significantly inaccurately valued by Vegas in order to profit from our exploitation of an inefficiency in the betting market.  That hope is eviscerated with this result.  All the games our model is confident about are overwhelmingly, but not uniformly, the same ones Vegas is confident about.  There is no great "hidden" value in these games.  
 
-This leaves the standard choice of betting on a team with low confidence (the underdog), with low financial risk and high reward, or betting on a team with high confidence (the favorite) and paying a (potentially hefty) premium, creating a larger financial risk and lower payout.  Needless to say, while this is not a shocking conclusion, the realization that I wouldn't be able to become a multi-bajillionaire overnight by outsmarting Vegas left me personally rather [disappointed](https://www.youtube.com/watch?v=_O1hM-k3aUY)!  
+This leaves the standard choice of betting on a team with low confidence (the underdog), with low financial risk and high reward, or betting on a team with high confidence (the favorite) and paying a (potentially hefty) premium, creating a larger financial risk and lower payout.  Needless to say, while this is not a shocking conclusion, the realization that I wouldn't be able to become a multi-millionaire overnight by outsmarting Vegas left me personally rather [disappointed](https://www.youtube.com/watch?v=_O1hM-k3aUY)!  
 
 #### Betting Approach - Game Winner
-There are two ways we can make bets, now.  The first is constructed without having further access to the model and the second will be to use the model itself.  The driving point of laying out these two methods is to show that, despite there not being any _great_ hidden inefficiency in the betting market, that the model still outperforms traditional betting.  The fundamental purpose of using the model is to make bets based on its predicted _probability_ of a team winning, which though does largely align with the spread, it does not do so with a 100% correlation.  Thus, there appear to be _small_ inefficiencies the model is picking up on and these, we hope, will allow us to beat the averages of betting only with the spread.  
+There are two ways we can make bets, now.  The first is constructed without having further access to the model and the second will be to use the model itself.  The driving point of laying out these two methods is to show that, despite there not being any _great_ hidden inefficiency in the betting market, that the model still offers a better approach than traditional betting.  The fundamental purpose of using the model is to make bets based on its predicted _probability_ of a team winning, which though does largely align with the spread, does not do so with a 100% correlation.  Thus, there appear to be _small_ inefficiencies the model is picking up on and these, we hope, will allow us to beat the averages of betting only with the spread.  
 
 ##### Betting via the Spread
 If we didn't have access to this model going forward and only had the graphs above, we might consider looking at the rough equivalents for the spread of the probability thresholds that seemed to have success.  The model starts to perform reliably well -- around 71% or better precision -- on bets it gives a 0.70 or better confidence for the home team to win.  This equates to the home team being favored by around 6.2 points.  So, we would restrict our bets to home teams that have are favored by 6.0+ points.
@@ -877,19 +877,19 @@ Home Favorite | Road Money Line | Home Money Line | Home Team Win % | Games / Se
 
 <BR>
 
-I'll touch on the historical winning percentages below, but will first discuss the wagering process.  We see that the typical amount we have to wager as a premium to bet on a home favorite with our spreads of interest ranges from 2.6x to 3.5x what we want to win.  While the concept of financial risk is relative for every individual, it holds to reason that wagering three-and-a-half times the amount of money you stand to win counts as a legitimate "risk."  If we had hoped to win $1,000 on a single bet, we'd have to wager $2,600 to $3,5000.  With such financial liability it makes sense to distribute our "risk" amongst many smaller bets, hoping the model's precision is accurate, allowing us to win many smaller bets and overcome a few small losses.  
+I'll touch on the historical winning percentages below, but will first discuss the wagering process.  We see that the typical amount we have to wager as a premium to bet on a home favorite with our spreads of interest ranges from 2.6x to 3.5x what we want to win.  While the concept of financial risk is relative for every individual, it holds to reason that wagering three-and-a-half times the amount of money you stand to win counts as a legitimate "risk."  If we had hoped to win $1,000 on a single bet, we'd have to wager $2,600 to $3,5000.  With such financial liability it makes sense to distribute our "risk" amongst many smaller bets, hoping to win many smaller bets and overcome a few small losses.  
 
 The feasibility of such an approach depends on how many candidate games there are.  If there are enough to spread our informed bets around, then we can pursue this method.  A quick glance at __Table 10__ shows us that there does indeed appear to be enough of a sample for us to try to minimize our overall risk.  The two lines at -6.0 and -6.5 have a roughly equal rate of occurrence, about once every two weeks of a regular season.  Combined, that gives about once a week throughout the season.  For the two lines at -7.0 and -7.5, we have a bigger difference between the two but a combined count nearly identical to the 6s, giving us around one bet per week.  In sum, if we consider all four spreads there are 1,371 games in the database, meaning we should expect to see around two games per week that we can wager on, totaling around 34 possible bets, or 12% of all NFL games in a season.  Of these 1,371 games, 970 were predicted correctly by Vegas straight-up, which gives a 70.7% win rate for these four values of the spread.
 
 ##### Betting via Model Probabilities
 So, why even use the model?  Why not just bet all games with the home team favored by 6.0 - 7.5 points?  Well, while it is clear the model follows the spread, not all games in this range are equally confident.  As mentioned above, there is no great hidden value to be found betting against Vegas, but the model does still outperform the spread alone.  Here is a table showing the actual values for the spread range of interest.  
 
-Home Favorite | Historical Home Win % | Model Home Win % | Model ∆
---------------|-----------------------|------------------|--------
-6.0           | 0.693                 | 0.719            | +0.026
-6.5           | 0.665                 | 0.722            | +0.057
-7.0           | 0.718                 | 0.719            | +0.001
-7.5           | 0.790                 | 0.919            | +0.129
+Home Spread | Historical Home Win % | Model Home Win % | Model ∆
+------------|-----------------------|------------------|--------
+-6.0        | 0.693                 | 0.719            | +0.026
+-6.5        | 0.665                 | 0.722            | +0.057
+-7.0        | 0.718                 | 0.719            | +0.001
+-7.5        | 0.790                 | 0.919            | +0.129
 
 <sub>__Table 11:__ Table showing the difference between the marginal differences between model's predictions and the historical outcomes.  Taken from __Tables A1__ and __A2__ in the appendix.
 
@@ -900,22 +900,22 @@ It appears the model is effectively using the other data in the database to make
 One important point to make about these results is that the model's predictions were made on 1,100 games after being trained on 4,488 games, while the historical averages are real data from 9,046 games.  Depending on the random draw of the samples the model is trained on and then tested on, some degree of fluctuation in these percentages is guaranteed.  Such variance is just a fact of smaller sample sizes.  Thus, taking the outcomes above as written in stone is not the correct way to view this problem.  Instead, it stands to show that the model is predicting well enough to compare with historical data and is a valid tool to use in making bets.  
 
 ###### Win Percent by Model Probability
-Home Win Probability | Home Win % | Mean Home Favorite | Number of Games
----------------------|------------|--------------------|----------------
-| 0.68               | 0.56       | 6.09               | 16
-| 0.69               | 0.65       | 5.91               | 17
-| 0.70               | 0.75       | 6.46               | 12
-| 0.71               | 0.71       | 7.25               | 14
-| 0.72               | 0.79       | 7.41               | 28
-| 0.73               | 0.91       | 7.14               | 11
-| 0.74               | 0.82       | 7.27               | 11
-| 0.75               | 0.80       | 7.43               | 15
+Home Win Probability | Home Win % | Mean Home Spread | Number of Games
+---------------------|------------|------------------|----------------
+| 0.68               | 0.56       | -6.09            | 16
+| 0.69               | 0.65       | -5.91            | 17
+| 0.70               | 0.75       | -6.46            | 12
+| 0.71               | 0.71       | -7.25            | 14
+| 0.72               | 0.79       | -7.41            | 28
+| 0.73               | 0.91       | -7.14            | 11
+| 0.74               | 0.82       | -7.27            | 11
+| 0.75               | 0.80       | -7.43            | 15
 
 <sub> __Table 12:__ Home team winning percentage as grouped by the model's prediction probabilities for the home team to win.  </sub>
 
 <BR>
 
-In __Table 12__ we see the home team winning percentages for each probability in the range selected above in [Betting by the Spread](#betting-by-the-spread) (that is, home favorites of 6.0 - 7.5 points).  First, the mean home spread jumps around -- it is not exactly linear with the probabilities.  This verifies what we discussed above in the [intro](betting-by-model-probabilities) to this section, that the model is finding some small but valuable information in the database which makes it more precise than the spread alone.  Second, note the high variance in the winning percentage for each given probability.  This is a result of the small sample sizes -- for example, out of the 1,100 games in the test dataset only 16 were given a probability of 0.68 <= x < 0.69 for the home team to win. And so on for the rest of the probabilities.   
+In __Table 12__ we see the home team winning percentages for each probability in the range selected above in [Betting by the Spread](#betting-by-the-spread) (that is, home favorites of 6.0 - 7.5 points).  First, the mean home spread jumps around -- it is not exactly linear with the probabilities.  This verifies what we discussed above in the [intro](betting-by-model-probabilities) to this section, that the model is finding some small but valuable information in the database which we hope makes it more precise than the spread alone.  Second, note the high variance in the winning percentage for each given probability.  This is a result of the small sample sizes -- for example, out of the 1,100 games in the test dataset only 16 were given a probability of 0.68 <= x < 0.69 for the home team to win. And so on for the rest of the probabilities.   
 
 But we wouldn't want to bet with only a single-point probability.  Instead we'd want to use a range, such as 0.68 - 0.75, which would give us 124 games worth of bets.  Of these 124 games, 92 were predicted correctly, giving us a 74.3% win rate from the model.  This compares favorably to the method of using the spread.
 
@@ -929,21 +929,23 @@ Model  | 5.9 (mean)        | 7.4 (mean)        | 124         | 74.3
 
 <BR>
 
-Upon first glance this is a strongly encouraging result.  But, and there's a big "but" ([Sir-Mix-A-Lot](https://www.youtube.com/watch?v=reTx5sqvVJ4) jokes preemptively acknowledged),the sample size is an order is an order of magnitude smaller than the spread's.  This is not an apples-to-apples comparison.  So, understanding the potential vagaries of a small sample, I tracked how using the spread as our betting rubric would have performed for those same 124 games the model got to use.  
+Upon first glance this is a strongly encouraging result.  But, and there's a big "but" ([Sir-Mix-A-Lot](https://www.youtube.com/watch?v=reTx5sqvVJ4) jokes preemptively acknowledged), the model's sample size is an order is an order of magnitude smaller than the spread's.  This is not an apples-to-apples comparison.  Understanding the potential vagaries of a small sample, I tracked how using the spread as our betting rubric would have performed for those exact 124 games the model got to use.  
 
 ###### Model vs Spread, Same Bets
 Method | Min Home Favorite | Max Home Favorite | Total Games | Bet Win %
 -------|-------------------|-------------------|-------------|----------
-Spread | 2.5               | 13.0              | 124         | 74.2
+Spread | 2.5               | 13.0              | 124         | 74.3
 Model  | 5.9 (mean)        | 7.4 (mean)        | 124         | 74.3
 
 <sub> __Table 14:__ Using the same games, the spread is now equal to the model.</sub>
 
 <BR>
 
-Wow.  Big difference that made!  For these 124 games, the spread predicted just as well as the model.  The interesting finding is that the spread for these specific 124 games covers a broad range, well outside the 6.0 - 7.5 point window we would have been betting on via the spread.  This means that some of these 124 games were not in the 1,371 used in the spread-range limited selection above, obviously.  It also shows us that the model considered games that had a home team favored by as low as 2.5 point and has high as 13.0 points to be in the same probability window (0.68 - 0.75) for games it believed were roughly equivalent to the traditional 6.0 - 7.5 home favorite point range.
+This makes more sense.  Since our specified probability range is for home teams with a 68% or higher chance to win, given the [correlation](#predictions-mirror-the-spread) between the spread and prediction probabilities, the spread for these 124 games is almost certainly going to be on the side of the home team, too.  (This is confirmed in __Table 14__ as the minimum spread still favors the home team by 2.5 points).  
 
-Clearly, limiting our confidence threshold range to probabilities that align with Vegas spreads places arbitrary restrictions on our model -- we want to know what the best possible range of probability thresholds for our model is.  Maybe it's 0.56 to 0.61?  Or 0.64 to 0.72?  To answer this question I conducted what amounts to a grid search over all threshold windows for games the model classified as greater than 0.50 probability for a home team to win.  I should note I also searched for the best outcome of games predicted as a home loss, but the results were significantly worse.  The accuracy of the model is not equal on both sides of the spread.  It is more reliable, due to a larger class sample size, in predicting when a home team will when than when they will lose.  
+Thus, the interesting finding is that the spread for these specific 124 games covers a broad range, well outside the 6.0 - 7.5 point window we would have been betting on if using only the spread and not the model.  This means that some of these 124 games were not in the 1,371 used in the spread-range limited selection above, obviously.  It also shows us that the model considered games that had a home team favored by as low as 2.5 point and has high as 13.0 points to be in the same probability window (0.68 - 0.75) for games it believed were roughly equivalent to the traditional 6.0 - 7.5 home favorite point range.
+
+Clearly, limiting our confidence threshold range to probabilities that align with Vegas spreads places arbitrary restrictions on our model -- we want to know what the best possible range of probability thresholds for our model is.  Maybe it's 0.56 to 0.62?  Or 0.70 to 0.74?  To answer this question I conducted what amounts to a grid search over all threshold windows for games the model classified as greater than 0.50 probability for a home team to win.  I should note I also searched for the best outcome of games predicted as a home loss, but the results were significantly worse.  As noted before, the accuracy of the model is not equal on both sides of the spread.  It is more reliable, due to a larger class sample size, in predicting when a home team will when than when they will lose.  
 
 <BR>
 <BR>
