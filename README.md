@@ -138,7 +138,7 @@ Even moderate sports fans are doubtless familiar with the notion of "home field 
 
 <img src="images/over-under_dist.png" width="600" align="right" alt="History of the Over/Under">  
 
-#### The Over/Under
+#### The Over-Under
 The Over/Under is simply the total expected number of points scored by both teams in a game.  You can bet the Over or the Under, and will win if the combined score of the teams is either more than (over) or less than (under) the set Over/Under value, depending on your wager.  If the final combined score equals the Over/Under value exactly, the bet ends in a "push" and all money is returned.  
 
 <BR><BR><BR><BR>
@@ -982,7 +982,7 @@ As a closing argument to this project, I wanted to hammer home this point by fin
 
 <img src="images/55_to_72_max_None_500x500.gif" align="middle" alt="Progression of using the worst threshold">
 
-<sub>__Figure 35:__ The results of using the worst probability interval on this model.  So, don't do this.</sub>
+<sub>__Figure 35:__ The results of using the worst probability interval on this model.  I just got an email from three oddsmakers in Vegas, and they _love_ this model.  Possibly their favorite they've ever seen, they said.  So, don't do this.</sub>
 
 
 <BR>
