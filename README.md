@@ -27,7 +27,8 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [PCA](#principal-component-analysis)
       + [t-SNE](#t-sne)
       + [Feature Overlaps](#feature-overlaps)
-5. [Results](#results)
+      + [Game Type Clusters](#game-type-clusters)
+5. [Model Results](#model-results)
     + [Spread Results](#spread-results)
       + [Summary Stats](#spread-summary-statistics)
       + [Accuracy](#spread-accuracy)
@@ -39,14 +40,26 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [Feature Importance](#over-under-feature-importance)
       + [Analysis](#over-under-analysis)
     + [Money Line](#money-line-results)
-    + [Predicting Bet Outcomes](#predicting-bet-outcomes)
+6. [Predicting Bet Outcomes](#predicting-bet-outcomes)
+    + [Spread Covers and Over/Unders](#covers-and-over-unders)
     + [Predicting the Winner](#predicting-the-winner)
-      + [Summary Stats](#winner-summary-stats)
+      + [Summary Stats](#winner-summary-statistics)
       + [Accuracy](#winner-accuracy)
+        + [Receiver Operating Characteristic](#receiver-operating-characteristic)
       + [Feature Importance](#winner-feature-importance)
-    + Weather
-      + TEMP/wind/wc plots
-    + Wise Bets Results
+      + [Winner Analysis](#winner-analysis)
+        + [Passing Features](#passing-features-in-top-40)
+        + [Rushing and Winning](#rushing-and-winning)
+
+
+
+
+
+
+
+
+      +
+    + [Wise Bets Results](#wise-bets-results)
       + Spread
       + Over/Under
       + Money Line
@@ -55,13 +68,11 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + Biggest Bet Upsets?
     + Hypothetical Bettor Using This Model
       + Money Line
-    + Clusters - Four Types
+
 6. [Future Considerations](#future-considerations)  
     + Dynamic Web App
-    + Player-specific Information
-      + Injuries
-      + Current-season Performance
-    + Miles Traveled
+
+
 
 
 <BR>
@@ -451,7 +462,7 @@ We see that overall, the trends follow the same general path of peaking in the e
 
 
 ### Over-Under Results
-###### Over/Under Summary Statistics
+###### Over-Under Summary Statistics
 Statistic | Mean (pts) | Std. Dev. | Coeff. of Var. | Min (pts) | Max (pts) | Min Sigma | Max Sigma
 ----------|:----------:|:---------:|:--------------:|:---------:|:---------:|:---------:|:-------:|
 Over/Under |    41.6   | 4.58      |  0.11          | 28.0      | 63.0      | -2.97     | 4.67    |
@@ -575,7 +586,7 @@ line is their five-year rolling averages which appear as nearly carbon copies of
 <BR>
 
 ### Predicting Bet Outcomes
-#### Covers and Over/Unders
+#### Covers and Over-Unders
 Two of the three classification targets, _road covers_ and _over/under results_ proved to be very difficult to tease anything meaningful out of.  My first hunch is that this is due mostly to what the classes are derived from: betting lines set by Vegas.  As discussed in the [NFL Betting Primer](#nfl-betting-primer) section, Vegas has a vested interest in making the results of any bet as close to 50/50 as possible, in order to avoid suffering massive losses.  Vegas takes small wins many times over to turn large profits.  
 
 Since the spread and over/under are set by Vegas to meet this balanced criterion, it is not surprising to find that "hidden gem" metrics which predict the results of these bets were not discovered.  If something does a great job of predicting these results, then Vegas knows about them already -- this is their livelihood, after all -- and is using them in their formulae to set these values.  In a sense, we are merely trying to tease out something Vegas has already baked in.
@@ -670,7 +681,7 @@ The predictive power of the spread in determining who will win an NFL game is wo
 
 Perhaps unsurprisingly, the _difference in average passes completed per game_ is the third biggest predictor and passing-specific stats appear eight times in the top 40 features (see [Table 9](#passing-features)).  Echoing what was discussed in the [Passing vs Rushing Offense](#passing-vs-rushing-offense-over-time) section above, when one team is more proficient at passing than their opponent, they are more likely to win.  
 
-###### Passing Features in Top 40
+##### Passing Features in Top 40
 Statistic                          | Tier | Importance (%)
 -----------------------------------|------|---------------
 Difference in Pass Comp. / Gm      | 2    | 2.76%
@@ -686,7 +697,7 @@ Pass Att. / Gm                     | 5    | 0.92%
 
 <BR>
 
-###### Rushing and Winning
+##### Rushing and Winning
 Other features that help predict whether a team will win or not read like a list of the usual suspects: superiority in advanced metrics like [DVOA](#advanced-metrics) and [EPA](#advanced-metrics), rushing stats per game, penalties and penalty yards per game, and 3rd and 4th down efficiency.  _Time of possession_ clocks in at \#29.  _Time of possession_ and the various _rushing_ stats (five total in the top 40 but none before tier 4) offer a textbook case of the "chicken and the egg" conundrum, however.  At first glance it is tempting to simply say "teams that have the ball more and have more rushing attempts per game win more."  Statistically, yes, our model says that is true.  
 
 But we must think about it one level deeper.  Doing so, we realize that teams which are leading _overwhelmingly_ run the ball more than teams that are trailing (Chase Stuart’s easily digestible “[game scripts](http://www.footballperspective.com/introducing-game-scripts-part-i/)” metric does a good job of capturing this).  As a result, teams that are trailing face far more rushes and subsequently give up more yards.  So, in a way the model is likely picking up that teams that allow more rushing yards than others are frequently trailing... and when you’re frequently trailing you are going to lose more often than win.  The fallacy (known in the stats community as the [“establish the run”](http://www.footballoutsiders.com/stat-analysis/2003/establishment-clause) fallacy, popularized by Aaron Schatz at Football Outsiders back in 2003 <sup>[__8__](#fn8)</sup>) that so many jabbering heads on TV espouse of “run the ball to win!” is actually the inverse of what happens, and I suspect this is what the model also detects.  It’s the teams that are already winning which choose to run the ball, not vice versa.  [Figures 23](#time-of-possession-and-rushing-attempts) and [667](#passing=and-rushing-attempts-correlation-to-margin-of-victory)
@@ -713,18 +724,18 @@ A second look at the concept of "rushing because we're winning" is to see how th
 
 Properly understood from this context, [Figure 24](#passing=and-rushing-attempts-correlation-to-margin-of-victory) shows that the bigger a team's lead, the more they're going to run the ball.  Conversely, teams that are trailing have to pass to catch up.  Again, as mentioned above, on average passing using less of the clock per play than rushing, and also covers more yardage.  Thus, we see the negative relationship of "bigger deficit correlates with more passing."
 
-###### Turnovers
+##### Turnovers
 Turnovers appear in tier 5 with _difference in average turnovers caused per game_.  This is a tough one.  We know that in any game turnovers are massively important.  They directly rob one team of a possession and gift one to the other (usually with advantageous field position).  This model doesn’t see a team's average turnover rate as being supremely __predictive__ because they are in some degree unpredictable.  Team A may be averaging 2.2 turnovers per game and Team B may average 1.8, but they might fluctuate a good deal between games (high).  These differences don’t appear to be extremely predictive (about as predictive as the difference in 1st downs per team, penalties per team, or passing yards per team).  
 
 I broke the category down into fumbles, fumbles lost, interceptions, and total turnovers, and the model identified "total turnovers" as the most important of the lot.  My personal conclusion is that the nature of turnovers is largely so random that they aren’t necessarily replicable per game.  Another way to think of it is that the other metrics, especially the advanced ones, do a good to great job of telling us about ‘true’ team strength.  Since a large element of turnovers is due to chance, they don’t do nearly as good a job about telling us about true team strength going into a game, and their lower predictive power reflects this.
 
-###### Weather and Rest Time
+##### Weather and Rest Time
 I was a bit surprised to see _hours of rest_ omitted from this list.  I expected differences in how much time players had to heal and coaches had to game plan to be more correlated with winning.  They don't appear until tier 6 (0.61%).  Similarly, _temperature_ also shows up in tier 6 (0.61%).  It’s about as important as how many penalty yards the defense averages per game, or how many sack yards the defense gets per game.  This is sensible as we expect home teams to be used to their weather more than the road team is.  Detroit going down to Tampa early in the season or Jacksonville going up to Buffalo in December... these climate adjustments apparently really do matter.  
 
-###### Weekday, Surface, and Stadium
+##### Weekday, Surface, and Stadium
 Some of the less important items are routinely the _day of the week_ the game is played on.  This makes sense since the day of the game is shared by both teams, so it is usually not a dividing feature.  However, we did see that hours of rest do matter, so teams that play on Sunday night then on Thursday reasonably have a disadvantage.  Another seemingly unimportant variable is the _surface_ and _stadium_.  Domes, retractable roofs, open stadiums, astroturf, sport turf, dessograss, field turf, natural grass... none of these variables have much impact at all compared to the actual team-centered and matchup-centered stats.
 
-###### The Power of the Spread
+##### The Power of the Spread
 The power of the spread in determining which team will win the game is clearly valuable to the model.  But to understand why the model gains more information from the spread than from other statistics takes a bit of digging.  Other statistics have similar correlations to the outcome of a game, as shown here in __Figure 25__.  
 
 <img src="images/home_win_feats_matrix.png" align="middle" alt="Scatter Matrix of top three features for determining the winner">
@@ -735,7 +746,7 @@ The power of the spread in determining which team will win the game is clearly v
 
 There doesn't appear to be a divide as sharp as the model's feature importance results suggest there is between the spread and the next two most important features.  After all, the difference in _Total DVOA_ and _Points Allowed per Game_ seem to be at least in the same ballpark as the spread for explaining the variance in the outcome of a game.  Recognizing that a simple linear regression is not asking the same question as "which feature has the biggest impact" is important.  Linear regression attempts to explain the variance in a target variable (game outcomes) as a result of changes in the independent variable (spread, DVOA, etc.). Feature importance is determined a [couple of ways](#feature-separation-and-importance), and generally measures the information gained about class separation, or purity, when a given feature is evaluated.  That said, I was curious as to what was causing the apparent discrepancy and decided to dig a little deeper.
 
-##### Prediction Confidence
+#### Winner Prediction Confidence
 Back in the [Receiver Operating Characteristic](#receiver-operating-characteristic) section, we discussed how a classifier makes predictions about which class to assign a data point to with a certain level of probability.  We can access these probabilities for each prediction and investigate their results on a granular level.  One reason to do this is, much like using the ROC curve, we want to identify different threshold ranges in which the model does well or poorly.  Again, as the goal is to identify games which make wise bets, we are likely more interested in the _precision_ of our predictions (how many of the predictions we make are correct?) compared to the _recall_ (the ratio of games out of the dataset that are "positive" which we correctly identify).  (In short, think _quality_ over _quantity_).
 
 <img src="images/precision_by_proba_thresh.png" align="middle" alt="Precision by probability window">
@@ -789,7 +800,7 @@ inverse of the prediction precision results from <i>Figure 711</i>, where the cl
 </div>
 <BR>
 
-###### Number of Games Played Impact on Confidence Level
+##### Number of Games Played Impact on Confidence Level
 As more games are played during a season the sample size for the underlying statistics describing each team grows.  With a larger sample size, might we not see an increase in the probability of a game's prediction, as the model has data that is more representative of the "true" quality of a team and can be more certain about its probability of winning or losing?  If a team is averaging 31 1st downs and 32.0 points per game after one game... then they had a great first game.  Congrats.  But if a team is averaging those same levels of performance after thirteen games, then we can feel more strongly about that team actually being excellent.  To take a quick gander into this, I binned the teams in the database by number of games played and charted the change in prediction confidence.
 
 <img src="images/GamesPlayed-PredConf.png" align="middle" alt="Impact of games played on prediction confidence.">
