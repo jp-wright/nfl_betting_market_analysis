@@ -590,7 +590,7 @@ Two of the three classification targets, _road covers_ and _over/under results_ 
 
 Since the spread and over/under are set by Vegas to meet this balanced criterion, it is not surprising to find that "hidden gem" metrics which predict the results of these bets were not discovered.  If something does a great job of predicting these results, then Vegas knows about them already -- this is their livelihood, after all -- and is using them in their formulae to set these values.  In a sense, we are merely trying to tease out something Vegas has already baked in.
 
-The results for predicting these two bets never got much above 51%.  Remember that the initial motivation of this project was to build a model to predict the spread, identify games that were beyond a spread-deviation threshold, and investigate to see if they were truly "wise bets".  As you can likely guess, the results for this approach were sub-optimal. 
+The results for predicting these two bets never got much above 51%.  Remember that the initial motivation of this project was to build a model to predict the spread, identify games that were beyond a spread-deviation threshold, and investigate to see if they were truly "wise" bets.  As you can likely guess, the results for this approach were sub-optimal.  Regardless of which predicted spread deviation used, half of the teams identified as the one to bet on failed to cover.  The model couldn't perform much better than random chance at saying which team would cover the spread.
 
 <BR>
 
@@ -950,7 +950,7 @@ Clearly, limiting our confidence threshold range to probabilities that align wit
 Here we put our money where our mouth is.  In an effort to keep things manageable, we will agree to wager the exact money line for each game that falls into our confidence window in which the home team is predicted to win.  This means that for every bet we win, we net $100.  For every bet we lose, we lose the amount of the money line, typically around $200 - $500.  A running tally of our winnings is kept, and the threshold range which provides us the highest winnings will be identified as the best choice for using the model.  For reference, the number of bets made and the percent that win will also be marked.  This will help provide context and avoid choosing a threshold range that misleadingly correctly predicts, say, nine out of only ten bets, for a sterling 90% win rate....
 
 
-<img src="images/72_to_81_max_None.gif" align="middle" alt="Winnings from optimum probability thresholds">
+<img src="images/72_to_81_max_None_800x800.gif" align="middle" alt="Winnings from optimum probability thresholds">
 
 <sub>__Figure 33:__ The running balance after each bet made by using the optimum thresholds in the model. The test data we use is 1,100 games, or about 4.23 NFL seasons' worth of games.</sub>
 
@@ -991,9 +991,9 @@ With different betting limits we observe a few noteworthy results.  The win perc
 #### The Probabilities Vegas Wants You to Use
 The result above is the rosiest possible outcome.  This bears repeating -- while our predictions were made fairly, our review of them was not.  We examined every possible outcome from every betting threshold and cherry picked the best one.  While this is a smart approach to using the model for future bets because we do want to know which confidence thresholds are likely to give us the best results going forward, it is no guarantee that these results actually _would_ be repeated by betting on future games.  Just think, if the games we made the predictions above on had not yet happened, how would we know to use the thresholds of 0.72 to 0.81?  Yes, we would perform the same experiment we just did on previous years' data, but it very well could have shown us the best threshold for that dataset was, say, 0.69 to 0.77.  Using that same range on the games in the test we ran above would produce some sub-optimal result!  It _is_ possible that the probability window of 0.72 to 0.81 we found above will be successful on future bets.  But we should be aware of the uncertainty inherent in our task. This, of course, the nature of prediction, and especially so of predicting sports outcomes.  
 
-As a closing argument to this project, I wanted to hammer home this point by finding the _worst_ confidence interval for our model and plotting it.  Seeing is believing, so get ready to believe you can go broke  while betting on sports (especially if you ignore my model. Joking....)
+As a closing argument to this project, I wanted to hammer home this point by finding the _worst_ confidence interval for our model and plotting it.  Seeing is believing, so get ready to believe you can go broke  while betting on sports (especially if you ignore my model. Joking....).  Here's how to lose $
 
-<img src="images/55_to_72_max_None_500x500.gif" align="middle" alt="Progression of using the worst threshold">
+<img src="images/55_to_72_max_None_800x800.gif" align="middle" alt="Progression of using the worst threshold">
 
 <sub>__Figure 35:__ The results of using the worst probability interval on this model.  I just got an email from three oddsmakers in Vegas, and they _love_ this model.  Possibly their favorite they've ever seen, they said.  So, don't do this.</sub>
 
