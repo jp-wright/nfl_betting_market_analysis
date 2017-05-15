@@ -1294,6 +1294,7 @@ Prob. Home Team Win | Road Win % | Mean Home Spread | Prob. Home Team Win | Home
 
 ###### Table A5 - Historical 'Cumulative' Home Win Percent (bifurcated), 1978-2016
 (To be compared against model's "cumulative precision above threshold")
+
 Home Spread | Home Win Percent | Home Spread | Home Win Percent
 ------------|------------------|-------------|-----------------
 23.0        | 0.00             | -0.0        | 0.67
