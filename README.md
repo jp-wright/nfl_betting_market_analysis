@@ -146,14 +146,14 @@ Even moderate sports fans are doubtless familiar with the notion of "home field 
 
 <BR>
 
-<img src="images/over-under_dist.png" width="600" align="right" alt="History of the Over/Under">  
+<img src="images/over-under_dist.png" width="600" align="right" alt="History of the over/under">  
 
 #### The Over-Under
-The Over/Under is simply the total expected number of points scored by both teams in a game.  You can bet the Over or the Under, and will win if the combined score of the teams is either more than (over) or less than (under) the set Over/Under value, depending on your wager.  If the final combined score equals the Over/Under value exactly, the bet ends in a "push" and all money is returned.  
+The over/under is simply the total expected number of points scored by both teams in a game.  You can bet the Over or the Under, and will win if the combined score of the teams is either more than (over) or less than (under) the set over/under value, depending on your wager.  If the final combined score equals the over/under value exactly, the bet ends in a "push" and all money is returned.  
 
 <BR><BR><BR><BR>
 <div align="right">
-<sub><b>Figure 2:</b> The historical distribution of the Vegas Over/Under for NFL games. The mean is denoted
+<sub><b>Figure 2:</b> The historical distribution of the Vegas over/under for NFL games. The mean is denoted
 <BR>
 by the small dashed line at 42.2 points. Again, we observe here a gaussian distribution. </sub>
 </div>
@@ -196,7 +196,7 @@ This flexibility in the line is the key component I aimed to use in snuffing out
 Because of this, the initial aim of this project was simple: I wanted to identify which factors best predict games that have spreads that are incorrectly set, to label these games as potentially "wise bets," and to examine the results of these games in hopes of finding that a favorable percentage would be winning bets.
 
 ##### Over-Under Wise Bets
-Secondarily, we can do the same for the Over/Under: use our model to predict the over/under for a game and then bet on games whose predicted over/under deviates by a set amount from the actual over/under.
+Secondarily, we can do the same for the over/under: use our model to predict the over/under for a game and then bet on games whose predicted over/under deviates by a set amount from the actual over/under.
 
 ##### Money Line Wise Bets
 Last, we can simply try to predict the winner of a game (this bet is made using the money line, hence the money line name).  These bets are divided into picking either the home team or the road team.  Home teams win more and are favored more, accordingly.  We can use our model to learn as many trends as possible for a given matchup and predict whether the home team will win or lose with a certain degree of confidence.  We can then bet on games that exceed a set level of confidence.
@@ -243,18 +243,18 @@ Experiments with both databases showed the wider, Advanced database to give slig
 This suggests that the information-rich advanced metrics more than make up for the loss of sample size when predicting the spread for a game but are either roughly equivalent to (without SMOTE), or do not compensate for the loss of (with SMOTE), fourteen extra years of data for predicting the winner outright.  Looking ahead, however, the advanced metrics will only continue to accrue and if they give better or roughly comparable predictions now with far fewer years of data, it would be sensible to use them going forward.
 
 ### Regression vs Classification
-Since the Spread and the Over/Under are numeric, regression models were used to predict these targets.  Conversely, classification algorithms were used in modeling the Money Line binary winner/loser of a game.  
+Since the spread and the over/under are numeric, regression models were used to predict these targets.  Conversely, classification algorithms were used in modeling the Money Line binary winner/loser of a game.  
 
 #### Regression
 There are two possible regression targets: the _spread_ and the _over/under_ for each game. Each target is given in game points.  The spread extends back to 1978 while the over/under starts in 1979.
 
 ###### Regression Target Ranges
-Target | Min. (abs) | Max. (abs) | Range
--------|------------|------------|----------
-Spread | 0.0        | 26.5       | 26.5
-Over/Under | 28.0   | 63.0       | 35.0
+Target     | Min. (abs) | Max. (abs) | Range
+-----------|------------|------------|----------
+Spread     | 0.0        | 26.5       | 26.5
+Over/Under | 28.0       | 63.0       | 35.0
 
-<sub>__Table 1:__ Range information for the Vegas Spread and Over/Under, from 1978-2016.</sub>
+<sub>__Table 1:__ Range information for the Vegas spread and over/under, from 1978-2016.</sub>
 
 <BR>
 
@@ -426,7 +426,7 @@ If we predicted a spread for the road team in an upcoming game to be +1.0 point 
 With this in mind, I decided to set the threshold for deciding how far off a game's spread was to a minimum +/- 3 points.  This ensured we would not select games that would 'flip' the favored team and that our prediction would be beyond the threshold of a field goal. Games that met or exceeded this threshold are explored in the [Wise Bets Results](#wise-bets-results) section below.
 
 #### Spread Feature Importance
-The most important features tend to be the _matchup delta_ features I engineered.  These tell the difference between the two teams in a game in a given metric.  My reasoning was that the raw value, say a high amount of rushing yards per game, would matter little for prediction of one team's superiority if the other team also had a high value in that metric.  If one team was significantly better than the other team in a given metric we would be able to make more accurate predictions.  This finding is shown consistently in this project as the _matchup_ features rank high in importance.
+The most important features tend to be the _matchup delta_ features I engineered.  These tell the difference between the two teams in a game in a given metric.  My reasoning was that the raw value of a statistic, say a high amount of rushing yards per game, would matter little for prediction of one team's superiority if the other team also had a high value in that metric.  If one team was significantly better than the other team in a given metric we would be able to make more accurate predictions.  This finding is shown consistently in this project as the _matchup_ features rank high in importance.
 
 <img src="images/road_spread_feats.png" align="middle" alt="Important features to predict the spread" >
 
@@ -449,7 +449,7 @@ I was unsure if the observed change is due to Vegas becoming better at predictio
 
 <img src="images/home_mov_rolling_avg.png" align="middle" alt="Historical Rolling Average for Home Team Margin of Victory" >
 
-<sub>__Figure 11:__ The average margin of victory for home teams isn't smoothed very well with a four year rolling average window.  Its trend mirrors that of the Vegas spread overall, but has pronounced differences in any given year.
+<sub>__Figure 11:__ The average margin of victory for home teams isn't smoothed very well with a five-year rolling average window.  Its trend mirrors that of the Vegas spread overall, but has pronounced differences in any given year.
 
 <BR>
 
@@ -471,11 +471,11 @@ Over/Under |    41.6   | 4.58      |  0.11          | 28.0      | 63.0      | -2
 <BR>
 
 #### Over-Under Accuracy
-Predicting the Over/Under is a bit easier for the model, as the data is more tightly clustered around its mean than the Vegas Spread. (See [Table 6](#over/under-summary-statistics)).  The lowest MAE for predicting the Over/Under was 1.86 points.  As with the spread, if we consider the range this gives us for prediction, we have a 3.72-point window.  However, unlike the spread, where a scoring play can be good (if made by the team we've bet on) or bad (if made by their opponent), all scoring plays for an Over/Under bet are either good (if we bet the Over) or bad (if we bet the Under).  
+Predicting the over/under is a bit easier for the model, as the data is more tightly clustered around its mean than the Vegas Spread. (See [Table 6](#over/under-summary-statistics)).  The lowest MAE for predicting the over/under was 1.86 points.  As with the spread, if we consider the range this gives us for prediction, we have a 3.72-point window.  However, unlike the spread, where a scoring play can be good (if made by the team we've bet on) or bad (if made by their opponent), all scoring plays for an over/under bet are either good (if we bet the Over) or bad (if we bet the Under).  
 
-This allows us to use the 1.86-point MAE as our error instead of the 3.72 window.  If the real Over/Under is 43.0 points and our predicted Over/Under is 44.0 points, and we choose the Over, we are not worried about the +1.86-point error in prediction since we are already expecting more than 44 points to be scored. So 44.0 + 1.86 = 45.86 points for the upper bound of prediction is actually _better_ for us, since this says the game should go even further over. The reverse is true for betting the Under.
+This allows us to use the 1.86-point MAE as our error instead of the 3.72 window.  If the real over/under is 43.0 points and our predicted over/under is 44.0 points, and we choose the Over, we are not worried about the +1.86-point error in prediction since we are already expecting more than 44 points to be scored. So 44.0 + 1.86 = 45.86 points for the upper bound of prediction is actually _better_ for us, since this says the game should go even further over. The reverse is true for betting the Under.
 
-By far the most obtainable scoring play in football is the field goal, which is worth three points.  As such, it reasons any predicted Over/Under that is +/- more than three points different than the actual Over/Under should be considered a potential "[wise bet](#wise-bets)". If it is beyond this threshold with the error taken into account, even better. See [Wise Bets Results](#wise-bets-results) below.
+By far the most obtainable scoring play in football is the field goal, which is worth three points.  As such, it reasons any predicted over/under that is +/- more than three points different than the actual over/under should be considered a potential "[wise bet](#wise-bets)". If it is beyond this threshold with the error taken into account, even better. See [Wise Bets Results](#wise-bets-results) below.
 
 #### Over-Under Feature Importance
 Unsurprisingly the most important features for determining the combined points scored in a game are statistics that relate to how effective a team is at scoring or preventing a score.  We see a strong divergence from important features in predicting the spread, with no _matchup delta_ metrics present.  This fits common sense as we aren't concerned with how much better Team A is than Team B at something, but rather how good or bad both teams combined are.  
@@ -498,15 +498,15 @@ Rank | Statistic         | Importance (%) | Rank | Statistic          | Importan
 <BR>
 
 #### Over-Under Analysis
-The Over/Under has been climbing since the year 2000.  Initially the change was incremental, but over the last decade the Over/Under has exploded, setting a new record five-year average for ten of the last eleven years!  I explore some possible causes for this growth below, starting with features that had the biggest impact on predicting the Over/Under.
+The over/under has been climbing since the year 2000.  Initially the change was incremental, but over the last decade the over/under has exploded, setting a new record five-year average for ten of the last eleven years!  I explore some possible causes for this growth below, starting with features that had the biggest impact on predicting the over/under.
 
-<img src="images/over-under_rolling_avg.png" align="middle" alt="Historical rolling average of Over/Under" >
+<img src="images/over-under_rolling_avg.png" align="middle" alt="Historical rolling average of over/under" >
 
-<sub>__Figures 12:__ The Over/Under has been on an upward climb since 2000, and has especially skyrocketed the last ten years.
+<sub>__Figures 12:__ The over/under has been on an upward climb since 2000, and has especially skyrocketed the last ten years.
 
 <BR>
 
-Looking at [Table 7](#over-under-top-features), the two most important statistics are the two we'd hope to see: how many points each team scores per game.  Following that is a surprising result -- the season!  This sparked me to investigate the Over/Under change over time as I did with the spread above.  It is examined below.  The remainder of the important statistics can be categorized as either "team related" or "game related".  The team-related statistics are sensible, related to how many points allowed and yards teams average.  But the game-related features are interesting and worth a quick word.
+Looking at [Table 7](#over-under-top-features), the two most important statistics are the two we'd hope to see: how many points each team scores per game.  Following that is a surprising result -- the season!  This sparked me to investigate the over/under change over time as I did with the spread above.  It is examined below.  The remainder of the important statistics can be categorized as either "team related" or "game related".  The team-related statistics are sensible, related to how many points allowed and yards teams average.  But the game-related features are interesting and worth a quick word.
 
 Wind chill and temperature only differ below 50° F, so seeing them paired is partly a consequence of their having the same information for all temps above 50° F.  I think there is also a relationship between the weather variables and the roof variables.  First, a quick graphical glance, then my thoughts below.
 
@@ -516,21 +516,21 @@ Wind chill and temperature only differ below 50° F, so seeing them paired is pa
 
 <BR>
 
-The poignant aspect of the temperature charts is the towering prevalence of games at 67 °F, the temperature of games in played in a dome.  (See [Acquisition and Error Correction](#acquisition-and-error-correction) for details on this).  Around 21% of all games played from 1978-2016, but these aren't equally distributed across that time span.  Domes have become increasingly popular in recent years.  Because of this, I wondered if there was a possible connection between the increase in games played in domes and the increase in the Over/Under.  Behold!
+The poignant aspect of the temperature charts is the towering prevalence of games at 67 °F, the temperature of games in played in a dome.  (See [Acquisition and Error Correction](#acquisition-and-error-correction) for details on this).  Around 21% of all games played from 1978-2016, but these aren't equally distributed across that time span.  Domes have become increasingly popular in recent years.  Because of this, I wondered if there was a possible connection between the increase in games played in domes and the increase in the over/under.  Behold!
 
 <img src="images/percent_games_domes.png" align="middle" alt="Percent of games per year in a dome" >
 
-<sub>__Figures 14:__ The trend in percent of games played in a dome is clear: more, more, more.  This trend also mirrors the increase in Over/Unders set by Vegas.
+<sub>__Figures 14:__ The trend in percent of games played in a dome is clear: more, more, more.  This trend also mirrors the increase in over/unders set by Vegas.
 
 <BR>
 
 Though I am unsure of the cause of the slight dip in the mid-200s (it's possibly due to temporary outdoor stadia being used while newer, domed stadia were being built), the overall trend of an increased percent of games being played in domes is obvious.  Currently one-quarter of the league's stadia are either domed or have retractable roofs.  Once the forthcoming Las Vegas Raiders finish building their new stadium in Nevada, nine of thirty-two teams will have the potential for a roofed stadium. <sup id="a1">[__6__](#fn6)</sup>
 
-Considering this impact on the Over/Under, recall that feature importance only tells us if having either _more_ or _less_ of the given feature increases the prediction of the model, not which one. With this in mind, I propose the following explanation for the apparent value of the weather-related and dome features in predicting the Over/Under: in the NFL, successfully passing the football is the catalyst for consistent scoring. <sup id="a1">[__7__](#fn7)</sup> Extreme weather (very high/low temperature, very windy, rain, snow) adversely affects the passing game more than the rushing game.  In a rainy game, for example, teams will run much more than pass because the ball is slippery, making it both hard to throw and to catch.  This decrease in passing will lead to a decrease in combined scoring.  
+Considering this impact on the over/under, recall that feature importance only tells us if having either _more_ or _less_ of the given feature increases the prediction of the model, not which one. With this in mind, I propose the following explanation for the apparent value of the weather-related and dome features in predicting the over/under: in the NFL, successfully passing the football is the catalyst for consistent scoring. <sup id="a1">[__7__](#fn7)</sup> Extreme weather (very high/low temperature, very windy, rain, snow) adversely affects the passing game more than the rushing game.  In a rainy game, for example, teams will run much more than pass because the ball is slippery, making it both hard to throw and to catch.  This decrease in passing will lead to a decrease in combined scoring.  
 
-But there's no bad weather in a dome.  So, the increase in domes means an increase in the number of games that are guaranteed to have good conditions, and a decrease in the number of games which can have bad ones.  With this reasoning, more dome games should equal more scoring.  There are also a handful of factors which influence the rise of domes, including the ability to draw fans on bad weather days, as well as what might be perceived as a competitive advantage for the home team by gearing their offense to more finesse passing (debatable).  Regardless of origin, the larger trend between increased number of dome games parallels the increase in the Over/Under set by Vegas.  
+But there's no bad weather in a dome.  So, the increase in domes means an increase in the number of games that are guaranteed to have good conditions, and a decrease in the number of games which can have bad ones.  With this reasoning, more dome games should equal more scoring.  There are also a handful of factors which influence the rise of domes, including the ability to draw fans on bad weather days, as well as what might be perceived as a competitive advantage for the home team by gearing their offense to more finesse passing (debatable).  Regardless of origin, the larger trend between increased number of dome games parallels the increase in the over/under set by Vegas.  
 
-While the relationship between an increased number of dome games and the increased Over/Under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in Over/Under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__7__](#fn7)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  With this in mind, I took a quick look at how offense has changed in the NFL over time.  
+While the relationship between an increased number of dome games and the increased over/under makes sense and is worth further investigation, there are other reasons which have undoubtedly contributed more to the increase in over/under values, primarily the increase in league-wide passing rate and efficiency <sup id="a1">[__7__](#fn7)</sup>, as well as what are perceived to be more "pro-offense" rule changes in the last fifteen years.  Curious, I took a quick look at how offense has changed in the NFL over time.  
 
 ###### Passing vs Rushing Offense Over Time
 <img src="images/combined_pass_rush_att_rolling_avg.png" align="middle" alt="Passing vs. Rushing Attempts Trend over time" >
@@ -539,20 +539,20 @@ While the relationship between an increased number of dome games and the increas
 
 <BR>
 
-These two rolling average plots of passing offense (left) and rushing offense (right) since 1950 show starkly different trends in league-wide offensive approach.  During the 1960s the high-flying AFL seems to have bolstered passing game, but was promptly suppressed once the leagues merged in 1970.  In 1978 and 1979 major rule changes were implemented that made pass defense more difficult, causing the first initial rise in passing offense.  To my surprise, it leveled off and remained consistent for the remainder of the 1980s and 1990s.  Beginning in 2005, however, the league began to experience its own Cambrian explosion of passing attacks, growing each year for a decade straight.  Conversely, rushing offense plummeted for fifteen consecutive years before coming to a roughly stable resting point.   
+These two rolling average plots of passing offense (left) and rushing offense (right) since 1950 show starkly different trends in league-wide offensive approach.  During the 1960s the high-flying AFL seems to have bolstered the passing game, but was promptly suppressed once the leagues merged in 1970.  In 1978 and 1979 major rule changes were implemented that made pass defense more difficult, causing the first initial rise in passing offense.  To my surprise, it leveled off and remained consistent for the remainder of the 1980s and 1990s.  Beginning in 2005, however, the league began to experience its own Cambrian explosion of passing attacks, growing each year for a decade straight.  Conversely, rushing offense plummeted for fifteen consecutive years before coming to a roughly stable resting point.   
 
-As interesting as the topic of how the league changes schematically as a whole over time is, the point of this investigation was to see if we could explain the dramatic rise in Over/Unders.  I think its safe to say we can do so to a large degree with passing offense alone, as we predicted above.  Take a minute to compare [Figure 12](#over---under-analysis) and [Figure 15](#passing-vs-rushing-offense-over-time).  The sharp rise in passing offense parallels that in the Over/Under, while rushing offense seems to have little to no correlation.  When comparing multiple variables at a time, a scatter matrix can help illuminate trends between all combinations of the targets.
+As interesting as the topic of how the league changes schematically as a whole over time is, the point of this investigation was to see if we could explain the dramatic rise in over/unders.  I think its safe to say we can do so to a large degree with passing offense alone, as we predicted above.  Take a minute to compare [Figure 12](#over---under-analysis) and [Figure 15](#passing-vs-rushing-offense-over-time).  The sharp rise in passing offense parallels that in the over/under, while rushing offense seems to have little to no correlation.  When comparing multiple variables at a time, a scatter matrix can help illuminate trends between all combinations of the targets.  Let's take a peek at the interplay between passing, rushing, and the over/under.
 
 ###### Offense and Over-Under Scatter Matrix
-<img src="images/pass_rush_over-under_matrix.png" align="middle" alt="Scatter Matrix for Passing, Rushing, and Over/Under" >
+<img src="images/pass_rush_over-under_matrix.png" align="middle" alt="Scatter Matrix for Passing, Rushing, and over/under" >
 
-<sub>__Figure 16:__ Scatter matrix of five-year rolling average passing offense, rushing offense, and the Over/Under per season since 1978.  Passing offense is clearly positively correlated with the Over/Under, while rushing offense has almost no observed correlation.</sub>
+<sub>__Figure 16:__ Scatter matrix of five-year rolling average passing offense, rushing offense, and the over/under per season since 1978.  Passing offense is clearly positively correlated with the over/under, while rushing offense has almost no observed correlation.</sub>
 
 
 
 <BR>
 
-At a glance we can see evidence of what we suspected above -- passing offense is strongly and positively correlated with the Over/Under, while rushing offense apparently bears no correlation to it.  Recall the Over/Under is simply the combined total points in a game, and as mentioned above, passing efficiency is the primary means to offensive success and higher scoring (see [Brian Burke's article](https://fifthdown.blogs.nytimes.com/2010/08/31/why-passing-is-more-important-than-running-in-the-n-f-l/) about passing offense efficiency which was written in 2010, right as the furious growth in passing offense began.  His claims would be only more concrete and emphasized if the article were written today).  The data here only bolster this conclusion: more passing means more scoring, all things equal.  But if _everyone_ is better at passing league-wide, then would it not competitively cancel out for everyone?  This question -- which statistics correlate to actually _winning_ -- is one we'll explore a bit more in the next section, where we analyze the Vegas money line.
+At a glance we can see evidence of what we suspected above -- passing offense is strongly and positively correlated with the over/under, while rushing offense apparently bears no correlation to it.  Recall the over/under is simply the combined total points in a game, and as mentioned above, passing efficiency is the primary means to offensive success and higher scoring (see [Brian Burke's article](https://fifthdown.blogs.nytimes.com/2010/08/31/why-passing-is-more-important-than-running-in-the-n-f-l/) about passing offense efficiency which was written in 2010, right as the furious growth in passing offense began.  His claims would be only more concrete and emphasized if the article were written today).  The data here only bolster this conclusion: more passing means more scoring, all things equal.  But if _everyone_ is better at passing league-wide, then would it not competitively cancel out for everyone?  This question -- which statistics correlate to actually _winning_ -- is one we'll explore a bit more in the next two sections, where we analyze the Vegas money line and predicting game winners.
 
 <BR>
 <BR>
@@ -564,14 +564,14 @@ As noted above in the [NFL Betting Primer](#nfl-betting-primer) section, the mon
 ###### Spread and Money Line Linear Relationship
 <img src="images/spread_vs_moneyline.png" align="middle" alt="spread_vs_moneyline" width="800">
 
-<sub>__Figure 17:__ The relationship between the spread and moneyline looks to be perfectly described by a 3rd degree polynomial (not pictured), but a closer look at the _density_ of the spread values, shows that over 94.51% are concentrated between -10 and +10.  This range comprises the center of this plot, which is highlighted with a grey box, and is easily described by a linear regression.</sub>
+<sub>__Figure 17:__ The relationship between the spread and moneyline looks to be perfectly described by a 3rd degree polynomial (not pictured), but a closer look at the _density_ of the spread values, shows that over 94.51% are concentrated between -10 and +10.  This range comprises the center of this plot, which is highlighted with a grey box, and is easily described by a linear regression.  This explains why there is such a high linear correlation between the two variables despite the appearance of off-line points at the extremes.  These outliers are so few as to nearly not even register in the regression.</sub>
 
 <BR>
 
 <img src="images/spread_vs_moneyline_rolling_avg.png" align="right" alt="spread_vs_moneyline_rolling_avg" width="600">
 
 ###### Spread and Money Line Rolling Average
-The point to take home is that the spread and the money line are essentially two ways to report the same metric -- how much better one team is than another.  Because of this, regressing against the money line is essentially the same as regressing against the spread.  Results are nearly identical in both feature importance and accuracy, as expected.  As a result, no further testing or modeling was done on the money line.  The remainder of the project was focused on examining how well the results of games labeled "wise bets" turned out.
+The point to take home is that the spread and the money line are essentially two ways to report the same metric -- how much better one team is than another.  Because of this, regressing against the money line is essentially the same as regressing against the spread.  Results are nearly identical in both feature importance and accuracy.  As a result, no further testing or modeling was done on the money line specifically.  The remainder of the project was focused on predicting games and examining how well ones labeled "wise bets" turned out.
 
 <BR>
 <div align="right">
@@ -586,11 +586,11 @@ line is their five-year rolling averages which appear as nearly carbon copies of
 
 ### Predicting Bet Outcomes
 #### Covers and Over-Unders
-Two of the three classification targets, _road covers_ and _over/under results_ proved to be very difficult to tease anything meaningful out of.  My first hunch is that this is due mostly to what the classes are derived from: betting lines set by Vegas.  As discussed in the [NFL Betting Primer](#nfl-betting-primer) section, Vegas has a vested interest in making the results of any bet as close to 50/50 as possible, in order to avoid suffering massive losses.  Vegas takes small wins many times over to turn large profits.  
+Two of the three classification targets, _road covers_ and _over/under results_ proved to be very difficult to tease anything meaningful out of.  My first hunch is that this is due mostly to what the classes are derived from: betting lines set by Vegas.  As discussed in the [NFL Betting Primer](#nfl-betting-primer) section, Vegas has a vested interest in making the results of any bet as close to 50/50 as possible, in order to avoid suffering massive losses.  Vegas takes "small" wins many times over to turn large profits.  
 
 Since the spread and over/under are set by Vegas to meet this balanced criterion, it is not surprising to find that "hidden gem" metrics which predict the results of these bets were not discovered.  If something does a great job of predicting these results, then Vegas knows about them already -- this is their livelihood, after all -- and is using them in their formulae to set these values.  In a sense, we are merely trying to tease out something Vegas has already baked in.
 
-The results for predicting these two bets never got much above 51%.  Remembering that the initial motivation of this project was to build a model to predict the spread, identify games that were beyond a spread-deviation threshold, and investigate to see if they were truly "wise bets".  As you can likely guess, the results for this approach were sub-optimal.  That does not make them uninteresting, however, and they are discussed below in the [Wise Bets Results](#wise-bets-results) section.
+The results for predicting these two bets never got much above 51%.  Remember that the initial motivation of this project was to build a model to predict the spread, identify games that were beyond a spread-deviation threshold, and investigate to see if they were truly "wise bets".  As you can likely guess, the results for this approach were sub-optimal. 
 
 <BR>
 
