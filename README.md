@@ -961,7 +961,7 @@ Here we put our money where our mouth is.  In an effort to keep things manageabl
 
 <BR>
 
-Not too bad!  Using the optimal threshold range of 0.72 to 0.81, our model earns a grand total of $4,430 in just over four seasons worth of games, leaving us winnings of $1,047 per season on a total of 139 bets placed.  A couple things stand out.  
+Not too bad!  Using the optimal threshold range of 0.72 to 0.81 found by reviewing all probability outcomes, our model earns a grand total of $4,430 in just over four seasons worth of games, leaving us winnings of $1,047 per season on a total of 139 bets placed.  This means that our model has found a "sweet spot" between low wager, low confidence games and very high wager, very high confidence ones.  A couple things stand out.  
 
 First, our model takes us $310 into the red after some early losses.  Depending on the bettor's allotted cash this may mean they can not afford to continue betting in order to get out of this early hole.   One possible solution is to prioritize a threshold range which has the least negative value for winnings in order to avoid going negative beyond a given dollar limit.  As is, the goal is to maximize profit, which means we are accepting the fact we might have some bumpy stretches on the way to our final earnings.  Again, since we are betting on the favorite we are only going to win $100 per successful bet, but lose some multiple (the amount wagered) of that for each loss.  Profit by 1,000 cuts...
 
@@ -1012,7 +1012,7 @@ Max Bet Limit | Bets Won | Bets Made | Win % | Total Wagered | Net Winnings   | 
 None          | 256      | 408       | 62.74%| $58,042       | -$4,685        | -$11.48     | $58,042 in risk
 
 
-<sub> __Table 16:__ Results from using different limits for a maximum bet.  The winningest model doesn't necessarily minimize risk. No bets between $750 and $1,000 existed, so those cutoffs were omitted. With a negative net result, all money wagered was the 'risk' with no subsequent reward.  If you win 62% of your bets on the underdog, you'd be the most successful bettor in recorded history.  But winning only 62% of the bets for the favorite is grossly inadequate.  You never recoup your reward for the money you've risked.</sub>
+<sub> __Table 16:__ Results of using the worst range of probabilities for the model.</sub>
 
 
 <BR>
