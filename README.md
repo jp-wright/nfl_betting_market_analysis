@@ -1,4 +1,4 @@
-# NFL Betting Market Prediction and Analysis
+# Comprehensive NFL Betting Market Prediction and Analysis
 
 Sports betting is a multi-billion dollar per year industry.  Estimates vary, but the Nevada Gaming Commission reported over $3.2B in legal gambling in 2011, with 41% of that money being wagered on football alone. <sup id="a1">[__1__](#fn1)</sup>  According to NBA commissioner Adam Silver, if illegal gambling is counted the annual total for American gambling jumps to $400B. <sup id="a1">[__2__](#fn2)</sup>   The single biggest betting event in America is the Super Bowl, which now attracts over $100M in legal bets and potentially ten times that amount illegally. <sup id="a1">[__3__](#fn3)</sup>  With such sums of money flowing into the betting market, I was curious to see if I could use machine learning to isolate some -- _any_ -- notable inefficiency which would give a leg up on betting intelligently.  Ultimately, the aim of this project was to build a model which would take in an upcoming week's games and classify specific contests as "wise bets" based on user-set confidence thresholds.
 
