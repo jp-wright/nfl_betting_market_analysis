@@ -69,7 +69,10 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [The Probabilities Vegas Wants You to Use](#the-probabilities-vegas-wants-you-to-use)
 
 8. [Future Considerations](#future-considerations)  
-    + Dynamic Web App
+    + [Dynamic Web App](#dyanmic-web-app)
+    + [Model Improvements](#model-improvements)
+9. [Glossary](#glossary)
+10. [Appendix](#appendix)
 
 
 
@@ -1004,8 +1007,10 @@ As a closing argument to this project, I wanted to hammer home this point by fin
 
 
 ## Future Considerations
+#### Dynamic Web App
 The biggest future goal I have is to make this model live on a website.  It will take the games for each upcoming week in the NFL season and return win probabilities, highlighting ones that are in the user-defined confidence window.  Historical accuracy with given probabilities will be available to help instruct the user.
 
+#### Model Improvements
 Regarding the model itself, there can be many improvements made.  Most deal with added data.
 1. Account for injuries.  Very granular data work, but could restrict it to key positions like QB, WR, S, DE, etc.  This would allow a _much_ more accurate prediction on the few games where a team is playing without their starting QB, for example.  I'm not sure the model would pick up on this or not, but we could simply have a dummy column called "Starting_QB", 1 for yes and 0 for any backup.  It might be drowned out because its a fairly uncommon occurrence, statistically speaking.  But it might not.  Also, would want to have some team-level injury information.  How many players are injured (using the NFL's injury designations) for a given game?  This will absolutely increase model accuracy.
 

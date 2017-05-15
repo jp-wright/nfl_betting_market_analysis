@@ -2,9 +2,8 @@
 *.xlsx
 *.xls
 
-jp_nfl_capstone_outline.md
-capstone_presentation_plan.md
-nfl_databases/
-nfl_presentation/
-nfl_scripts/
-nfl_coding_resources/
+JP_nfl_vegas_plan.md
+databases/
+src/
+scripts/
+coding_resources/
