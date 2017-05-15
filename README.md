@@ -29,19 +29,19 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [Feature Overlaps](#feature-overlaps)
       + [Game Type Clusters](#game-type-clusters)
 5. [Model Results](#model-results)
-    + [Spread Results](#spread-results)
+    + [Spread](#spread-results)
       + [Summary Stats](#spread-summary-statistics)
       + [Accuracy](#spread-accuracy)
       + [Feature Importance](#spread-feature-importance)
       + [Analysis](#spread-analysis)
-    + [Over/Under](#over-under)
+    + [Over/Under](#over-under-results)
       + [Summary Stats](#over-under-summary-statistics)
       + [Accuracy](#over-under-accuracy)
       + [Feature Importance](#over-under-feature-importance)
       + [Analysis](#over-under-analysis)
     + [Money Line](#money-line-results)
 6. [Predicting Bet Outcomes](#predicting-bet-outcomes)
-    + [Spread Covers and Over/Unders](#covers-and-over-unders)
+    + [Covers and Over/Unders](#covers-and-over-unders)
     + [Predicting the Winner](#predicting-the-winner)
       + [Summary Stats](#winner-summary-statistics)
       + [Accuracy](#winner-accuracy)
@@ -50,26 +50,25 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
       + [Winner Analysis](#winner-analysis)
         + [Passing Features](#passing-features-in-top-40)
         + [Rushing and Winning](#rushing-and-winning)
+        + [Turnovers](#turnovers)
+        + [Weather and Rest](#weather-and-rest)
+        + [Weekday, Surface, and Stadium](#weekday-and-surface-and-stadium)
+        + [The Power of the Spread](#the-power-of-the-spread)
+      + [Prediction Confidence](#winner-prediction-confidence)
+        + [Cumulative Precision](#cumulative-precision)
+        + [Games per Season by Confidence Level](#games-per-season-by-confidence-level)
+        + [Games Played Impact Confidence Level](#number-of-games-played-impacts-confidence-level)
+      + [Can We Make Money?](#can-we-make-money)
+        + [Predictions Mirror the Spread](#predictions-mirror-the-spread)
+      + [Betting Approach](#betting-approach---game-winner)
+        + [Betting via the Spread](#betting-via-the-spread)
+        + [Betting via Probability](#betting-via-model-probabilities)
+7. [Wise Bets Results](#wise-bets-results)
+    + [Optimal Probability Range](#optimal-probability-range)
+      + [Limiting Maximum Bets](#limiting-maximum-bets)
+    + [The Probabilities Vegas Wants You to Use](#the-probabilities-vegas-wants-you-to-use)
 
-
-
-
-
-
-
-
-      +
-    + [Wise Bets Results](#wise-bets-results)
-      + Spread
-      + Over/Under
-      + Money Line
-        + 91.5% R2 with Spread when predicting proba...
-        + Try Seaborn RegPlot and lmplot with some targets/wise/proba/etc
-      + Biggest Bet Upsets?
-    + Hypothetical Bettor Using This Model
-      + Money Line
-
-6. [Future Considerations](#future-considerations)  
+8. [Future Considerations](#future-considerations)  
     + Dynamic Web App
 
 
@@ -402,7 +401,7 @@ The results were all comparable.  There is no clear class separability.  This do
 <BR>
 
 
-## Results
+## Model Results
 As mentioned in [Wise Bets](#wise-bets) above, the goal of predicting the spread and the over/under was be able to label games that had improperly set lines which could make them appealing bets.  This means we really wanted to regress against these targets in order to ultimately classify them.  Paired with the three classification targets, this results in the final goal for all models in this project being able to classify whether or not a game is one we should bet on.  A quick glance at [Tables 3](#regression-outcomes) and [4](#classification-outcomes) show a fairly pedestrian success rate at correctly predicting two of the three classification targets and a modest but not insignificant error on the regression targets.  
 
 <BR>
@@ -729,10 +728,10 @@ Turnovers appear in tier 5 with _difference in average turnovers caused per game
 
 I broke the category down into fumbles, fumbles lost, interceptions, and total turnovers, and the model identified "total turnovers" as the most important of the lot.  My personal conclusion is that the nature of turnovers is largely so random that they aren’t necessarily replicable per game.  Another way to think of it is that the other metrics, especially the advanced ones, do a good to great job of telling us about ‘true’ team strength.  Since a large element of turnovers is due to chance, they don’t do nearly as good a job about telling us about true team strength going into a game, and their lower predictive power reflects this.
 
-##### Weather and Rest Time
+##### Weather and Rest
 I was a bit surprised to see _hours of rest_ omitted from this list.  I expected differences in how much time players had to heal and coaches had to game plan to be more correlated with winning.  They don't appear until tier 6 (0.61%).  Similarly, _temperature_ also shows up in tier 6 (0.61%).  It’s about as important as how many penalty yards the defense averages per game, or how many sack yards the defense gets per game.  This is sensible as we expect home teams to be used to their weather more than the road team is.  Detroit going down to Tampa early in the season or Jacksonville going up to Buffalo in December... these climate adjustments apparently really do matter.  
 
-##### Weekday, Surface, and Stadium
+##### Weekday and Surface and Stadium
 Some of the less important items are routinely the _day of the week_ the game is played on.  This makes sense since the day of the game is shared by both teams, so it is usually not a dividing feature.  However, we did see that hours of rest do matter, so teams that play on Sunday night then on Thursday reasonably have a disadvantage.  Another seemingly unimportant variable is the _surface_ and _stadium_.  Domes, retractable roofs, open stadiums, astroturf, sport turf, dessograss, field turf, natural grass... none of these variables have much impact at all compared to the actual team-centered and matchup-centered stats.
 
 ##### The Power of the Spread
@@ -761,7 +760,7 @@ Our model has the expected parabolic horseshoe curve we expect for precision.  A
 
 The class ratio for predicting a game's winner is, as mentioned previously, 58% home winner and 42% road winner.  This means the _minimum_ level of accuracy we would ever accept is 58%, because all we have to do is label _every_ game a "home win" and we will be right 58% of the time.  Thus, our baseline is not the traditional 50% but rather 58%.  With this in mind, I colored each data point relative to this baseline.  Red is below, blue is above.  This helps to demonstrate the strong and weak points of the model over the entire probability range.  Again, the densest cluster of red points comes in the middle of the plot, where the predictions are least confident.  This makes sense.  Interestingly, once the model determines a game is going to be won by the home team with at least 70% probability (x-axis), it averages an above-baseline precision for every probability interval thereafter. It bears repeating that unless the precision is 1.0, there are some games in the given probability interval that it predicted incorrectly.
 
-###### Cumulative Precision
+##### Cumulative Precision
 <img src="images/cumulative_precision_below-above_50perc_proba.png" align="middle" alt="Cumulative Precision above .5p">
 
 <sub>__Figure 27:__ Cumulative precision bifurcated at 0.50 probability threshold and colored by class of prediction, with blue being "home loss" and green being "home win".  The aim of this plot is to serve as a "betting cutoff" locator by allowing the user to see that all games with a 0.70 probability or higher average around an 83% success rate or better.  Hence, choosing to bet in favor of the home team winning only on games at or above the 0.70 probability threshold would ideally lead to a greater than 83% win rate over time.</sub>
@@ -778,7 +777,7 @@ Also, with fewer games it means each incorrect prediction weighs more heavily on
 
 The consequence of having fewer games at the tails of the prediction ranges means that the more confident we are about predicting a game, the fewer games we will have to make such a confident bet on.  In order to get a sensible handle on just how many or few games this pattern left us, I charted the distribution of games per season across all probability thresholds alongside the distribution of probabilities for predicting a "home win."  
 
-###### Games Per Season by Confidence Level
+##### Games Per Season by Confidence Level
 <img src="images/games_per_season_proba_subplot.png" align="middle" alt="Games Per Season by Probability Dist">
 
 <sub>__Figure 28:__ The distributions for the number of games per season across all probability thresholds and for all the probabilities themselves.</sub>
@@ -800,7 +799,7 @@ inverse of the prediction precision results from <i>Figure 711</i>, where the cl
 </div>
 <BR>
 
-##### Number of Games Played Impact on Confidence Level
+##### Number of Games Played Impacts Confidence Level
 As more games are played during a season the sample size for the underlying statistics describing each team grows.  With a larger sample size, might we not see an increase in the probability of a game's prediction, as the model has data that is more representative of the "true" quality of a team and can be more certain about its probability of winning or losing?  If a team is averaging 31 1st downs and 32.0 points per game after one game... then they had a great first game.  Congrats.  But if a team is averaging those same levels of performance after thirteen games, then we can feel more strongly about that team actually being excellent.  To take a quick gander into this, I binned the teams in the database by number of games played and charted the change in prediction confidence.
 
 <img src="images/GamesPlayed-PredConf.png" align="middle" alt="Impact of games played on prediction confidence.">
@@ -829,7 +828,7 @@ In the second half of the season, all four are above the mean and three of the f
 
 The trend is more pronounced here.  Looking at the raw "under the hood" stats like DVOA shows the impact of sample size on the metric itself, which subsequently impacts the model's predictions.  With only one or two games played, the variance in the DVOA metric is quite large, over 50% in some cases, compared to the later weeks of the season.  As we increase the number of games played we see a condensing of the data, more bunched around the mean, giving shorter and thicker violins.  This reduction in variance due to increased sample size is what we expect, but it is neat to see it backed up by the data for real NFL teams.
 
-##### Can We Make Money
+#### Can We Make Money
 Looking back at [Figure 27](#cumulative-precision), the cumulative precision shows us that once we get to, say, 0.70 probability, the precision for all predictions at or above 0.70 is 83% or higher.  That's encouraging, but we must remember this is the mean precision for all bets above (or below) a set threshold.  We'd expect the accuracy of prediction to be higher for bets the model was more confident about.  Regardless, if we believe we can be correct 83% of the time on all bets above 0.70 confidence,  shouldn't we just bet for the home team to win on every game that has a 70% or greater probability and ride off into the Nevada sunset?  It seems like a slam dunk -- choose the high-confidence bets and be guaranteed of success, right?  Well, it's not quite that simple for two primary reasons, one of which we have already touched upon and the other a secret [lurking in the darkness](https://www.youtube.com/watch?v=i_6w1EUGRoU).  
 
 First, the number of games with a probability of the home team winning at or over 70% is around 19 per season, which is a smidge over one per week.  This isn't too bad, actually, but does make one susceptible to a few bad weeks in a row.  Depending on a bettor's financial reserves, he or she may not be able to afford to play (for any appreciable sum) after three or four consecutive losses.  
@@ -854,7 +853,7 @@ This leaves the standard choice of betting on a team with low confidence (the un
 #### Betting Approach - Game Winner
 There are two ways we can make bets, now.  The first is constructed without having further access to the model and the second will be to use the model itself.  The driving point of laying out these two methods is to show that, despite there not being any _great_ hidden inefficiency in the betting market, that the model still outperforms traditional betting.  The fundamental purpose of using the model is to make bets based on its predicted _probability_ of a team winning, which though does largely align with the spread, it does not do so with a 100% correlation.  Thus, there appear to be _small_ inefficiencies the model is picking up on and these, we hope, will allow us to beat the averages of betting only with the spread.  
 
-##### Betting by the Spread
+##### Betting via the Spread
 If we didn't have access to this model going forward and only had the graphs above, we might consider looking at the rough equivalents for the spread of the probability thresholds that seemed to have success.  The model starts to perform reliably well -- around 71% or better precision -- on bets it gives a 0.70 or better confidence for the home team to win.  This equates to the home team being favored by around 6.2 points.  So, we would restrict our bets to home teams that have are favored by 6.0+ points.
 
 But betting on a favorite means paying a premium.  We have to wager more money than we will win.  Because of this, the most confident bets also carry the highest financial risk for the favorite-backer.  So, we would want to avoid paying _extreme_ premiums if the increase in prediction confidence is only marginal (that is, we want a steeper slope of accuracy to spread).  Accepting that the cumulative precision is only a loose and optimistic-by-nature guide, looking at [Figure 27](#cumulative-precision) we see a mini-peak at 0.74 probability.  After this, there is a diminished return on precision for increase in probability, excluding the high-variance, small sample size results at the extreme.  A 0.74 probability equates roughly to a home team being favored by +7.5 points. So, we could forego bets on games where the home team is favored by more than 7.5 points.  
@@ -879,7 +878,7 @@ I'll touch on the historical winning percentages below, but will first discuss t
 
 The feasibility of such an approach depends on how many candidate games there are.  If there are enough to spread our informed bets around, then we can pursue this method.  A quick glance at __Table 10__ shows us that there does indeed appear to be enough of a sample for us to try to minimize our overall risk.  The two lines at -6.0 and -6.5 have a roughly equal rate of occurrence, about once every two weeks of a regular season.  Combined, that gives about once a week throughout the season.  For the two lines at -7.0 and -7.5, we have a bigger difference between the two but a combined count nearly identical to the 6s, giving us around one bet per week.  In sum, if we consider all four spreads there are 1,371 games in the database, meaning we should expect to see around two games per week that we can wager on, totaling around 34 possible bets, or 12% of all NFL games in a season.  Of these 1,371 games, 970 were predicted correctly by Vegas straight-up, which gives a 70.7% win rate for these four values of the spread.
 
-##### Betting by Model Probabilities
+##### Betting via Model Probabilities
 So, why even use the model?  Why not just bet all games with the home team favored by 6.0 - 7.5 points?  Well, while it is clear the model follows the spread, not all games in this range are equally confident.  As mentioned above, there is no great hidden value to be found betting against Vegas, but the model does still outperform the spread alone.  Here is a table showing the actual values for the spread range of interest.  
 
 Home Favorite | Historical Home Win % | Model Home Win % | Model ∆
@@ -946,7 +945,8 @@ Clearly, limiting our confidence threshold range to probabilities that align wit
 <BR>
 <BR>
 
-### Wise Bets Results
+## Wise Bets Results
+#### Optimal Probability Range
 Here we put our money where our mouth is.  In an effort to keep things manageable, we will agree to wager the exact money line for each game that falls into our confidence window in which the home team is predicted to win.  This means that for every bet we win, we net $100.  For every bet we lose, we lose the amount of the money line, typically around $200 - $500.  A running tally of our winnings is kept, and the threshold range which provides us the highest winnings will be identified as the best choice for using the model.  For reference, the number of bets made and the percent that win will also be marked.  This will help provide context and avoid choosing a threshold range that misleadingly correctly predicts, say, nine out of only ten bets, for a sterling 90% win rate....
 
 
@@ -960,6 +960,7 @@ Not too bad!  Using the optimal threshold range of 0.72 to 0.81, our model earns
 
 First, our model takes us $310 into the red after some early losses.  Depending on the bettor's allotted cash this may mean they can not afford to continue betting in order to get out of this early hole.   One possible solution is to prioritize a threshold range which has the least negative value for winnings in order to avoid going negative beyond a given dollar limit.  As is, the goal is to maximize profit, which means we are accepting the fact we might have some bumpy stretches on the way to our final earnings.  Again, since we are betting on the favorite we are only going to win $100 per successful bet, but lose some multiple (the amount wagered) of that for each loss.  Profit by 1,000 cuts...
 
+##### Limiting Maximum Bets
 Second, the amount wagered is shown as the dotted black line.  In it we see some sharp spikes, reaching well over $1,000.  While our model says these games were in our specified threshold range, Vegas had them listed well above our maximum threshold leading to their requiring a very, very high wager by us.  (In other words, our model said Vegas was overrating the favorite).  In reality, no matter how confident we or the model are about a game, I don't envision anyone wanting to risk $1,850 -- the maximum bet made -- to win only $100.  So, I added an option to limit the maximum amount we'd bet, regardless of if the game was in our specified confidence range, and plotted the results with a maximum bet cutoff of $1,000.
 
 <img src="images/72_to_81_max_1000.png" align="middle" alt="Winnings from optimum probability thresholds">
@@ -970,7 +971,7 @@ Second, the amount wagered is shown as the dotted black line.  In it we see some
 
 The end result is interesting from a risk/reward standpoint.  There were four bets over $1,000 in the initial run.  By limiting our maximum bet to $1,000, those bets were not placed.  All four bets did win, bring +$400 to our total in the original scenario.  That's $400 we now lose out on  However, the amounts we wagered on those four bets were $1637, $1400, $1850, and $1400, respectively.  That's a whopping $6,287 we had to risk in order to win $400!  So, the risk vs. reward ratio should benefit from capping how much we are willing to wager.
 
-###### Limiting Maximum Bets
+###### Risk/Reward Ratios For Different Bet Limits
 Max Bet Limit | Bets Won | Bets Made | Win % | Total Wagered | Net Winnings   | Net Per Bet | Risk/Reward Ratio
 --------------|----------|-----------|-------|---------------|----------------|-------------|------------------
 None          | 116      | 139       | 83.45%| $58,042       | $4,330         | $31.15      | $13.40 in risk
@@ -987,6 +988,7 @@ $500          | 95       | 118       | 80.50%| $40,905       | $2,230         | 
 
 With different betting limits we observe a few noteworthy results.  The win percentage is just the number of games in the threshold that the home team won, since they're the team we are betting to win in each.  The insight the model gives is that some of these games are slightly inaccurately valued by Vegas.  This is borne out in the Risk/Reward Ratio, as we can minimize our risk by excluding bets over $1,000.  Setting our bet limit to a lower cutoff than $1,000 is actually counter productive in terms of risk to reward.  As we continue to lower our limit we start missing out on more bets at an unfavorable ratio.  For the probability ranges of 0.72 to 0.81 for a home team to win, the ideal max bet we should make to minimize our risk-to-reward ratio is $1,000.  There is a small caveat: no bets between $750 and $1,000 existed in this test, so it is possible that an even lower risk-to-reward ratio could be found at a cutoff in this range.
 
+#### The Probabilities Vegas Wants You to Use
 The result above is the rosiest possible outcome.  This bears repeating -- while our predictions were made fairly, our review of them was not.  We examined every possible outcome from every betting threshold and cherry picked the best one.  While this is a smart approach to using the model for future bets because we do want to know which confidence thresholds are likely to give us the best results going forward, it is no guarantee that these results actually _would_ be repeated by betting on future games.  Just think, if the games we made the predictions above on had not yet happened, how would we know to use the thresholds of 0.72 to 0.81?  Yes, we would perform the same experiment we just did on previous years' data, but it very well could have shown us the best threshold for that dataset was, say, 0.69 to 0.77.  Using that same range on the games in the test we ran above would produce some sub-optimal result!  It _is_ possible that the probability window of 0.72 to 0.81 we found above will be successful on future bets.  But we should be aware of the uncertainty inherent in our task. This, of course, the nature of prediction, and especially so of predicting sports outcomes.  
 
 As a closing argument to this project, I wanted to hammer home this point by finding the _worst_ confidence interval for our model and plotting it.  Seeing is believing, so get ready to believe you can go broke  while betting on sports (especially if you ignore my model. Joking....)
@@ -1002,7 +1004,9 @@ As a closing argument to this project, I wanted to hammer home this point by fin
 
 
 ## Future Considerations
-There can be many improvements made.  Most deal with added data.
+The biggest future goal I have is to make this model live on a website.  It will take the games for each upcoming week in the NFL season and return win probabilities, highlighting ones that are in the user-defined confidence window.  Historical accuracy with given probabilities will be available to help instruct the user.
+
+Regarding the model itself, there can be many improvements made.  Most deal with added data.
 1. Account for injuries.  Very granular data work, but could restrict it to key positions like QB, WR, S, DE, etc.  This would allow a _much_ more accurate prediction on the few games where a team is playing without their starting QB, for example.  I'm not sure the model would pick up on this or not, but we could simply have a dummy column called "Starting_QB", 1 for yes and 0 for any backup.  It might be drowned out because its a fairly uncommon occurrence, statistically speaking.  But it might not.  Also, would want to have some team-level injury information.  How many players are injured (using the NFL's injury designations) for a given game?  This will absolutely increase model accuracy.
 
 2. Compute ANY/A per QB, not per team.  Thus, if a team loses their starting QB, we can use the backup's career or projected ANY/A in his place.  
