@@ -20,21 +20,21 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 3. [Wise Bets](#wise-bets)  
 4. [Model Selection](#model-selection)   
     + [Data Selection](#data-selection)
+      + [Feature Importance](#feature-separation-and-importance)
     + [Classification vs. Regression](#regression-vs-classification)
     + [Model Selection and Training](#model-selection-and-training)
-      + [Tree-based Feature Importance](#feature-separation-and-importance)
     + [Class Inspection](#class-inspection)
       + [PCA](#principal-component-analysis)
       + [t-SNE](#t---sne)
       + [Feature Overlaps](#feature-overlaps)
 5. [Results](#results)
     + [Spread Results](#spread-results)
-      + [Summary Stats](#spread-summary-stats)
+      + [Summary Stats](#spread-summary-statistics)
       + [Accuracy](#spread-accuracy)
       + [Feature Importance](#feature-importance)
       + [Analysis](#spread-analysis)
     + [Over/Under](#over---under)
-      + [Summary Stats](#over---under-summary-stats)
+      + [Summary Stats](#over---under-summary-statistics)
       + [Accuracy](#over---under-accuracy)
       + [Feature Importance](#over---under-feature-importance)
       + [Analysis](#over---under-analysis)
@@ -178,17 +178,17 @@ All things considered, you must risk more money when betting on a home team as t
 ## Wise Bets
 Games that pass a user-set threshold of deviation from the model's prediction, either in a point spread, over/under, or in odds to win are labeled as __wise bets__.
 
-###### Spread Wise Bets
+##### Spread Wise Bets
 A game whose actual spread deviates from the predicted spread by the user-set point threshold or more will be labeled a "wise bet".  The underlying approach to finding mis-valued spreads works as follows.  The key factor for a spread is its _flexibility_. As Vegas receives more bets on a particular team at a given spread value, they can adjust the spread in order to balance the wagers on the opposing team, reducing the bookmakers' risk by taking near equal money on both sides.  (Vegas typically does not win big on any given game.  They win small amounts consistently by playing percentages very carefully).  
 
 This flexibility in the line is the key component I aimed to use in snuffing out inefficiency in the spread.  If the betting public has a possibly inaccurate perception about a given team, they will either over- or under-bet for that team, forcing Vegas oddsmakers to compensate by artificially adjusting the spread in order to entice bettors to make wagers against their (inaccurate) perception and even out the money wagered.  
 
 Because of this, the initial aim of this project was simple: I wanted to identify which factors best predict games that have spreads that are incorrectly set, to label these games as potentially "wise bets," and to examine the results of these games in hopes of finding that a favorable percentage would be winning bets.
 
-###### Over-Under Wise Bets
+##### Over-Under Wise Bets
 Secondarily, we can do the same for the Over/Under: use our model to predict the over/under for a game and then bet on games whose predicted over/under deviates by a set amount from the actual over/under.
 
-###### Money Line Wise Bets
+##### Money Line Wise Bets
 Last, we can simply try to predict the winner of a game (this bet is made using the money line, hence the money line name).  These bets are divided into picking either the home team or the road team.  Home teams win more and are favored more, accordingly.  We can use our model to learn as many trends as possible for a given matchup and predict whether the home team will win or lose with a certain degree of confidence.  We can then bet on games that exceed a set level of confidence.
 
 
