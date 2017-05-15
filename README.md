@@ -67,7 +67,6 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
     + [Optimal Probability Range](#optimal-probability-range)
       + [Limiting Maximum Bets](#limiting-maximum-bets)
     + [The Probabilities Vegas Wants You to Use](#the-probabilities-vegas-wants-you-to-use)
-
 8. [Future Considerations](#future-considerations)  
     + [Dynamic Web App](#dyanmic-web-app)
     + [Model Improvements](#model-improvements)
@@ -79,8 +78,6 @@ The oddsmakers in Vegas use networks of supercomputers to set the odds, so expec
 
 <BR>
 <BR>
-<BR>
-
 
 
 ## Dataset
