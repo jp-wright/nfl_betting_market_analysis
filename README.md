@@ -108,7 +108,7 @@ Last, as a long-time paying member at Football Outsiders, I was able to obtain a
 I engineered features in seven distinct ways.
 1. __Per-game averages__ for each team in every statistic.  This was necessary for two concrete reasons.
     1. Not every season in NFL history has had the same number of games.
-    2. Within a season, teams regularly play an opponent that has not played the same number of games at they have at that point in the season.  Simply using season-long running-total values would skew things in favor of the team that had played more games for positive stats and in favor of the team that had played fewer games for negative stats.   By converting every statistic to a per-game value, we are comparing apples-to-apples.
+    2. Within a season, teams regularly play an opponent that has not played the same number of games as they have at that point in the season.  Simply using season-long running-total values would skew things in favor of the team that had played more games for positive stats and in favor of the team that had played fewer games for negative stats.   By converting every statistic to a per-game value, we are comparing apples-to-apples.
 2. __Deltas__ between the two teams in given statistics, resulting in a single statistic describing the relationship between the teams for the given game.   
     _Example:_ home team averages +103 more yards passing per game than the road team.
 3. __Aggregation__ of similar statistics into a single metric.  
